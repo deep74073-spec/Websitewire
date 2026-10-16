@@ -1,162 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Websitewire helps you solve everyday problems with practical how-to guides, honest product comparisons, affiliate recommendations, free online tools, and website development and SEO services.">
-<title>Websitewire – Solutions, Buying Guides &amp; Web Services</title>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Websitewire | Helpful Guides, Buying Advice &amp; Web Services</title>
+<meta name="description" content="Websitewire helps you solve problems with practical articles, buying guides, free online tools and website development services.">
+<link rel="canonical" href="https://websitewire.co.in/">
 <link rel="icon" type="image/png" href="/Website_wire.png">
+<meta name="robots" content="index,follow">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588" crossorigin="anonymous"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033;line-height:1.6}
-header{background:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb}
-.logo{font-size:25px;font-weight:800;color:#172033;text-decoration:none}
-.logo span{color:#2563eb}
-nav a{margin-left:18px;text-decoration:none;color:#334155}
-.hero{background:linear-gradient(135deg,#101827,#234a87);color:white;text-align:center;padding:75px 20px}
-.hero h1{font-size:clamp(36px,6vw,58px);line-height:1.15;margin:12px auto}
-.hero p{color:#dbeafe;max-width:650px;margin:15px auto}
-.search{display:flex;max-width:650px;margin:28px auto;gap:8px;background:white;padding:7px;border-radius:12px}
-.search input{flex:1;min-width:0;border:0;padding:13px;outline:none;font-size:16px}
-button,.btn{background:#2563eb;color:white;border:0;border-radius:8px;padding:13px 18px;cursor:pointer;text-decoration:none;font-weight:bold}
-.wrap{max-width:1100px;margin:auto;padding:45px 20px}
-h2{font-size:30px;margin-bottom:5px}
-.sub{color:#64748b;margin-top:0}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:25px}
-.card{background:white;padding:23px;border:1px solid #e2e8f0;border-radius:15px;text-decoration:none;color:inherit;display:block}
-.card:hover{border-color:#2563eb;transform:translateY(-2px)}
-.card h3{margin:8px 0}
-.card p{color:#64748b;font-size:15px}
-.icon{font-size:30px}
-.link{color:#2563eb;font-weight:bold}
-#results{display:none;max-width:850px;margin:25px auto 0;text-align:left}
-#results.show{display:block}
-.notice{background:#eff6ff;padding:18px;border-radius:10px;color:#1e40af;font-size:14px}
-.cta{background:#e8efff;padding:28px;border-radius:16px}
-footer{background:#101827;color:white;padding:30px 6%;text-align:center}
-footer a{color:#cbd5e1;margin:8px;display:inline-block}
-@media(max-width:700px){nav a{margin-left:8px;font-size:13px}.grid{grid-template-columns:1fr 1fr}.hero{padding:55px 15px}}
-@media(max-width:430px){header{padding:15px 4%}.logo{font-size:21px}nav a{margin-left:5px}.grid{grid-template-columns:1fr}.search{flex-direction:column}.search input{padding:12px}}
-</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588"
-     crossorigin="anonymous"></script>
-</head>
-<body>
-<header>
-<a class="logo" href="/" aria-label="Websitewire Home" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-size:24px;font-weight:700;color:inherit"><img src="/Website_wire.png" alt="Websitewire logo" style="height:42px;width:auto;object-fit:contain"><span style="display:inline-block">Websitewire</span></a>
-<nav>
-<a href="#articles">Articles</a>
-<a href="#products">Products</a>
-<a href="#services">Services</a>
-</nav>
-</header>
-
+:root{--blue:#155eef;--ink:#182230;--muted:#667085;--line:#e4e7ec;--bg:#f8faff;--green:#087443}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.7;background:#fff}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);background:white;position:sticky;top:0;z-index:5}
+.nav{max-width:1120px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:9px;font-size:23px;font-weight:800;color:var(--ink)}
+.brand img{width:42px;height:42px;object-fit:contain}.links{display:flex;gap:17px;flex-wrap:wrap;font-size:14px;font-weight:600}
+main{max-width:1120px;margin:auto;padding:28px 20px 60px}.hero{background:linear-gradient(135deg,#eef4ff,#f7faff);padding:42px 28px;border-radius:22px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0 0 16px}h2{line-height:1.25;margin-top:28px}
+p{color:#475467}.muted{color:var(--muted)}.search{display:flex;gap:8px;max-width:650px;margin-top:24px}
+input,textarea,select{font:inherit;border:1px solid #d0d5dd;border-radius:10px;padding:12px;width:100%;background:white}
+button,.btn{display:inline-block;border:0;border-radius:10px;padding:12px 17px;background:var(--blue);color:white;font-weight:700;cursor:pointer}
+.btn.secondary{background:white;color:var(--blue);border:1px solid #b2ccff}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:20px 0}
+.card{border:1px solid var(--line);border-radius:16px;padding:20px;background:white}
+.card h3{margin:0 0 8px}.card p{margin:7px 0}.tag{display:inline-block;font-size:12px;background:#eef4ff;color:#1849a9;padding:4px 9px;border-radius:30px}
+.notice{background:#fffaeb;border:1px solid #fedf89;padding:14px;border-radius:12px;font-size:14px}
+.article{max-width:800px}.article li{margin:8px 0}.cta{background:#eff8ff;padding:22px;border-radius:15px;margin:25px 0}
+footer{background:#101828;color:white;padding:30px 20px}footer a{color:#d1e0ff}footer p{color:#d0d5dd}
+.footer-inner{max-width:1120px;margin:auto}.footer-links{display:flex;gap:16px;flex-wrap:wrap}
+.tool-output{white-space:pre-wrap;background:#f2f4f7;padding:14px;border-radius:10px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:30px 20px}.links{gap:11px}.search{flex-direction:column}.nav{align-items:flex-start}main{padding:22px 16px 45px}}
+</style></head><body>
+<header><nav class="nav">
+<a class="brand" href="/"><img src="/Website_wire.png" alt="Websitewire logo">Websitewire</a>
+<div class="links">
+<a href="/">Home</a><a href="/articles/">Articles</a>
+<a href="/buying-guides/">Buying Guides</a><a href="/tools/">Free Tools</a>
+<a href="/services/">Services</a><a href="/contact/">Contact</a>
+</div></nav></header>
 <main>
-<section class="hero">
-<p>YOUR ALL-IN-ONE SOLUTION HUB</p>
-<h1>Every Problem Has<br>A Smarter Solution.</h1>
-<p>Discover helpful guides, product recommendations, useful tools and digital services — all in one place.</p>
-<form class="search" id="searchForm">
-<input id="query" placeholder="Search your problem or question..." aria-label="Search articles" required>
-<button type="submit">Search →</button>
-</form>
-<div id="results" aria-live="polite"></div>
+<section class="hero"><span class="tag">Learn • Compare • Build</span>
+<h1>Find practical solutions to everyday problems</h1>
+<p>Helpful how-to articles, buying guides, free online tools and website services—all in one place.</p>
+<form class="search" action="/search.html" method="get">
+<input name="q" aria-label="Search Websitewire" placeholder="Search articles and guides..." required>
+<button type="submit">Search</button></form>
+<p class="muted">Explore trusted information and make more informed decisions.</p></section>
+<h2>Explore Websitewire</h2><section class="grid">
+<div class="card"><h3>📚 Articles & Guides</h3><p>Step-by-step help for technology, websites and everyday problems.</p><a href="/articles/">Browse articles →</a></div>
+<div class="card"><h3>🛒 Buying Guides</h3><p>Compare features and understand what to check before buying.</p><a href="/buying-guides/">Explore guides →</a></div>
+<div class="card"><h3>🧰 Free Online Tools</h3><p>Simple browser-based utilities for everyday tasks.</p><a href="/tools/">Use free tools →</a></div>
+<div class="card"><h3>💻 Website Services</h3><p>Website development, landing pages and SEO assistance.</p><a href="/services/">View services →</a></div>
+<div class="card"><h3>✉️ Contact Us</h3><p>Have a question or need help with a website project?</p><a href="/contact/">Get in touch →</a></div>
+<div class="card"><h3>🔎 Search Resources</h3><p>Find a topic using our site search.</p><a href="/search.html">Search Websitewire →</a></div>
 </section>
-
-<section class="wrap">
-<h2>What can we help you with?</h2>
-<p class="sub">Explore solutions for your everyday digital needs.</p>
-<div class="grid">
-<a class="card" href="#articles"><div class="icon">📚</div><h3>How-to Guides</h3><p>Step-by-step guides to solve common problems.</p><span class="link">Explore guides →</span></a>
-<a class="card" href="#products"><div class="icon">🛍️</div><h3>Product Guides</h3><p>Compare useful products before making a decision.</p><span class="link">Explore products →</span></a>
-<a class="card" href="#tools"><div class="icon">🧰</div><h3>Online Tools</h3><p>Discover tools for work, learning and productivity.</p><span class="link">Explore tools →</span></a>
-</div>
-</section>
-
-<section class="wrap" id="articles">
-<h2>Latest Helpful Guides</h2>
-<p class="sub">Practical knowledge to help you make better decisions.</p>
-<div class="grid">
-<a class="card article" data-words="website create build hosting domain" href="articles/how-to-create-a-website.html"><div class="icon">🌐</div><h3>How to Create a Website</h3><p>Learn the basics of creating and publishing your own website.</p><span class="link">Read guide →</span></a>
-<a class="card article" data-words="seo google search traffic ranking" href="articles/seo-basics.html"><div class="icon">🔎</div><h3>SEO for Beginners</h3><p>Understand the foundations of search engine optimization.</p><span class="link">Read guide →</span></a>
-<a class="card article" data-words="laptop students computer study budget" href="articles/best-laptop-for-students.html"><div class="icon">💻</div><h3>Choosing a Student Laptop</h3><p>Understand laptop specifications before you buy.</p><span class="link">Read guide →</span></a>
-</div>
-</section>
-
-<section class="wrap" id="products">
-<h2>Smart Product Recommendations</h2>
-<p class="sub">Choose products according to your actual needs and budget.</p>
-<div class="grid">
-<div class="card"><div class="icon">💻</div><h3>Laptops & Accessories</h3><p>Compare features, performance and value.</p></div>
-<div class="card"><div class="icon">📱</div><h3>Technology</h3><p>Explore practical buying guides and comparisons.</p></div>
-<div class="card"><div class="icon">⚙️</div><h3>Software</h3><p>Find digital tools for your daily tasks.</p></div>
-</div>
-<p class="notice">Affiliate disclosure: Websitewire may earn a commission from qualifying purchases through affiliate links, at no extra cost to you.</p>
-</section>
-
-<section class="wrap" id="tools">
-<h2>Useful Online Tools</h2>
-<div class="grid">
-<div class="card"><div class="icon">✍️</div><h3>Writing Resources</h3><p>Resources for writing and editing content.</p></div>
-<div class="card"><div class="icon">📊</div><h3>Productivity</h3><p>Discover ways to simplify everyday work.</p></div>
-<div class="card"><div class="icon">🔧</div><h3>Website Tools</h3><p>Resources for website owners and creators.</p></div>
-</div>
-</section>
-
-<section class="wrap" id="services">
-<div class="cta">
-<h2>Need a Website or Digital Service?</h2>
-<p class="sub">Explore website development, web design, SEO and content services.</p>
-<a class="btn" href="contact.html">Contact Us →</a>
-</div>
-</section>
+<h2>Featured articles</h2><section class="grid"><div class="card"><span class="tag">Technology</span><h3><a href="/articles/fix-slow-wifi.html">How to Fix Slow Wi-Fi at Home</a></h3><p>Practical steps to troubleshoot slow Wi-Fi, improve router placement and check your internet connection.</p><a href="/articles/fix-slow-wifi.html">Read guide →</a></div><div class="card"><span class="tag">Websites</span><h3><a href="/articles/create-a-business-website.html">How to Create a Website for Your Small Business</a></h3><p>A beginner-friendly checklist for planning, creating and launching a small business website.</p><a href="/articles/create-a-business-website.html">Read guide →</a></div><div class="card"><span class="tag">Websites</span><h3><a href="/articles/choose-a-web-hosting-plan.html">How to Choose a Web Hosting Plan</a></h3><p>Understand hosting types, storage, support, backups and renewal prices before selecting a hosting plan.</p><a href="/articles/choose-a-web-hosting-plan.html">Read guide →</a></div></section>
+<div class="notice"><strong>Affiliate disclosure:</strong> Some future buying-guide links may be affiliate links. If you buy through them, Websitewire may earn a commission at no additional cost to you. Recommendations should be based on useful, accurate information.</div>
 </main>
-
-<footer>
-<a class="logo" href="/" aria-label="Websitewire Home" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-size:24px;font-weight:700;color:white"><img src="/Website_wire.png" alt="Websitewire logo" style="height:42px;width:auto;object-fit:contain"><span style="display:inline-block">Websitewire</span></a>
-<p>Helpful answers. Smarter choices. Better solutions.</p>
-<a href="about.html">About</a>
-<a href="contact.html">Contact</a>
-<a href="privacy-policy.html">Privacy Policy</a>
-<a href="affiliate-disclosure.html">Affiliate Disclosure</a>
-<a href="terms.html">Terms</a>
-<p>© <span id="year"></span> Websitewire</p>
-</footer>
-
-<script>
-document.getElementById("year").textContent=new Date().getFullYear();
-const articles=[...document.querySelectorAll(".article")];
-document.getElementById("searchForm").addEventListener("submit",function(e){
-e.preventDefault();
-const q=document.getElementById("query").value.trim().toLowerCase();
-const words=q.split(/[^a-z0-9]+/).filter(Boolean);
-const matches=articles.map(a=>{
-const text=(a.innerText+" "+a.dataset.words).toLowerCase();
-return {a,score:words.filter(w=>text.includes(w)).length};
-}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
-const box=document.getElementById("results");
-box.replaceChildren();
-box.classList.add("show");
-const title=document.createElement("h3");
-title.textContent="Search results for: "+q;
-box.appendChild(title);
-if(!matches.length){
-const p=document.createElement("p");
-p.textContent="No matching guide found yet. Try website, SEO, laptop or student.";
-box.appendChild(p);
-return;
-}
-matches.forEach(item=>{
-const a=document.createElement("a");
-a.href=item.a.href;
-a.className="card";
-a.style.marginTop="10px";
-const h=document.createElement("strong");
-h.textContent=item.a.querySelector("h3").textContent;
-a.appendChild(h);
-box.appendChild(a);
-});
-});
-</script>
-</body>
-</html>
+<footer><div class="footer-inner">
+<a class="brand" href="/" style="color:white"><img src="/Website_wire.png" alt="">Websitewire</a>
+<p>Practical guides, useful tools, product research and website services.</p>
+<div class="footer-links"><a href="/about/">About</a><a href="/contact/">Contact</a>
+<a href="/privacy-policy/">Privacy Policy</a><a href="/disclaimer/">Affiliate Disclosure</a>
+<a href="/terms/">Terms</a></div>
+<p>© 2026 Websitewire. All rights reserved.</p>
+</div></footer></body></html>
