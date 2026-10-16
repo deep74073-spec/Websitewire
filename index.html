@@ -1,36 +1,120 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Websitewire — Simple Solutions to Everyday Problems</title>
-<meta name="description" content="Simple, practical guides to solve everyday tech problems, plus useful product recommendations to help you choose what you need.">
-<link rel="canonical" href="https://websitewire.co.in/">
-<style>
-:root{--blue:#155eef;--ink:#172033;--muted:#5d687b;--line:#e6eaf0;--soft:#f5f8ff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.wrap{width:min(1080px,92%);margin:auto}header{border-bottom:1px solid var(--line)}.nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:1.45rem;font-weight:800;color:var(--ink);display:inline-flex;align-items:center;gap:9px}.brand img{width:38px;height:38px;object-fit:contain}.brand span{color:var(--blue)}nav{display:flex;gap:20px;flex-wrap:wrap;font-size:.94rem}nav a{color:#303b50}.hero{padding:62px 0 52px;background:linear-gradient(135deg,#f5f8ff,#fff)}.eyebrow{color:var(--blue);font-weight:750;text-transform:uppercase;letter-spacing:1.4px;font-size:.78rem}h1{font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.1;letter-spacing:-1.5px;max-width:720px;margin:12px 0}.hero p{max-width:660px;color:var(--muted);font-size:1.1rem;margin:0 0 24px}.search{display:flex;gap:10px;max-width:650px}.search input{flex:1;min-width:0;padding:14px 16px;border:1px solid #d9e0eb;border-radius:10px;font:inherit}.search button{border:0;border-radius:9px;padding:13px 18px;background:var(--blue);color:white;font-weight:700;font:inherit;cursor:pointer}section{padding:42px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}h2{font-size:1.75rem;line-height:1.2;letter-spacing:-.5px;margin:0}.section-head p{margin:5px 0 0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:white}.thumb{height:125px;display:grid;place-items:center;background:var(--soft);font-size:3rem}.card-body{padding:18px}.tag{display:inline-block;color:var(--blue);font-size:.76rem;font-weight:750;background:#edf3ff;border-radius:999px;padding:4px 9px;margin-bottom:9px}h3{font-size:1.1rem;line-height:1.35;margin:0 0 8px}.card p{color:var(--muted);margin:0 0 12px;font-size:.95rem}.read{font-weight:750}.soft-section{background:#f8faff;border-block:1px solid #edf1f7}.product .thumb{background:#f6f8fb}.product-note{font-size:.9rem;color:var(--muted);margin:0 0 14px}.amazon{display:block;text-align:center;background:#ffd34d;color:#222;padding:10px 12px;border-radius:8px;font-weight:800}.disclosure{font-size:.85rem;color:var(--muted);margin:0 0 18px}.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.how article{padding:20px;border:1px solid var(--line);border-radius:12px}.how strong{display:block;margin-bottom:5px}footer{background:#111b2c;color:#e9eef7;padding:28px 0}.foot{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}footer a{color:#e9eef7}footer p{margin:5px 0;color:#c0cada;font-size:.9rem}.footlinks{display:flex;gap:16px;flex-wrap:wrap;font-size:.9rem}[hidden]{display:none!important}@media(max-width:760px){nav{gap:12px}.nav{padding:14px 0;align-items:flex-start}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:45px 0}.section-head{align-items:flex-start;flex-direction:column}.how{grid-template-columns:1fr}}@media(max-width:520px){.nav{display:block}.brand{display:block;margin-bottom:10px}.search{flex-direction:column}.search button{width:100%}.grid{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Websitewire | Simple Solutions</title>
+  <meta name="description" content="Websitewire helps you find solutions to everyday problems.">
+  <link rel="icon" href="/Website_wire.png">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #172033;
+      background: #fff;
+      line-height: 1.6;
+    }
+    header {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 14px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 23px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #172033;
+    }
+    .brand img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    nav a { color: #334155; text-decoration: none; }
+    nav a:hover { color: #1769ff; }
+    .welcome {
+      text-align: center;
+      padding: 75px 20px;
+      background: #f3f7ff;
+    }
+    h1 { font-size: clamp(30px, 5vw, 46px); margin: 0 0 12px; }
+    .welcome p { color: #5b6575; margin: 0; }
+    main { max-width: 900px; margin: auto; padding: 35px 20px; }
+    .ad-slot {
+      min-height: 100px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #64748b;
+      padding: 15px;
+      margin: 0 auto 30px;
+    }
+    footer {
+      padding: 25px 20px;
+      text-align: center;
+      background: #172033;
+      color: white;
+    }
+    footer a { color: white; margin: 0 8px; text-decoration: none; }
+    @media (max-width: 600px) {
+      header { justify-content: center; }
+      nav { justify-content: center; }
+      .welcome { padding: 55px 18px; }
+    }
+  </style>
 </head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="/" aria-label="Websitewire home"><img src="/Website_wire.png" alt="" width="38" height="38">Website<span>wire</span></a><nav aria-label="Main navigation"><a href="/">Home</a><a href="#articles">Articles</a><a href="#products">Amazon products</a><a href="#about">About</a></nav></div></header>
-<main>
-<section class="hero"><div class="wrap"><div class="eyebrow">Understand it · Fix it · Choose better</div><h1>Simple solutions to everyday problems.</h1><p>Clear, step-by-step guides for common tech problems, with practical product suggestions only when they can genuinely help.</p><form class="search" id="searchForm" role="search"><input id="searchInput" type="search" placeholder="Search a problem or guide…" aria-label="Search articles"><button type="submit">Search articles</button></form></div></section>
-<section id="articles"><div class="wrap"><div class="section-head"><div><h2>Find a solution</h2><p>Start with the problem you want to solve.</p></div></div><div class="grid" id="articleGrid">
-<article class="card article-card" data-search="slow wifi internet router speed fix"><div class="thumb">📶</div><div class="card-body"><span class="tag">Internet & Wi-Fi</span><h3><a href="/articles/fix-slow-wifi.html">How to Fix Slow Wi-Fi at Home</a></h3><p>Try these checks before spending money on a new router: restart your router, improve its placement, check connected devices and test your speed.</p><a class="read" href="/articles/fix-slow-wifi.html">Read the guide →</a></div></article>
-<article class="card article-card" data-search="phone battery draining fast android battery life"><div class="thumb">🔋</div><div class="card-body"><span class="tag">Phones</span><h3><a href="/articles/phone-battery-draining.html">Phone Battery Draining Fast? Try These Fixes</a></h3><p>Check battery usage, background apps, screen brightness and battery health before buying accessories or replacing your phone.</p><a class="read" href="/articles/phone-battery-draining.html">Read the guide →</a></div></article>
-<article class="card article-card" data-search="laptop slow speed storage startup performance"><div class="thumb">💻</div><div class="card-body"><span class="tag">Computers</span><h3><a href="/articles/make-laptop-faster.html">How to Make a Slow Laptop Faster</a></h3><p>Use built-in storage, startup and update checks to find the cause of slow performance before deciding whether an upgrade is needed.</p><a class="read" href="/articles/make-laptop-faster.html">Read the guide →</a></div></article>
-<article class="card article-card" data-search="storage full phone free up space photos apps"><div class="thumb">🗂️</div><div class="card-body"><span class="tag">Everyday tech</span><h3><a href="/articles/free-up-phone-storage.html">How to Free Up Phone Storage Safely</a></h3><p>Find large files, review downloads and clear safe-to-remove data without accidentally deleting important photos or documents.</p><a class="read" href="/articles/free-up-phone-storage.html">Read the guide →</a></div></article>
-<article class="card article-card" data-search="website small business create website beginner"><div class="thumb">🌐</div><div class="card-body"><span class="tag">Websites</span><h3><a href="/articles/create-small-business-website.html">How to Create a Website for a Small Business</a></h3><p>A beginner-friendly checklist for choosing a domain, planning pages and publishing a clear, mobile-friendly website.</p><a class="read" href="/articles/create-small-business-website.html">Read the guide →</a></div></article>
-<article class="card article-card" data-search="buy router choose wifi home buying guide"><div class="thumb">🛜</div><div class="card-body"><span class="tag">Buying help</span><h3><a href="/articles/choose-home-wifi-router.html">How to Choose a Home Wi-Fi Router</a></h3><p>Understand home size, internet speed, device count and useful features so you can avoid paying for features you do not need.</p><a class="read" href="/articles/choose-home-wifi-router.html">Read the guide →</a></div></article>
-</div><p id="noResults" hidden>No matching guides found. Try a shorter search.</p></div></section>
-<section class="soft-section" id="products"><div class="wrap"><div class="section-head"><div><h2>Useful products, chosen for a reason</h2><p>Compare the product with your actual problem before buying.</p></div></div><p class="disclosure"><strong>Affiliate disclosure:</strong> Websitewire may earn a commission from qualifying purchases through Amazon links, at no extra cost to you. We aim to explain when a product may help and when you may not need one.</p><div class="grid">
-<article class="card product"><div class="thumb">📡</div><div class="card-body"><h3>Wi-Fi router</h3><p class="product-note">Consider a replacement only after checking your current router, placement and internet plan. Compare coverage, Wi-Fi standard and warranty.</p><a class="amazon" href="https://www.amazon.in/" target="_blank" rel="sponsored nofollow noopener">Find on Amazon India ↗</a></div></article>
-<article class="card product"><div class="thumb">💾</div><div class="card-body"><h3>External SSD</h3><p class="product-note">Useful if you need extra storage or backups. Check capacity, device compatibility and warranty before choosing one.</p><a class="amazon" href="https://www.amazon.in/" target="_blank" rel="sponsored nofollow noopener">Find on Amazon India ↗</a></div></article>
-<article class="card product"><div class="thumb">🔌</div><div class="card-body"><h3>Charging cable and adapter</h3><p class="product-note">Match the connector and supported charging standard to your device; avoid unverified products and exaggerated wattage claims.</p><a class="amazon" href="https://www.amazon.in/" target="_blank" rel="sponsored nofollow noopener">Find on Amazon India ↗</a></div></article>
-</div><p class="disclosure" style="margin-top:14px">These are general product categories, not paid placements or verified product reviews. Add specific products only after checking current details and suitability.</p></div></section>
-<section id="about"><div class="wrap"><div class="section-head"><div><h2>How Websitewire helps</h2><p>Solutions first, shopping second.</p></div></div><div class="how"><article><strong>1. Explain the problem</strong>We describe common causes in plain language so you know what to check.</article><article><strong>2. Try practical fixes</strong>Follow clear steps, starting with free and low-risk options whenever possible.</article><article><strong>3. Compare before buying</strong>If a product could help, review compatibility, trade-offs and total cost before deciding.</article></div></div></section>
-</main>
-<footer><div class="wrap foot"><div><a class="brand" href="/">Website<span>wire</span></a><p>Practical guides. Clear answers. Smarter choices.</p></div><div class="footlinks"><a href="#articles">Articles</a><a href="#products">Product picks</a><a href="/about.html">About</a><a href="/privacy-policy.html">Privacy</a><a href="/contact.html">Contact</a></div><p>© <span id="year"></span> Websitewire</p></div></footer>
-<script>
-document.getElementById('year').textContent=new Date().getFullYear();
-document.getElementById('searchForm').addEventListener('submit',function(e){e.preventDefault();const q=document.getElementById('searchInput').value.trim().toLowerCase();const cards=[...document.querySelectorAll('.article-card')];let n=0;cards.forEach(c=>{const ok=!q||(c.innerText+' '+(c.dataset.search||'')).toLowerCase().includes(q);c.hidden=!ok;if(ok)n++});document.getElementById('noResults').hidden=n!==0;document.getElementById('articles').scrollIntoView({behavior:'smooth'})});
-</script>
-</body></html>
+  <header>
+    <a class="brand" href="/" aria-label="Websitewire home">
+      <img src="/Website_wire.png" alt="Websitewire logo">
+      <span>Websitewire</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="#articles">Articles</a>
+      <a href="#about">About</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </header>
+
+  <section class="welcome">
+    <h1>Welcome to Websitewire</h1>
+    <p>Find helpful information and solutions to everyday problems.</p>
+  </section>
+
+  <main>
+    <!-- Google AdSense placement: add your approved ad code here later. -->
+    <div class="ad-slot">
+      Google AdSense space
+    </div>
+
+    <section id="articles">
+      <!-- Your article images, titles and links will be added here later. -->
+    </section>
+
+    <section id="about">
+      <h2>About Websitewire</h2>
+      <p>A simple place to find helpful solutions.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Websitewire</p>
+    <a href="/privacy-policy/">Privacy Policy</a>
+    <a href="/disclaimer/">Disclaimer</a>
+    <a href="/contact/">Contact</a>
+  </footer>
+</body>
+</html>
