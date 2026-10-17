@@ -63,7 +63,7 @@ footer{border-top:1px solid #334155;margin-top:28px}
 <button data-dir="down" aria-label="Down">▼</button>
 <button data-dir="right" aria-label="Right">▶</button>
 </div>
-<p class="help-text" style="text-align:center">Keyboard: arrow keys or W A S D. On phones, use the direction buttons.</p>
+<p class="help-text" style="text-align:center">Keyboard: arrow keys or W A S D. On phones, swipe anywhere on the game board to turn, or use the direction buttons.</p>
 </section>
 <section>
 <h2>How to play</h2>
@@ -108,7 +108,27 @@ function draw(){
 }
 function reset(){
   clearInterval(timer);
-  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  
+/* swipe-touch-controls */
+(function(){
+ const board=document.getElementById('game');
+ let sx=0,sy=0;
+ board.addEventListener('pointerdown',e=>{
+   sx=e.clientX; sy=e.clientY;
+   if(board.setPointerCapture) board.setPointerCapture(e.pointerId);
+ });
+ board.addEventListener('pointerup',e=>{
+   const dx=e.clientX-sx,dy=e.clientY-sy;
+   if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;
+   if(Math.abs(dx)>Math.abs(dy)){
+     change(dx>0?{x:1,y:0}:{x:-1,y:0});
+   }else{
+     change(dy>0?{x:0,y:1}:{x:0,y:-1});
+   }
+ });
+})();
+
+snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
   dir={x:1,y:0};nextDir={x:1,y:0};
   score=0;running=true;paused=false;over=false;
   scoreEl.textContent=score;
