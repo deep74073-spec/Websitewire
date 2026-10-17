@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Play Snake Online Free | Websitewire</title>
+<meta name="description" content="Play Snake online for free. Collect food, avoid crashing and beat your best score on mobile or desktop.">
+<link rel="canonical" href="https://websitewire.co.in/games/snake/">
+<meta name="robots" content="index,follow">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#f8fafc;font-family:system-ui,Arial,sans-serif}
+header,main,footer{max-width:760px;margin:auto;padding:18px}
+header{border-bottom:1px solid #334155}
+a{color:#93c5fd}
+.brand{font-size:21px;font-weight:800;text-decoration:none;color:#fff}
+h1{font-size:clamp(28px,6vw,40px);margin-bottom:5px}
+p{line-height:1.6;color:#cbd5e1}
+.panel{background:#1e293b;border:1px solid #334155;border-radius:18px;padding:15px}
+.stats{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;font-weight:700}
+canvas{display:block;width:100%;max-width:480px;aspect-ratio:1;margin:auto;background:#07111f;border-radius:12px;touch-action:none}
+button{border:0;border-radius:10px;padding:12px 17px;font-size:16px;font-weight:750;cursor:pointer;background:#38bdf8;color:#082f49}
+.controls{display:grid;grid-template-columns:repeat(3,60px);gap:8px;justify-content:center;margin:16px auto}
+.controls button{padding:12px 0;font-size:20px}
+.controls .empty{visibility:hidden}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+.secondary{background:#334155;color:white}
+.status{text-align:center;min-height:26px;font-weight:700}
+footer{border-top:1px solid #334155;margin-top:28px}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="/games/">← Websitewire Games</a>
+</header>
+<main>
+<h1>Snake</h1>
+<p>Collect the food, grow your snake and avoid hitting the walls or yourself.</p>
+<section class="panel">
+<div class="stats">
+<span>Score: <span id="score">0</span></span>
+<span>Best: <span id="best">0</span></span>
+</div>
+<canvas id="game" width="400" height="400" aria-label="Snake game board"></canvas>
+<p id="status" class="status" aria-live="polite">Press Start to play.</p>
+<div class="actions">
+<button id="start">Start / Restart</button>
+<button id="pause" class="secondary">Pause</button>
+</div>
+<div class="controls" aria-label="Touch controls">
+<span class="empty"></span><button data-dir="up" aria-label="Up">▲</button><span class="empty"></span>
+<button data-dir="left" aria-label="Left">◀</button>
+<button data-dir="down" aria-label="Down">▼</button>
+<button data-dir="right" aria-label="Right">▶</button>
+</div>
+<p style="text-align:center">Keyboard: arrow keys or W A S D. On phones, use the direction buttons.</p>
+</section>
+<section>
+<h2>How to play</h2>
+<p>Use the direction controls to collect the red food. Each food item adds one point and makes the snake longer. Avoid the walls and your own tail. Press Pause whenever you need a break.</p>
+<h2>Game information</h2>
+<p>This is a free, self-contained browser game. It does not require an account or app installation.</p>
+</section>
+</main>
+<footer><p>© 2026 Websitewire · <a href="/privacy-policy/">Privacy Policy</a> · <a href="/contact/">Contact</a></p></footer>
+<script>
+(function(){
+const canvas=document.getElementById('game');
+const ctx=canvas.getContext('2d');
+const scoreEl=document.getElementById('score');
+const bestEl=document.getElementById('best');
+const statusEl=document.getElementById('status');
+const size=20, cells=20;
+let snake,food,dir,nextDir,score,timer,running,paused,over;
+let best=0;
+try { best=Number(localStorage.getItem('wwSnakeBest')||0); } catch(e) {}
+bestEl.textContent=best;
+
+function randomFood(){
+  let f;
+  do { f={x:Math.floor(Math.random()*cells),y:Math.floor(Math.random()*cells)}; }
+  while(snake.some(p=>p.x===f.x&&p.y===f.y));
+  return f;
+}
+function draw(){
+  ctx.fillStyle='#07111f';ctx.fillRect(0,0,400,400);
+  ctx.strokeStyle='rgba(148,163,184,.08)';
+  for(let i=0;i<=cells;i++){
+    ctx.beginPath();ctx.moveTo(i*size,0);ctx.lineTo(i*size,400);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i*size);ctx.lineTo(400,i*size);ctx.stroke();
+  }
+  ctx.fillStyle='#fb7185';
+  ctx.beginPath();ctx.arc(food.x*size+10,food.y*size+10,7,0,Math.PI*2);ctx.fill();
+  snake.forEach((p,i)=>{
+    ctx.fillStyle=i===0?'#a3e635':'#4ade80';
+    ctx.fillRect(p.x*size+2,p.y*size+2,size-4,size-4);
+  });
+}
+function reset(){
+  clearInterval(timer);
+  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  dir={x:1,y:0};nextDir={x:1,y:0};
+  score=0;running=true;paused=false;over=false;
+  scoreEl.textContent=score;
+  food=randomFood();statusEl.textContent='Good luck! Collect the food.';
+  draw();timer=setInterval(tick,135);
+}
+function tick(){
+  if(!running||paused)return;
+  dir=nextDir;
+  const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  const eating=head.x===food.x&&head.y===food.y;
+  const body=eating?snake:snake.slice(0,-1);
+  if(head.x<0||head.x>=cells||head.y<0||head.y>=cells||body.some(p=>p.x===head.x&&p.y===head.y)){
+    running=false;over=true;clearInterval(timer);
+    statusEl.textContent='Game over! Press Start / Restart to try again.';
+    return;
+  }
+  snake.unshift(head);
+  if(eating){
+    score++;scoreEl.textContent=score;food=randomFood();
+    if(score>best){
+      best=score;bestEl.textContent=best;
+      try{localStorage.setItem('wwSnakeBest',String(best));}catch(e){}
+    }
+  }else snake.pop();
+  draw();
+}
+function change(d){
+  if(!running||paused)return;
+  if(d.x===-dir.x&&d.y===-dir.y)return;
+  nextDir=d;
+}
+document.getElementById('start').addEventListener('click',reset);
+document.getElementById('pause').addEventListener('click',()=>{
+  if(!running)return;
+  paused=!paused;
+  statusEl.textContent=paused?'Paused. Press Pause to continue.':'Game resumed!';
+});
+document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>{
+  const d=b.dataset.dir;
+  change(d==='up'?{x:0,y:-1}:d==='down'?{x:0,y:1}:d==='left'?{x:-1,y:0}:{x:1,y:0});
+}));
+document.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  const map={arrowup:{x:0,y:-1},w:{x:0,y:-1},arrowdown:{x:0,y:1},s:{x:0,y:1},arrowleft:{x:-1,y:0},a:{x:-1,y:0},arrowright:{x:1,y:0},d:{x:1,y:0}};
+  if(map[k]){e.preventDefault();change(map[k]);}
+  if(k===' '&&running){e.preventDefault();paused=!paused;statusEl.textContent=paused?'Paused.':'Game resumed!';}
+});
+snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+food={x:14,y:10};dir={x:1,y:0};nextDir=dir;score=0;running=false;paused=false;over=false;
+draw();
+})();
+</script>
+</body>
+</html>
