@@ -19,6 +19,15 @@ p{line-height:1.6;color:#cbd5e1}
 .panel{background:#1e293b;border:1px solid #334155;border-radius:18px;padding:15px}
 .stats{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;font-weight:700}
 canvas{display:block;width:100%;max-width:480px;aspect-ratio:1;margin:auto;background:#07111f;border-radius:12px;touch-action:none}
+#gamePanel:fullscreen{width:100%;height:100%;max-width:none;max-height:none;border-radius:0;padding:12px;overflow:auto;display:flex;flex-direction:column;justify-content:center;background:#101827}
+#gamePanel:fullscreen canvas{width:min(100%,calc(100dvh - 250px));max-width:calc(100dvh - 250px);max-height:calc(100dvh - 250px);flex-shrink:1}
+#gamePanel:fullscreen .controls{margin:8px auto;gap:6px}
+#gamePanel:fullscreen .controls button{min-width:58px;min-height:52px}
+#gamePanel:fullscreen .status{margin:8px 0}
+#gamePanel:fullscreen .stats{margin-bottom:8px}
+#gamePanel:fullscreen .help-text{display:none}
+@media(max-width:500px){.controls{grid-template-columns:repeat(3, minmax(58px,72px));gap:8px}.controls button{min-height:54px;touch-action:manipulation}.actions button{min-height:48px}}
+body:has(#gamePanel:fullscreen){overflow:hidden}
 button{border:0;border-radius:10px;padding:12px 17px;font-size:16px;font-weight:750;cursor:pointer;background:#38bdf8;color:#082f49}
 .controls{display:grid;grid-template-columns:repeat(3,60px);gap:8px;justify-content:center;margin:16px auto}
 .controls button{padding:12px 0;font-size:20px}
@@ -36,7 +45,7 @@ footer{border-top:1px solid #334155;margin-top:28px}
 <main>
 <h1>Snake</h1>
 <p>Collect the food, grow your snake and avoid hitting the walls or yourself.</p>
-<section class="panel">
+<section class="panel" id="gamePanel">
 <div class="stats">
 <span>Score: <span id="score">0</span></span>
 <span>Best: <span id="best">0</span></span>
@@ -46,6 +55,7 @@ footer{border-top:1px solid #334155;margin-top:28px}
 <div class="actions">
 <button id="start">Start / Restart</button>
 <button id="pause" class="secondary">Pause</button>
+<button id="fullscreen" class="secondary" type="button">⛶ Full Screen</button>
 </div>
 <div class="controls" aria-label="Touch controls">
 <span class="empty"></span><button data-dir="up" aria-label="Up">▲</button><span class="empty"></span>
@@ -53,7 +63,7 @@ footer{border-top:1px solid #334155;margin-top:28px}
 <button data-dir="down" aria-label="Down">▼</button>
 <button data-dir="right" aria-label="Right">▶</button>
 </div>
-<p style="text-align:center">Keyboard: arrow keys or W A S D. On phones, use the direction buttons.</p>
+<p class="help-text" style="text-align:center">Keyboard: arrow keys or W A S D. On phones, use the direction buttons.</p>
 </section>
 <section>
 <h2>How to play</h2>
@@ -131,6 +141,23 @@ function change(d){
   if(d.x===-dir.x&&d.y===-dir.y)return;
   nextDir=d;
 }
+const panel=document.getElementById('gamePanel');
+const fullBtn=document.getElementById('fullscreen');
+fullBtn.addEventListener('click',async()=>{
+  try{
+    if(!document.fullscreenElement){
+      if(panel.requestFullscreen) await panel.requestFullscreen();
+      else { statusEl.textContent='Full screen is not supported in this browser.'; return; }
+    }else{
+      await document.exitFullscreen();
+    }
+  }catch(e){
+    statusEl.textContent='Full screen was blocked by the browser.';
+  }
+});
+document.addEventListener('fullscreenchange',()=>{
+  fullBtn.textContent=document.fullscreenElement?'✕ Exit Full Screen':'⛶ Full Screen';
+});
 document.getElementById('start').addEventListener('click',reset);
 document.getElementById('pause').addEventListener('click',()=>{
   if(!running)return;
