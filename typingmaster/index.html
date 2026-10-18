@@ -44,7 +44,24 @@ button.secondary{background:#475569}
 </section>
 </main>
 <script>
-const original=document.getElementById('passage').textContent.trim();
+const passageEl=document.getElementById('passage');
+const original=passageEl.textContent.trim();
+function renderPassage(typed=''){
+ passageEl.innerHTML='';
+ for(let i=0;i<original.length;i++){
+  const span=document.createElement('span');
+  span.textContent=original[i];
+  if(i<typed.length){
+   span.style.color=typed[i]===original[i]?'#15803d':'#dc2626';
+   span.style.background=typed[i]===original[i]?'#dcfce7':'#fee2e2';
+  } else if(i===typed.length){
+   span.style.background='#dbeafe';
+   span.style.borderBottom='2px solid #2563eb';
+  }
+  passageEl.appendChild(span);
+ }
+}
+renderPassage();
 const typing=document.getElementById('typing');
 const timeEl=document.getElementById('time');
 const wpmEl=document.getElementById('wpm');
@@ -53,6 +70,7 @@ const message=document.getElementById('message');
 let remaining=60, timer=null, started=false, finished=false, startTime=0;
 function update(){
  const typed=typing.value;
+ renderPassage(typed);
  let correct=0;
  for(let i=0;i<typed.length;i++) if(typed[i]===original[i]) correct++;
  const elapsed=started?Math.max((Date.now()-startTime)/60000,1/60):0;
