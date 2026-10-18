@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypingMaster - Free Typing Test | Websitewire</title>
+<meta name="description" content="Practice typing online with a free typing speed test. Check your WPM, accuracy and mistakes.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#172033;color:white;padding:18px 16px}
+header a{color:white;text-decoration:none}
+main{max-width:850px;margin:28px auto;padding:20px}
+.panel{background:white;padding:24px;border-radius:16px;box-shadow:0 5px 20px #0000000d}
+h1{margin-top:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{background:#eff6ff;padding:15px;border-radius:10px;text-align:center}
+.stat strong{display:block;font-size:25px;color:#2563eb;margin-top:6px}
+#passage{font-size:19px;line-height:1.9;background:#f8fafc;padding:18px;border-radius:10px;margin:18px 0;overflow-wrap:anywhere}
+#typing{width:100%;min-height:130px;padding:14px;font-size:18px;line-height:1.6;border:2px solid #cbd5e1;border-radius:10px;resize:vertical}
+button{border:0;border-radius:9px;background:#2563eb;color:white;padding:12px 18px;font-size:16px;cursor:pointer;margin:8px 5px 0 0}
+button.secondary{background:#475569}
+#message{font-weight:bold;margin-top:15px}
+@media(max-width:520px){main{padding:12px}.panel{padding:17px}.stats{gap:6px}.stat{padding:10px}.stat strong{font-size:21px}}
+</style>
+</head>
+<body>
+<header><a href="/">← Websitewire Home</a></header>
+<main>
+<section class="panel">
+<h1>⌨️ TypingMaster</h1>
+<p>Practice typing and improve your speed. Type the passage below as accurately as possible.</p>
+<div class="stats">
+<div class="stat">Time left<strong id="time">60</strong></div>
+<div class="stat">Speed (WPM)<strong id="wpm">0</strong></div>
+<div class="stat">Accuracy<strong id="accuracy">100%</strong></div>
+</div>
+<div id="passage">Practice every day to improve your typing speed and accuracy. Keep your fingers relaxed, look at the screen, and focus on typing each word correctly. Good typing comes from patience, consistency, and regular practice. Start slowly and build your speed over time.</div>
+<textarea id="typing" placeholder="Tap here and start typing the passage..." disabled></textarea>
+<br>
+<button id="start">Start 60-Second Test</button>
+<button id="reset" class="secondary">Restart</button>
+<p id="message" role="status">Press Start when you are ready.</p>
+</section>
+</main>
+<script>
+const original=document.getElementById('passage').textContent.trim();
+const typing=document.getElementById('typing');
+const timeEl=document.getElementById('time');
+const wpmEl=document.getElementById('wpm');
+const accuracyEl=document.getElementById('accuracy');
+const message=document.getElementById('message');
+let remaining=60, timer=null, started=false, finished=false, startTime=0;
+function update(){
+ const typed=typing.value;
+ let correct=0;
+ for(let i=0;i<typed.length;i++) if(typed[i]===original[i]) correct++;
+ const elapsed=started?Math.max((Date.now()-startTime)/60000,1/60):0;
+ wpmEl.textContent=elapsed?Math.round((typed.trim()?typed.trim().split(/\s+/).length:0)/elapsed):0;
+ accuracyEl.textContent=(typed.length?Math.round(correct/typed.length*100):100)+'%';
+}
+function finish(){
+ clearInterval(timer);finished=true;typing.disabled=true;
+ message.textContent='Test complete! Speed: '+wpmEl.textContent+' WPM · Accuracy: '+accuracyEl.textContent+'. Press Restart to try again.';
+}
+function reset(){
+ clearInterval(timer);remaining=60;started=false;finished=false;typing.value='';typing.disabled=true;
+ timeEl.textContent='60';wpmEl.textContent='0';accuracyEl.textContent='100%';
+ message.textContent='Press Start when you are ready.';
+ document.getElementById('start').disabled=false;
+}
+document.getElementById('start').addEventListener('click',()=>{
+ if(started||finished)return;
+ started=true;startTime=Date.now();typing.disabled=false;typing.focus();
+ message.textContent='Go! Type the passage above.';
+ document.getElementById('start').disabled=true;
+ timer=setInterval(()=>{
+  remaining--;timeEl.textContent=remaining;update();
+  if(remaining<=0)finish();
+ },1000);
+});
+typing.addEventListener('input',()=>{
+ if(!started||finished)return;
+ update();
+ if(typing.value.length>=original.length)finish();
+});
+document.getElementById('reset').addEventListener('click',reset);
+</script>
+</body>
+</html>
