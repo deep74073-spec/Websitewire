@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Edit videos online on mobile or computer with Websitewire Video Editor.">
+  <title>Online Video Editor | Websitewire</title>
+  <link rel="icon" type="image/png" href="/Website_wire.png">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588" crossorigin="anonymous"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Arial,sans-serif;background:#f4f7fb;color:#172033}
+    header{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    header a{color:#172033;text-decoration:none;font-weight:700}
+    .brand{font-size:22px}
+    .wrap{max-width:1050px;margin:auto;padding:28px 16px 50px}
+    .hero{text-align:center;margin:10px auto 24px}
+    .hero h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}
+    .hero p{color:#5c6676;margin:0}
+    .panel{background:white;border:1px solid #e2e8f0;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 8px 24px #1720330b}
+    .upload{display:block;border:2px dashed #9ca3af;border-radius:14px;padding:24px;text-align:center;cursor:pointer;background:#fafbff}
+    input[type=file]{max-width:100%;margin-top:12px}
+    video{width:100%;max-height:480px;background:#111;border-radius:12px;margin-top:16px}
+    .controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+    label{display:block;font-weight:650;font-size:14px}
+    input[type=number],input[type=text],select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:9px;margin-top:6px;font:inherit}
+    button{border:0;border-radius:10px;padding:12px 16px;background:#6d28d9;color:white;font:inherit;font-weight:700;cursor:pointer}
+    button.secondary{background:#e9e4f7;color:#4c1d95}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .status{font-size:14px;color:#475569;margin-top:12px;overflow-wrap:anywhere}
+    .features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .feature{background:#f8fafc;border:1px solid #e2e8f0;padding:14px;border-radius:12px;font-size:14px}
+    footer{text-align:center;color:#64748b;padding:22px}
+    footer a{color:#4c1d95}
+    @media(max-width:600px){.wrap{padding:20px 12px}.panel{padding:15px}.controls{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,minmax(0,1fr))}header{padding:12px 16px}}
+  </style>
+</head>
+<body>
+<header>
+  <a class="brand" href="/">Websitewire</a>
+  <a href="/">Home</a>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h1>🎬 Online Video Editor</h1>
+    <p>Choose a video and preview it on your phone or computer.</p>
+  </section>
+
+  <section class="panel">
+    <label class="upload" for="videoFile">
+      <strong>Select a video from your device</strong><br>
+      <span>MP4, WebM and other formats supported by your browser</span><br>
+      <input id="videoFile" type="file" accept="video/*">
+    </label>
+    <video id="preview" controls playsinline hidden></video>
+    <div class="controls">
+      <label>Start time (seconds)
+        <input id="startTime" type="number" min="0" step="0.1" value="0">
+      </label>
+      <label>End time (seconds)
+        <input id="endTime" type="number" min="0" step="0.1" value="0">
+      </label>
+    </div>
+    <div class="actions">
+      <button id="previewTrim" disabled>Preview selected section</button>
+      <button id="exportTrim" disabled>Export trimmed MP4</button>
+      <button id="reset" class="secondary" disabled>Reset selection</button>
+    </div>
+    <p id="status" class="status" role="status">Select a video to begin. Export runs in your browser and may use significant memory.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Tools in this editor</h2>
+    <div class="features">
+      <div class="feature">✂️ Trim / Cut</div>
+      <div class="feature">📐 Crop / Resize</div>
+      <div class="feature">🔤 Text / Captions</div>
+      <div class="feature">🎵 Music / Audio</div>
+      <div class="feature">📱 Reels / Shorts</div>
+      <div class="feature">🖼️ Thumbnail maker</div>
+      <div class="feature">🗜️ Video compressor</div>
+      <div class="feature">🎞️ Multiple clips</div>
+    </div>
+    <p class="status">More editing and export features are planned. The tools listed above are not all active yet.</p>
+  </section>
+</main>
+<footer>
+  © Websitewire · <a href="/contact/">Contact</a> · <a href="/privacy-policy/">Privacy Policy</a>
+</footer>
+<script>
+  const fileInput = document.getElementById('videoFile');
+  const video = document.getElementById('preview');
+  const startInput = document.getElementById('startTime');
+  const endInput = document.getElementById('endTime');
+  const previewButton = document.getElementById('previewTrim');
+  const resetButton = document.getElementById('reset');
+  const exportButton = document.getElementById('exportTrim');
+  const status = document.getElementById('status');
+  let objectUrl = null;
+  let ffmpeg = null;
+  let ffmpegLoading = false;
+
+  async function getFFmpeg() {
+    if (ffmpeg) return ffmpeg;
+    if (ffmpegLoading) throw new Error('FFmpeg is already loading. Please wait.');
+    ffmpegLoading = true;
+    try {
+      if (!window.FFmpegWASM || !window.FFmpegWASM.FFmpeg) {
+        throw new Error('FFmpeg library did not load. Check your internet connection and reload.');
+      }
+      ffmpeg = new window.FFmpegWASM.FFmpeg();
+      ffmpeg.on('log', ({ message }) => {
+        if (message) status.textContent = 'Processing: ' + message.slice(0, 180);
+      });
+      await ffmpeg.load({
+        coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+        wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm'
+      });
+      return ffmpeg;
+    } catch (error) {
+      ffmpeg = null;
+      throw error;
+    } finally {
+      ffmpegLoading = false;
+    }
+  }
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    video.src = objectUrl;
+    video.hidden = false;
+    previewButton.disabled = false;
+    resetButton.disabled = false;
+    exportButton.disabled = false;
+    status.textContent = 'Video loaded: ' + file.name + '. Preparing preview…';
+    video.onloadedmetadata = () => {
+      startInput.value = '0';
+      endInput.value = video.duration.toFixed(1);
+      startInput.max = video.duration;
+      endInput.max = video.duration;
+      status.textContent = 'Video ready. Duration: ' + video.duration.toFixed(1) + ' seconds. Preview selection is available. Use Export trimmed MP4 to download the selected section.';
+    };
+  });
+
+  previewButton.addEventListener('click', () => {
+    const start = Number(startInput.value);
+    const end = Number(endInput.value);
+    if (!video.src || !Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start || end > video.duration) {
+      status.textContent = 'Enter a valid range: start must be at least 0, and end must be after start and within the video duration.';
+      return;
+    }
+    video.currentTime = start;
+    video.play().then(() => {
+      status.textContent = 'Previewing selected section. This previews the range; it does not create a trimmed download.';
+    }).catch(() => {
+      status.textContent = 'Press Play on the video to preview the selected section.';
+    });
+    video.ontimeupdate = () => {
+      if (video.currentTime >= end) {
+        video.pause();
+        video.ontimeupdate = null;
+      }
+    };
+  });
+
+  exportButton.addEventListener('click', async () => {
+    const file = fileInput.files && fileInput.files[0];
+    const start = Number(startInput.value);
+    const end = Number(endInput.value);
+    if (!file || !video.src || !Number.isFinite(start) || !Number.isFinite(end) ||
+        start < 0 || end <= start || end > video.duration) {
+      status.textContent = 'Choose a video and enter a valid start/end range before exporting.';
+      return;
+    }
+
+    exportButton.disabled = true;
+    previewButton.disabled = true;
+    resetButton.disabled = true;
+    fileInput.disabled = true;
+    let inputName = 'input_video';
+    let outputName = 'websitewire_trimmed.mp4';
+    try {
+      status.textContent = 'Loading video processor. First use may download about 30 MB or more…';
+      const engine = await getFFmpeg();
+      const extensionMatch = file.name.match(/\.([a-zA-Z0-9]{1,8})$/);
+      inputName = 'input_video' + (extensionMatch ? '.' + extensionMatch[1].toLowerCase() : '.mp4');
+      status.textContent = 'Preparing video file…';
+      await engine.writeFile(inputName, new Uint8Array(await file.arrayBuffer()));
+      status.textContent = 'Trimming video. Please keep this page open…';
+      const result = await engine.exec([
+        '-ss', String(start),
+        '-i', inputName,
+        '-t', String(end - start),
+        '-map', '0:v:0',
+        '-map', '0:a?',
+        '-c:v', 'libx264',
+        '-preset', 'ultrafast',
+        '-crf', '23',
+        '-c:a', 'aac',
+        '-movflags', '+faststart',
+        outputName
+      ]);
+      if (result !== 0) throw new Error('FFmpeg could not export this video. Try a smaller or browser-compatible file.');
+      const data = await engine.readFile(outputName);
+      const blob = new Blob([data], { type: 'video/mp4' });
+      const downloadUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = outputName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
+      status.textContent = 'Export finished. If your browser did not start the download, try again or use a smaller video.';
+    } catch (error) {
+      status.textContent = 'Export failed: ' + (error && error.message ? error.message : String(error)) +
+        '. This may happen if the device runs out of memory or the browser blocks the processor.';
+    } finally {
+      try {
+        if (ffmpeg) {
+          await ffmpeg.deleteFile(inputName).catch(() => {});
+          await ffmpeg.deleteFile(outputName).catch(() => {});
+        }
+      } catch (_) {}
+      exportButton.disabled = !fileInput.files.length;
+      previewButton.disabled = !fileInput.files.length;
+      resetButton.disabled = !fileInput.files.length;
+      fileInput.disabled = false;
+    }
+  });
+
+  resetButton.addEventListener('click', () => {
+    if (!video.src) return;
+    startInput.value = '0';
+    endInput.value = video.duration.toFixed(1);
+    video.currentTime = 0;
+    status.textContent = 'Selection reset to the full video. You can preview or export the selected section.';
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  });
+</script>
+</body>
+</html>
