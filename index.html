@@ -183,35 +183,44 @@ header { flex-wrap: nowrap !important; gap: 10px; }
   .hub-content { width:100%; }
   .hub-hero { padding:42px 18px; }
 }
-/* Sidebar stays closed until the menu button is clicked */
-.hub-sidebar {
-  display: none;
-}
-.hub-sidebar.open {
-  display: flex;
-}
+/* Sidebar menu fix */
 .hub-layout {
   position: relative;
 }
 .hub-sidebar {
+  display: none;
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
-  z-index: 150;
+  bottom: 0;
+  z-index: 250;
   width: min(82vw, 280px);
   min-height: 100%;
+  box-sizing: border-box;
+  padding: 22px 14px;
+  flex-direction: column;
+  gap: 7px;
+  background: #172033;
   box-shadow: 8px 0 25px rgba(0,0,0,.18);
+}
+.hub-sidebar.open {
+  display: flex;
 }
 .sidebar-toggle {
   display: block !important;
+  position: relative;
+  z-index: 300;
+  cursor: pointer;
 }
-@media(min-width:761px) {
+.hub-content {
+  width: 100%;
+  min-width: 0;
+}
+@media (min-width: 761px) {
   .hub-sidebar {
     width: 260px;
   }
 }
-
 </style>
 </head>
 
