@@ -3,56 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Document Converter | Websitewire</title>
-<meta name="description" content="Free browser-based document utilities to create PDF documents and download text files.">
+<title>Free Document Tools | Websitewire</title>
+<meta name="description" content="Free online document tools: create PDFs from text and images, merge PDFs, and download text files. Files are processed in your browser.">
+<meta name="theme-color" content="#172554">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}header{background:#172033;padding:17px}header a{color:white;text-decoration:none}main{max-width:900px;margin:25px auto;padding:16px}.panel{background:white;padding:24px;border-radius:14px;margin:16px 0;box-shadow:0 5px 20px #0000000a}h1{margin-top:0}textarea,input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;margin:8px 0}textarea{min-height:180px}button{background:#6d28d9;color:white;border:0;border-radius:8px;padding:12px 16px;margin:5px 5px 5px 0;font-size:15px;cursor:pointer}.secondary{background:#475569}.note{color:#64748b;font-size:14px}.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}@media print{header,.no-print{display:none}body{background:white}main{margin:0;padding:0}.panel{box-shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#172554;color:white;padding:16px 20px}
+header a{color:white;text-decoration:none;font-weight:700}
+main{max-width:1050px;margin:28px auto;padding:0 16px}
+.hero{background:linear-gradient(130deg,#172554,#6d28d9);color:white;border-radius:20px;padding:28px;margin-bottom:22px}
+.hero h1{margin:0 0 10px;font-size:clamp(27px,5vw,40px)}
+.hero p{line-height:1.6;margin:0;color:#e0e7ff}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:18px}
+.panel{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:21px;box-shadow:0 8px 24px #0f172a08}
+.panel h2{margin:0 0 8px;font-size:21px}
+.panel p{color:#64748b;line-height:1.5}
+label{display:block;font-weight:650;margin-top:12px}
+input,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;margin-top:6px;background:#fff}
+textarea{min-height:150px;resize:vertical}
+button{border:0;border-radius:9px;background:#6d28d9;color:white;padding:12px 15px;font:inherit;font-weight:650;cursor:pointer;margin:12px 6px 0 0}
+button.secondary{background:#334155}
+button:disabled{opacity:.55;cursor:not-allowed}
+.status{margin-top:12px;padding:10px;border-radius:8px;background:#f1f5f9;overflow-wrap:anywhere;font-size:14px}
+.note{font-size:13px;color:#64748b;line-height:1.6}
+footer{text-align:center;padding:28px 16px;color:#64748b}
+.adbox{margin:18px 0;text-align:center;min-height:0}
+@media print{header,footer,.adbox{display:none}}
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 <header><a href="/">← Websitewire Home</a></header>
 <main>
-<h1>📄 Document Converter</h1>
-<p>Simple document utilities that run in your browser. Your text stays on your device.</p>
+<section class="hero">
+<h1>📄 Free Document Tools</h1>
+<p>Create PDFs, combine PDF files, and download text documents. Simple tools that work in your browser. Your files are not uploaded to our server.</p>
+</section>
+
+<div class="adbox" aria-label="Advertisement"></div>
+
 <div class="tools">
 <section class="panel">
-<h2>Text to PDF</h2>
-<p>Write or paste text, then create a printable PDF using your browser.</p>
+<h2>✍️ Text to PDF</h2>
+<p>Write or paste text and save it as a PDF using your browser's print dialog.</p>
 <label for="docTitle">Document title</label>
-<input id="docTitle" value="My Document">
+<input id="docTitle" value="My Document" maxlength="150">
 <label for="docText">Document text</label>
-<textarea id="docText" placeholder="Write or paste your document here..."></textarea>
-<button id="makePdf">Print / Save as PDF</button>
-<p class="note">In the print dialog, choose “Save as PDF”.</p>
+<textarea id="docText" placeholder="Write or paste your text here..."></textarea>
+<button id="makePdf">Create / Save PDF</button>
+<button class="secondary" id="clearText">Clear</button>
+<p class="note">Choose “Save as PDF” in the print dialog.</p>
 </section>
+
 <section class="panel">
-<h2>Text to TXT file</h2>
-<p>Download your text as a plain text file.</p>
+<h2>⬇️ Text to TXT</h2>
+<p>Download your text as a plain-text file.</p>
 <label for="txtName">File name</label>
-<input id="txtName" value="my-document">
+<input id="txtName" value="my-document" maxlength="100">
 <button id="downloadTxt">Download TXT</button>
+<div id="txtStatus" class="status" role="status">Ready to export text.</div>
+</section>
+
+<section class="panel">
+<h2>🖼️ Images to PDF</h2>
+<p>Combine selected JPG, PNG, or WebP images into one PDF.</p>
+<label for="imageFiles">Choose images</label>
+<input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+<button id="imagesPdf">Create image PDF</button>
+<div id="imageStatus" class="status" role="status">No images selected.</div>
+<p class="note">Large images may take longer to process. Image files are processed on your device.</p>
+</section>
+
+<section class="panel">
+<h2>🔗 Merge PDF files</h2>
+<p>Select two or more PDFs and combine their pages in selection order.</p>
+<label for="pdfFiles">Choose PDF files</label>
+<input id="pdfFiles" type="file" accept="application/pdf,.pdf" multiple>
+<button id="mergePdf">Merge PDFs</button>
+<div id="mergeStatus" class="status" role="status">No PDFs selected.</div>
+<p class="note">Encrypted or damaged PDFs may not merge. Processing happens in your browser.</p>
 </section>
 </div>
-<p class="note">This page currently supports text-to-PDF through the browser print dialog and text-file downloads. It does not yet convert Word files or merge PDFs.</p>
+
+<div class="adbox" aria-label="Advertisement"></div>
+<p class="note">Privacy: these tools process selected content locally in your browser. The PDF library is loaded from a third-party CDN. Avoid using a shared device for sensitive documents. Never click ads to support a site; click only if genuinely interested.</p>
 </main>
+<footer>© Websitewire · <a href="/">Home</a></footer>
+
 <script>
-document.getElementById('makePdf').addEventListener('click',()=>{
- const title=document.getElementById('docTitle').value.trim()||'My Document';
- const text=document.getElementById('docText').value;
- if(!text.trim()){alert('Please enter some document text first.');return}
+const $=id=>document.getElementById(id);
+function safeName(value,fallback){
+ return (value||fallback).trim().replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,90)||fallback;
+}
+function downloadBlob(blob,name){
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$('makePdf').addEventListener('click',()=>{
+ const text=$('docText').value,title=$('docTitle').value.trim()||'My Document';
+ if(!text.trim()){alert('Please enter some text first.');return}
  const w=window.open('','_blank');
- if(!w){alert('Please allow pop-ups to print your document.');return}
- const safeTitle=title.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
- const safeText=text.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
- w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+safeTitle+'</title><style>body{font-family:Arial,sans-serif;margin:25mm;line-height:1.6}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}</style></head><body><h1>'+safeTitle+'</h1><pre>'+safeText+'</pre><script>window.onload=()=>window.print()<\/script></body></html>');
+ if(!w){alert('Please allow pop-ups to create your PDF.');return}
+ const escapeHtml=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(title)+'</title><style>body{font-family:Arial,sans-serif;margin:22mm;line-height:1.6;color:#111}h1{font-size:22pt}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}@page{size:auto;margin:18mm}</style></head><body><h1>'+escapeHtml(title)+'</h1><pre>'+escapeHtml(text)+'</pre><script>window.onload=()=>window.print()<\/script></body></html>');
  w.document.close();
 });
-document.getElementById('downloadTxt').addEventListener('click',()=>{
- const text=document.getElementById('docText').value;
- if(!text.trim()){alert('Please enter some document text first.');return}
- const name=(document.getElementById('txtName').value.trim()||'my-document').replace(/[^a-z0-9_-]/gi,'-');
- const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
- const a=document.createElement('a');a.href=url;a.download=name+'.txt';a.click();URL.revokeObjectURL(url);
+$('clearText').addEventListener('click',()=>{$('docText').value='';$('docText').focus()});
+$('downloadTxt').addEventListener('click',()=>{
+ const text=$('docText').value;
+ if(!text.trim()){$('txtStatus').textContent='Enter some text in the Text to PDF section first.';return}
+ downloadBlob(new Blob([text],{type:'text/plain;charset=utf-8'}),safeName($('txtName').value,'my-document')+'.txt');
+ $('txtStatus').textContent='Your TXT download has started.';
+});
+$('imageFiles').addEventListener('change',()=>{
+ const files=$('imageFiles').files;
+ $('imageStatus').textContent=files.length+' image(s) selected.';
+});
+$('imagesPdf').addEventListener('click',async()=>{
+ const files=[...$('imageFiles').files];
+ if(!files.length){$('imageStatus').textContent='Please select one or more images.';return}
+ if(!window.PDFLib){$('imageStatus').textContent='PDF library did not load. Check your internet connection and reload.';return}
+ const button=$('imagesPdf');button.disabled=true;$('imageStatus').textContent='Creating PDF…';
+ try{
+  const {PDFDocument}=PDFLib,pdf=await PDFDocument.create();
+  for(const file of files){
+   if(!/^image\/(jpeg|png|webp)$/.test(file.type))throw Error('Unsupported image: '+file.name);
+   const data=new Uint8Array(await file.arrayBuffer());
+   let image;
+   if(file.type==='image/jpeg')image=await pdf.embedJpg(data);
+   else if(file.type==='image/png')image=await pdf.embedPng(data);
+   else{
+    const bitmap=await createImageBitmap(file);
+    const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height;
+    canvas.getContext('2d').drawImage(bitmap,0,0);bitmap.close();
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.92));
+    if(!blob)throw Error('Could not convert '+file.name);
+    image=await pdf.embedJpg(new Uint8Array(await blob.arrayBuffer()));
+  }
+   const page=pdf.addPage([image.width,image.height]);
+   page.drawImage(image,{x:0,y:0,width:image.width,height:image.height});
+  }
+  downloadBlob(new Blob([await pdf.save()],{type:'application/pdf'}),'images.pdf');
+  $('imageStatus').textContent='PDF created successfully from '+files.length+' image(s).';
+ }catch(e){$('imageStatus').textContent='Could not create PDF: '+e.message}
+ finally{button.disabled=false}
+});
+$('pdfFiles').addEventListener('change',()=>{
+ $('mergeStatus').textContent=$('pdfFiles').files.length+' PDF file(s) selected.';
+});
+$('mergePdf').addEventListener('click',async()=>{
+ const files=[...$('pdfFiles').files];
+ if(files.length<2){$('mergeStatus').textContent='Please select at least two PDF files.';return}
+ if(!window.PDFLib){$('mergeStatus').textContent='PDF library did not load. Check your internet connection and reload.';return}
+ const button=$('mergePdf');button.disabled=true;$('mergeStatus').textContent='Merging PDFs…';
+ try{
+  const {PDFDocument}=PDFLib,merged=await PDFDocument.create();
+  for(const file of files){
+   if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf'))throw Error('Not a PDF: '+file.name);
+   const source=await PDFDocument.load(await file.arrayBuffer());
+   const pages=await merged.copyPages(source,source.getPageIndices());
+   pages.forEach(page=>merged.addPage(page));
+  }
+  downloadBlob(new Blob([await merged.save()],{type:'application/pdf'}),'merged.pdf');
+  $('mergeStatus').textContent='Successfully merged '+files.length+' PDF files.';
+ }catch(e){$('mergeStatus').textContent='Could not merge PDFs: '+e.message}
+ finally{button.disabled=false}
 });
 </script>
 </body>

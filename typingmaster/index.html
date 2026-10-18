@@ -3,106 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TypingMaster - Free Typing Test | Websitewire</title>
-<meta name="description" content="Practice typing online with a free typing speed test. Check your WPM, accuracy and mistakes.">
+<title>TypingMaster Pro | Free Typing Speed Test - Websitewire</title>
+<meta name="description" content="Improve typing speed with free 30, 60 and 120 second typing tests. Track WPM, CPM, accuracy and mistakes with live feedback.">
+<meta name="theme-color" content="#172554">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588" crossorigin="anonymous"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
-header{background:#172033;color:white;padding:18px 16px}
-header a{color:white;text-decoration:none}
-main{max-width:850px;margin:28px auto;padding:20px}
-.panel{background:white;padding:24px;border-radius:16px;box-shadow:0 5px 20px #0000000d}
-h1{margin-top:0}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.stat{background:#eff6ff;padding:15px;border-radius:10px;text-align:center}
-.stat strong{display:block;font-size:25px;color:#2563eb;margin-top:6px}
-#passage{font-size:19px;line-height:1.9;background:#f8fafc;padding:18px;border-radius:10px;margin:18px 0;overflow-wrap:anywhere}
-#typing{width:100%;min-height:130px;padding:14px;font-size:18px;line-height:1.6;border:2px solid #cbd5e1;border-radius:10px;resize:vertical}
-button{border:0;border-radius:9px;background:#2563eb;color:white;padding:12px 18px;font-size:16px;cursor:pointer;margin:8px 5px 0 0}
+:root{color-scheme:light}
+body{margin:0;font-family:system-ui,-apple-system,Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#172554;color:white;padding:16px 20px}
+header a{color:white;text-decoration:none;font-weight:700}
+main{max-width:1050px;margin:26px auto;padding:0 16px}
+.hero{background:linear-gradient(130deg,#172554,#2563eb);color:white;border-radius:20px;padding:27px;margin-bottom:18px}
+.hero h1{font-size:clamp(28px,5vw,40px);margin:0 0 8px}
+.hero p{margin:0;line-height:1.7;color:#dbeafe}
+.adbox{text-align:center;min-height:10px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:16px}
+.panel{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 8px 24px #0f172a08;min-width:0}
+h2{margin:0 0 12px;font-size:20px}
+label{display:block;font-weight:650;margin:12px 0 6px}
+select,textarea{width:100%;font:inherit;border:1px solid #cbd5e1;border-radius:10px;padding:12px;background:white;color:#172033}
+button{border:0;border-radius:10px;background:#2563eb;color:white;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer;margin:8px 6px 0 0}
 button.secondary{background:#475569}
-#message{font-weight:bold;margin-top:15px}
-@media(max-width:520px){main{padding:12px}.panel{padding:17px}.stats{gap:6px}.stat{padding:10px}.stat strong{font-size:21px}}
+button:disabled{opacity:.5;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.stat{background:#eff6ff;border:1px solid #dbeafe;border-radius:12px;padding:14px 8px;text-align:center}
+.stat span{display:block;font-size:12px;color:#475569}
+.stat strong{display:block;font-size:clamp(20px,4vw,29px);margin-top:5px;color:#1d4ed8;overflow-wrap:anywhere}
+#passage{font-size:19px;line-height:2;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin:15px 0;overflow-wrap:anywhere;min-height:150px;white-space:pre-wrap}
+#typing{min-height:135px;resize:vertical;line-height:1.6}
+#typing:focus,select:focus{outline:3px solid #bfdbfe;border-color:#2563eb}
+.correct{color:#15803d;background:#dcfce7}
+.wrong{color:#b91c1c;background:#fee2e2;text-decoration:underline}
+.current{background:#dbeafe;border-bottom:2px solid #2563eb}
+.status{padding:12px;background:#f1f5f9;border-radius:10px;margin-top:12px;line-height:1.6}
+.note{font-size:13px;color:#64748b;line-height:1.6}
+.result{display:none;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:16px;margin-top:15px}
+footer{text-align:center;color:#64748b;padding:26px}
+@media(max-width:520px){main{padding:0 11px}.panel{padding:15px}.stats{gap:6px}.stat{padding:11px 4px}#passage{font-size:17px;padding:13px}}
 </style>
 </head>
 <body>
 <header><a href="/">← Websitewire Home</a></header>
 <main>
-<section class="panel">
-<h1>⌨️ TypingMaster</h1>
-<p>Practice typing and improve your speed. Type the passage below as accurately as possible.</p>
-<div class="stats">
-<div class="stat">Time left<strong id="time">60</strong></div>
-<div class="stat">Speed (WPM)<strong id="wpm">0</strong></div>
-<div class="stat">Accuracy<strong id="accuracy">100%</strong></div>
-</div>
-<div id="passage">Practice every day to improve your typing speed and accuracy. Keep your fingers relaxed, look at the screen, and focus on typing each word correctly. Good typing comes from patience, consistency, and regular practice. Start slowly and build your speed over time.</div>
-<textarea id="typing" placeholder="Tap here and start typing the passage..." disabled></textarea>
-<br>
-<button id="start">Start 60-Second Test</button>
-<button id="reset" class="secondary">Restart</button>
-<p id="message" role="status">Press Start when you are ready.</p>
+<section class="hero">
+<h1>⌨️ TypingMaster Pro</h1>
+<p>Build speed, improve accuracy and practise at your own pace. Start a test and watch your progress live.</p>
 </section>
+<div class="adbox" aria-label="Advertisement"></div>
+<div class="grid">
+<section class="panel">
+<h2>Test settings</h2>
+<label for="duration">Test duration</label>
+<select id="duration">
+<option value="30">30 seconds · Quick</option>
+<option value="60" selected>60 seconds · Standard</option>
+<option value="120">120 seconds · Endurance</option>
+</select>
+<label for="level">Difficulty</label>
+<select id="level">
+<option value="easy">Easy · Beginner</option>
+<option value="medium" selected>Medium · Everyday</option>
+<option value="hard">Hard · Advanced</option>
+</select>
+<button id="start">Start test</button>
+<button id="reset" class="secondary">Restart</button>
+<div id="message" class="status" role="status" aria-live="polite">Choose your settings, then press Start.</div>
+<p class="note">The timer starts when you press Start. Use the displayed passage and type as accurately as possible.</p>
+</section>
+<section class="panel">
+<h2>Your live stats</h2>
+<div class="stats">
+<div class="stat"><span>TIME LEFT</span><strong id="time">60</strong></div>
+<div class="stat"><span>WORDS / MIN</span><strong id="wpm">0</strong></div>
+<div class="stat"><span>ACCURACY</span><strong id="accuracy">100%</strong></div>
+<div class="stat"><span>CHARS / MIN</span><strong id="cpm">0</strong></div>
+<div class="stat"><span>ERRORS</span><strong id="errors">0</strong></div>
+<div class="stat"><span>CHARACTERS</span><strong id="chars">0</strong></div>
+</div>
+<div class="status">Tip: Accuracy first, speed second. Keep your hands relaxed and avoid looking at the keyboard.</div>
+</section>
+</div>
+<section class="panel" style="margin-top:16px">
+<h2>Typing passage</h2>
+<div id="passage" aria-label="Text to type"></div>
+<label for="typing">Type the passage here</label>
+<textarea id="typing" placeholder="Press Start test to begin..." disabled spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+<div id="result" class="result" aria-live="polite"></div>
+<button id="again" class="secondary" type="button">Try another test</button>
+<p class="note">Scoring: WPM uses correctly typed words (five characters per standard word); CPM counts correctly typed characters per minute. Accuracy is based on typed characters compared with the passage. Results are calculated in your browser.</p>
+</section>
+<div class="adbox" aria-label="Advertisement"></div>
+<p class="note">Privacy: your typing is processed locally in this browser. Do not type passwords or private information into practice tools. Advertisements, if displayed, are separate from the typing test.</p>
 </main>
+<footer>© Websitewire · <a href="/">Home</a></footer>
 <script>
-const passageEl=document.getElementById('passage');
-const original=passageEl.textContent.trim();
+const $=id=>document.getElementById(id);
+const passages={
+easy:[
+"The best way to learn is to practise a little every day. Stay calm, sit comfortably, and type each word carefully. Small steps can lead to big improvements over time.",
+"Good habits make daily work easier. Keep your eyes on the screen, relax your fingers, and try to make fewer mistakes with every new typing session."
+],
+medium:[
+"Consistent practice is more valuable than a single burst of effort. Focus on rhythm, accuracy, and comfortable posture. As your confidence grows, your typing speed will improve naturally.",
+"Clear communication depends on careful work and attention to detail. Build a steady pace, use the correct fingers, and remember that accuracy is an important part of professional typing."
+],
+hard:[
+"Efficient communication requires concentration, precision, and consistency. Evaluate each keystroke without losing your rhythm; deliberate practice gradually transforms complex patterns into reliable muscle memory.",
+"Technology rewards people who combine adaptability with careful execution. Maintain a sustainable pace, correct errors thoughtfully, and measure improvement through repeatable tests rather than occasional personal bests."
+]
+};
+const passageEl=$('passage'),typing=$('typing');
+let original='',remaining=60,timer=null,started=false,finished=false,startTime=0;
+function choosePassage(){
+ const list=passages[$('level').value];
+ original=list[Math.floor(Math.random()*list.length)];
+}
 function renderPassage(typed=''){
- passageEl.innerHTML='';
+ passageEl.replaceChildren();
  for(let i=0;i<original.length;i++){
   const span=document.createElement('span');
   span.textContent=original[i];
-  if(i<typed.length){
-   span.style.color=typed[i]===original[i]?'#15803d':'#dc2626';
-   span.style.background=typed[i]===original[i]?'#dcfce7':'#fee2e2';
-  } else if(i===typed.length){
-   span.style.background='#dbeafe';
-   span.style.borderBottom='2px solid #2563eb';
-  }
+  if(i<typed.length)span.className=typed[i]===original[i]?'correct':'wrong';
+  else if(i===typed.length)span.className='current';
   passageEl.appendChild(span);
  }
 }
-renderPassage();
-const typing=document.getElementById('typing');
-const timeEl=document.getElementById('time');
-const wpmEl=document.getElementById('wpm');
-const accuracyEl=document.getElementById('accuracy');
-const message=document.getElementById('message');
-let remaining=60, timer=null, started=false, finished=false, startTime=0;
-function update(){
+function metrics(){
  const typed=typing.value;
+ let correct=0,errors=0;
+ for(let i=0;i<typed.length;i++){
+  if(i<original.length&&typed[i]===original[i])correct++;
+  else errors++;
+ }
+ const elapsed=started?Math.max((Date.now()-startTime)/1000,1):0;
+ const minutes=Math.max(elapsed/60,1/60);
+ const wpm=Math.round((correct/5)/minutes);
+ const cpm=Math.round(correct/minutes);
+ const accuracy=typed.length?Math.round(correct/typed.length*100):100;
+ $('wpm').textContent=wpm;
+ $('cpm').textContent=cpm;
+ $('accuracy').textContent=accuracy+'%';
+ $('errors').textContent=errors;
+ $('chars').textContent=typed.length;
  renderPassage(typed);
- let correct=0;
- for(let i=0;i<typed.length;i++) if(typed[i]===original[i]) correct++;
- const elapsed=started?Math.max((Date.now()-startTime)/60000,1/60):0;
- wpmEl.textContent=elapsed?Math.round((typed.trim()?typed.trim().split(/\s+/).length:0)/elapsed):0;
- accuracyEl.textContent=(typed.length?Math.round(correct/typed.length*100):100)+'%';
+ return {correct,errors,accuracy,wpm,cpm};
 }
-function finish(){
- clearInterval(timer);finished=true;typing.disabled=true;
- message.textContent='Test complete! Speed: '+wpmEl.textContent+' WPM · Accuracy: '+accuracyEl.textContent+'. Press Restart to try again.';
+function finish(reason='Time is up!'){
+ if(finished)return;
+ clearInterval(timer);timer=null;finished=true;typing.disabled=true;
+ const m=metrics();
+ $('message').textContent='Test complete. '+reason;
+ $('result').style.display='block';
+ $('result').textContent='Final result: '+m.wpm+' WPM · '+m.cpm+' CPM · '+m.accuracy+'% accuracy · '+m.errors+' errors · '+m.correct+' correct characters.';
+ $('start').disabled=false;
 }
 function reset(){
- clearInterval(timer);remaining=60;started=false;finished=false;typing.value='';typing.disabled=true;
- timeEl.textContent='60';wpmEl.textContent='0';accuracyEl.textContent='100%';
- message.textContent='Press Start when you are ready.';
- document.getElementById('start').disabled=false;
+ clearInterval(timer);timer=null;started=false;finished=false;
+ remaining=Number($('duration').value);
+ typing.value='';typing.disabled=true;
+ $('time').textContent=remaining;
+ $('wpm').textContent='0';$('cpm').textContent='0';
+ $('accuracy').textContent='100%';$('errors').textContent='0';$('chars').textContent='0';
+ $('result').style.display='none';$('result').textContent='';
+ $('message').textContent='Choose your settings, then press Start.';
+ $('start').disabled=false;
+ choosePassage();renderPassage();
 }
-document.getElementById('start').addEventListener('click',()=>{
+function start(){
  if(started||finished)return;
- started=true;startTime=Date.now();typing.disabled=false;typing.focus();
- message.textContent='Go! Type the passage above.';
- document.getElementById('start').disabled=true;
+ choosePassage();renderPassage('');
+ remaining=Number($('duration').value);
+ $('time').textContent=remaining;
+ started=true;startTime=Date.now();typing.disabled=false;
+ $('start').disabled=true;
+ $('message').textContent='Go! Type the passage above.';
+ typing.focus();
  timer=setInterval(()=>{
-  remaining--;timeEl.textContent=remaining;update();
+  remaining=Math.max(0,Number($('duration').value)-Math.floor((Date.now()-startTime)/1000));
+  $('time').textContent=remaining;
+  metrics();
   if(remaining<=0)finish();
- },1000);
-});
+ },200);
+}
 typing.addEventListener('input',()=>{
  if(!started||finished)return;
- update();
- if(typing.value.length>=original.length)finish();
+ const m=metrics();
+ if(typing.value.length>=original.length)finish('You completed the passage!');
 });
-document.getElementById('reset').addEventListener('click',reset);
+$('start').addEventListener('click',start);
+$('reset').addEventListener('click',reset);
+$('again').addEventListener('click',reset);
+$('duration').addEventListener('change',reset);
+$('level').addEventListener('change',reset);
+choosePassage();renderPassage();
 </script>
 </body>
 </html>
