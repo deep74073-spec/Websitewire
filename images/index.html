@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Tools | Websitewire</title>
+<meta name="description" content="Resize and compress images online for free in your browser.">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}header{background:#172033;padding:17px}header a{color:white;text-decoration:none}main{max-width:900px;margin:25px auto;padding:16px}.panel{background:white;padding:24px;border-radius:14px;box-shadow:0 5px 20px #0000000a}input,select{padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;max-width:100%;margin:7px 0}label{display:block;margin-top:13px;font-weight:bold}button{background:#ea580c;color:white;border:0;border-radius:8px;padding:12px 16px;margin:12px 5px 5px 0;font-size:15px;cursor:pointer}.preview{display:block;max-width:100%;max-height:420px;margin:16px auto;border-radius:8px}.row{display:flex;gap:14px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}.note{color:#64748b;font-size:14px}#status{font-weight:bold}
+</style>
+</head>
+<body>
+<header><a href="/">← Websitewire Home</a></header>
+<main>
+<section class="panel">
+<h1>🖼️ Image Tools</h1>
+<p>Resize and compress images directly in your browser. Your image is not uploaded to a server.</p>
+<label for="file">Choose an image</label>
+<input id="file" type="file" accept="image/*">
+<div id="controls" hidden>
+<div class="row">
+<div><label for="width">Width (px)</label><input id="width" type="number" min="1" max="10000"></div>
+<div><label for="height">Height (px)</label><input id="height" type="number" min="1" max="10000"></div>
+</div>
+<label><input id="keep" type="checkbox" checked> Keep original aspect ratio</label>
+<label for="format">Output format</label>
+<select id="format"><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select>
+<label for="quality">Compression quality (JPEG/WebP)</label>
+<input id="quality" type="range" min="30" max="100" value="80">
+<span id="qualityLabel">80%</span>
+<p id="originalInfo" class="note"></p>
+<button id="process">Resize / Compress Image</button>
+</div>
+<p id="status" role="status"></p>
+<img id="preview" class="preview" alt="Image preview" hidden>
+<a id="download" hidden><button type="button">Download processed image</button></a>
+<p class="note">Note: output size depends on the image, format and quality. Transparent backgrounds may be lost when exporting to JPEG.</p>
+</section>
+</main>
+<script>
+const fileEl=document.getElementById('file'),controls=document.getElementById('controls'),widthEl=document.getElementById('width'),heightEl=document.getElementById('height'),keepEl=document.getElementById('keep'),formatEl=document.getElementById('format'),qualityEl=document.getElementById('quality'),preview=document.getElementById('preview'),download=document.getElementById('download'),statusEl=document.getElementById('status');
+let sourceImage=null,sourceName='image';
+fileEl.addEventListener('change',()=>{
+ const file=fileEl.files&&fileEl.files[0];if(!file)return;
+ if(!file.type.startsWith('image/')){statusEl.textContent='Please choose a valid image file.';return}
+ const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{
+  sourceImage=img;sourceName=file.name.replace(/\.[^.]+$/,'')||'image';
+  widthEl.value=img.naturalWidth;heightEl.value=img.naturalHeight;
+  document.getElementById('originalInfo').textContent=`Original: ${img.naturalWidth} × ${img.naturalHeight}px · ${(file.size/1024).toFixed(1)} KB`;
+  controls.hidden=false;preview.src=url;preview.hidden=false;download.hidden=true;
+  statusEl.textContent='Image loaded. Choose dimensions and output settings.';
+ };
+ img.onerror=()=>{URL.revokeObjectURL(url);statusEl.textContent='Could not open this image.'};
+ img.src=url;
+});
+widthEl.addEventListener('input',()=>{if(keepEl.checked&&sourceImage&&widthEl.value>0)heightEl.value=Math.max(1,Math.round(widthEl.value*sourceImage.naturalHeight/sourceImage.naturalWidth))});
+heightEl.addEventListener('input',()=>{if(keepEl.checked&&sourceImage&&heightEl.value>0)widthEl.value=Math.max(1,Math.round(heightEl.value*sourceImage.naturalWidth/sourceImage.naturalHeight))});
+qualityEl.addEventListener('input',()=>document.getElementById('qualityLabel').textContent=qualityEl.value+'%');
+document.getElementById('process').addEventListener('click',()=>{
+ if(!sourceImage)return;
+ const w=Number(widthEl.value),h=Number(heightEl.value);
+ if(!Number.isInteger(w)||!Number.isInteger(h)||w<1||h<1||w>10000||h>10000){statusEl.textContent='Enter width and height between 1 and 10000 pixels.';return}
+ const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+ const ctx=canvas.getContext('2d');if(formatEl.value==='image/jpeg'){ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h)}
+ ctx.drawImage(sourceImage,0,0,w,h);
+ const quality=Number(qualityEl.value)/100;
+ canvas.toBlob(blob=>{
+  if(!blob){statusEl.textContent='Could not process this image. Try another format.';return}
+  const url=URL.createObjectURL(blob);download.href=url;download.download=sourceName+'-edited.'+({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[formatEl.value]);download.hidden=false;
+  statusEl.textContent=`Done! New size: ${(blob.size/1024).toFixed(1)} KB. Tap Download to save it.`;
+  preview.src=url;preview.hidden=false;
+ },formatEl.value,quality);
+});
+</script>
+</body>
+</html>

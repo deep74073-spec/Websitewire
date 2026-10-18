@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document Converter | Websitewire</title>
+<meta name="description" content="Free browser-based document utilities to create PDF documents and download text files.">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}header{background:#172033;padding:17px}header a{color:white;text-decoration:none}main{max-width:900px;margin:25px auto;padding:16px}.panel{background:white;padding:24px;border-radius:14px;margin:16px 0;box-shadow:0 5px 20px #0000000a}h1{margin-top:0}textarea,input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;margin:8px 0}textarea{min-height:180px}button{background:#6d28d9;color:white;border:0;border-radius:8px;padding:12px 16px;margin:5px 5px 5px 0;font-size:15px;cursor:pointer}.secondary{background:#475569}.note{color:#64748b;font-size:14px}.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}@media print{header,.no-print{display:none}body{background:white}main{margin:0;padding:0}.panel{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><a href="/">← Websitewire Home</a></header>
+<main>
+<h1>📄 Document Converter</h1>
+<p>Simple document utilities that run in your browser. Your text stays on your device.</p>
+<div class="tools">
+<section class="panel">
+<h2>Text to PDF</h2>
+<p>Write or paste text, then create a printable PDF using your browser.</p>
+<label for="docTitle">Document title</label>
+<input id="docTitle" value="My Document">
+<label for="docText">Document text</label>
+<textarea id="docText" placeholder="Write or paste your document here..."></textarea>
+<button id="makePdf">Print / Save as PDF</button>
+<p class="note">In the print dialog, choose “Save as PDF”.</p>
+</section>
+<section class="panel">
+<h2>Text to TXT file</h2>
+<p>Download your text as a plain text file.</p>
+<label for="txtName">File name</label>
+<input id="txtName" value="my-document">
+<button id="downloadTxt">Download TXT</button>
+</section>
+</div>
+<p class="note">This page currently supports text-to-PDF through the browser print dialog and text-file downloads. It does not yet convert Word files or merge PDFs.</p>
+</main>
+<script>
+document.getElementById('makePdf').addEventListener('click',()=>{
+ const title=document.getElementById('docTitle').value.trim()||'My Document';
+ const text=document.getElementById('docText').value;
+ if(!text.trim()){alert('Please enter some document text first.');return}
+ const w=window.open('','_blank');
+ if(!w){alert('Please allow pop-ups to print your document.');return}
+ const safeTitle=title.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const safeText=text.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+safeTitle+'</title><style>body{font-family:Arial,sans-serif;margin:25mm;line-height:1.6}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}</style></head><body><h1>'+safeTitle+'</h1><pre>'+safeText+'</pre><script>window.onload=()=>window.print()<\/script></body></html>');
+ w.document.close();
+});
+document.getElementById('downloadTxt').addEventListener('click',()=>{
+ const text=document.getElementById('docText').value;
+ if(!text.trim()){alert('Please enter some document text first.');return}
+ const name=(document.getElementById('txtName').value.trim()||'my-document').replace(/[^a-z0-9_-]/gi,'-');
+ const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+ const a=document.createElement('a');a.href=url;a.download=name+'.txt';a.click();URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
