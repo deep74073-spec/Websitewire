@@ -290,4 +290,30 @@ header { flex-wrap: nowrap !important; gap: 10px; }
   <a href="/disclaimer/">Disclaimer</a>
 </footer>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('hubSidebar');
+
+  if (!toggle || !sidebar) return;
+
+  toggle.addEventListener('click', function () {
+    const isOpen = sidebar.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    toggle.textContent = isOpen ? '✕' : '☰';
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!sidebar.classList.contains('open')) return;
+    if (sidebar.contains(event.target) || toggle.contains(event.target)) return;
+
+    sidebar.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+    toggle.textContent = '☰';
+  });
+});
+</script>
+</body>
 </html>
