@@ -164,23 +164,49 @@ header { flex-wrap: nowrap !important; gap: 10px; }
   .hub-card { padding:22px; }
 }
 
+
+/* Left sidebar layout */
+.hub-header { position:sticky; top:0; z-index:200; display:flex; justify-content:flex-start; align-items:center; gap:14px; padding:12px 22px; background:#fff; border-bottom:1px solid #e5e7eb; }
+.sidebar-toggle { display:block; border:0; border-radius:9px; background:#172033; color:#fff; font-size:22px; padding:7px 12px; cursor:pointer; }
+.hub-layout { display:flex; align-items:stretch; min-height:70vh; }
+.hub-sidebar { width:245px; flex:0 0 245px; padding:22px 14px; background:#172033; display:flex; flex-direction:column; gap:7px; }
+.hub-sidebar a { display:block; color:#f8fafc; text-decoration:none; padding:12px 13px; border-radius:9px; font-weight:600; }
+.hub-sidebar a:hover { background:#334155; }
+.hub-content { flex:1; min-width:0; }
+.hub-hero { padding:54px 20px; }
+.hub-main { max-width:1100px; }
+.hub-footer { clear:both; }
+@media(max-width:760px) {
+  .hub-layout { position:relative; }
+  .hub-sidebar { position:absolute; top:0; bottom:0; left:0; z-index:150; width:min(82vw,280px); transform:translateX(-105%); transition:transform .2s ease; box-shadow:8px 0 25px rgba(0,0,0,.18); }
+  .hub-sidebar.open { transform:translateX(0); }
+  .hub-content { width:100%; }
+  .hub-hero { padding:42px 18px; }
+}
+@media(min-width:761px) {
+  .sidebar-toggle { display:none; }
+}
+
 </style>
 </head>
 
 <body>
 <header class="hub-header">
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-expanded="false">☰</button>
   <a class="brand" href="/">
     <img src="/Website_wire.png" alt="Websitewire logo">
     <span>Websitewire</span>
   </a>
-  <nav class="hub-nav" aria-label="Main navigation">
-    <a href="/">Home</a>
-    <a href="/articles/">Articles</a>
-    <a href="/games/">Games</a>
-    <a href="/documents/">Document Converter</a>
-    <a href="/images/">Image Tools</a>
-  </nav>
 </header>
+<div class="hub-layout">
+  <aside class="hub-sidebar" id="hubSidebar" aria-label="Website sections">
+    <a href="/">⌂ &nbsp; Home</a>
+    <a href="/articles/">📰 &nbsp; Articles</a>
+    <a href="/games/">🎮 &nbsp; Games</a>
+    <a href="/documents/">📄 &nbsp; Document Converter</a>
+    <a href="/images/">🖼️ &nbsp; Image Tools</a>
+  </aside>
+  <div class="hub-content">
 
 <section class="hub-hero">
   <span class="hub-tag">ONE WEBSITE · MANY SERVICES</span>
@@ -230,6 +256,8 @@ header { flex-wrap: nowrap !important; gap: 10px; }
   </section>
 </main>
 
+</div>
+</div>
 <footer class="hub-footer">
   <p>© Websitewire</p>
   <a href="/contact/">Contact</a>
