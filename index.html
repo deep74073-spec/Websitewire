@@ -183,8 +183,33 @@ header { flex-wrap: nowrap !important; gap: 10px; }
   .hub-content { width:100%; }
   .hub-hero { padding:42px 18px; }
 }
+/* Sidebar stays closed until the menu button is clicked */
+.hub-sidebar {
+  display: none;
+}
+.hub-sidebar.open {
+  display: flex;
+}
+.hub-layout {
+  position: relative;
+}
+.hub-sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 150;
+  width: min(82vw, 280px);
+  min-height: 100%;
+  box-shadow: 8px 0 25px rgba(0,0,0,.18);
+}
+.sidebar-toggle {
+  display: block !important;
+}
 @media(min-width:761px) {
-  .sidebar-toggle { display:none; }
+  .hub-sidebar {
+    width: 260px;
+  }
 }
 
 </style>
