@@ -120,161 +120,75 @@ header { flex-wrap: nowrap !important; gap: 10px; }
 
 </style>
 </head>
+
 <body>
-  <header>
-    <a class="brand" href="/">
-      <img src="/Website_wire.png" alt="Websitewire logo">
-      <span>Websitewire</span>
-    </a>
-    <button class="menu-toggle" id="menuToggle" type="button"
-      aria-label="Open navigation menu" aria-expanded="false" aria-controls="siteMenu">☰</button>
-    <nav id="siteMenu" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <div class="menu-group">
-        <button type="button" class="submenu-toggle" aria-expanded="false">Articles ▾</button>
-        <div class="submenu">
-          <a href="/articles/">All Articles</a>
-          <a href="/articles/diwali-guide.html">Festival Guides</a>
-          <a href="/articles/fix-slow-wifi.html">Tech Guides</a>
-        </div>
-      </div>
-      <div class="menu-group">
-        <button type="button" class="submenu-toggle" aria-expanded="false">Games ▾</button>
-        <div class="submenu">
-          <a href="/games/">Games Zone</a>
-          <a href="/games/snake/">Snake Game</a>
-        </div>
-      </div>
-      <div class="menu-group">
-        <button type="button" class="submenu-toggle" aria-expanded="false">More ▾</button>
-        <div class="submenu">
-          <a href="#about">About</a>
-          <a href="/contact/">Contact</a>
-        </div>
-      </div>
-    </nav>
-  </header>
+<header class="hub-header">
+  <a class="brand" href="/">
+    <img src="/Website_wire.png" alt="Websitewire logo">
+    <span>Websitewire</span>
+  </a>
+  <nav class="hub-nav" aria-label="Main navigation">
+    <a href="/">Home</a>
+    <a href="/articles/">Articles</a>
+    <a href="/games/">Games</a>
+    <a href="/documents/">Document Converter</a>
+    <a href="/images/">Image Tools</a>
+  </nav>
+</header>
 
-  <section class="welcome">
-    <h1>Welcome to Websitewire</h1>
-    <p>Helpful information and solutions to everyday problems.</p>
-  </section>
-
-  <main>
-    <div class="ad-space" aria-label="Advertisement area"></div>
-    <section id="articles">
-      <h2>Latest Articles</h2>
-      <article class="article-card">
-        <a href="/articles/diwali-guide.html">
-          <img src="/articles/images/diwali-hero.jpg"
-               alt="Diwali festival lights and decorations"
-               loading="lazy"
-               style="width:100%;max-width:600px;height:auto;border-radius:12px;">
-          <h3>Diwali 2026: Decoration and Shopping Guide</h3>
-        </a>
-        <p>Discover Diwali puja essentials, diyas, decorative lights, rangoli ideas and festive gifts.</p>
-        <a href="/articles/diwali-guide.html">Read Article →</a>
-      </article>
-
-      <article class="article-card">
-        <a href="/articles/karwa-chauth-guide.html">
-          <img src="/articles/images/karwa-chauth-hero.jpg"
-               alt="Karwa Chauth festive celebration"
-               loading="lazy"
-               style="width:100%;max-width:600px;height:auto;border-radius:12px;">
-          <h3>Karwa Chauth 2026: Puja and Shopping Guide</h3>
-        </a>
-        <p>Explore Karwa Chauth traditions, puja essentials, festive outfits and useful shopping ideas.</p>
-        <a href="/articles/karwa-chauth-guide.html">Read Article →</a>
-      </article>
-
-      <article class="article-card">
-        <a href="/articles/dussehra-guide.html">
-          <img src="/articles/images/dussehra-hero.jpg"
-               alt="Ravan Dahan during Dussehra celebrations"
-               loading="lazy"
-               style="width:100%;max-width:600px;height:auto;border-radius:12px;">
-          <h3>Dussehra 2026: History and Significance</h3>
-        </a>
-        <p>Discover the story of Vijayadashami, the meaning of Ravan Dahan and Dussehra traditions across India.</p>
-        <a href="/articles/dussehra-guide.html">Read Article →</a>
-      </article>
-
-      <article class="article-card">
-        <a href="/articles/navratri-shopping-guide.html">
-          <img src="/articles/images/navratri-hero-new.jpg"
-               alt="Navratri shopping guide illustration"
-               loading="lazy"
-               style="width:100%;max-width:600px;height:auto;border-radius:12px;">
-          <h3>Navratri Shopping Guide for Women</h3>
-        </a>
-        <p>Compare festive outfits, jewellery, footwear and puja essentials before buying.</p>
-        <a href="/articles/navratri-shopping-guide.html">Read Article →</a>
-      </article>
-
-      <article class="article-card">
-        <a href="/articles/new-gadgets-launches-october-2026.html">
-          <img src="/assets/products/urbn-bloq-magtag.png"
-               alt="URBN Bloq Magtag magnetic power bank"
-               loading="lazy"
-               style="width:100%;max-width:600px;height:auto;border-radius:12px;">
-          <h3>3 Gadgets to Know About in October 2026</h3>
-        </a>
-        <p>Explore a magnetic power bank, OPPO smartphone and smart projector, with key features and Amazon shopping links.</p>
-        <a href="/articles/new-gadgets-launches-october-2026.html">Read Article →</a>
-      </article>
-
-    </section>
-    <section id="about">
-      <h2>About Websitewire</h2>
-      <p>A simple place for useful information and solutions.</p>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2026 Websitewire</p>
-    <a href="/privacy-policy/">Privacy Policy</a>
-    <a href="/disclaimer/">Disclaimer</a>
-    <a href="/contact/">Contact</a>
-  
-<section id="games-zone-home" style="padding:32px 16px;margin:24px auto;max-width:1100px">
-  <div style="background:#172238;color:#fff;border-radius:18px;padding:28px;text-align:center">
-    <div style="font-size:38px">🎮</div>
-    <h2>Play Free Online Games</h2>
-    <p>Take a break with free browser games. Play Snake on your phone or computer—no installation needed.</p>
-    <a href="/games/" style="display:inline-block;background:#38bdf8;color:#07111f;padding:13px 24px;border-radius:10px;text-decoration:none;font-weight:bold">Explore Games →</a>
-    <p style="margin-top:16px"><a href="/games/snake/" style="color:#7dd3fc">Play Snake Now</a></p>
-  </div>
+<section class="hub-hero">
+  <span class="hub-tag">ONE WEBSITE · MANY SERVICES</span>
+  <h1>Everything You Need, in One Place</h1>
+  <p>Read helpful articles, play games, convert documents and manage images—all on Websitewire.</p>
 </section>
 
+<main class="hub-main">
+  <div class="hub-section-heading">
+    <h2>Explore Websitewire</h2>
+    <p>Choose a section to get started.</p>
+  </div>
+
+  <section class="hub-grid" aria-label="Website sections">
+    <a class="hub-card articles-card" href="/articles/">
+      <span class="hub-icon">📰</span>
+      <h3>Articles & Guides</h3>
+      <p>Helpful information, festival guides, technology tips and how-to articles.</p>
+      <span class="hub-link">Explore Articles →</span>
+    </a>
+
+    <a class="hub-card games-card" href="/games/">
+      <span class="hub-icon">🎮</span>
+      <h3>Games Zone</h3>
+      <p>Play browser games on your phone or computer. Start with Snake and discover more games.</p>
+      <span class="hub-link">Play Games →</span>
+    </a>
+
+    <a class="hub-card documents-card" href="/documents/">
+      <span class="hub-icon">📄</span>
+      <h3>Document Converter</h3>
+      <p>Find PDF, Word and ZIP tools in one place, with more conversion options to come.</p>
+      <span class="hub-link">Open Document Tools →</span>
+    </a>
+
+    <a class="hub-card images-card" href="/images/">
+      <span class="hub-icon">🖼️</span>
+      <h3>Image Tools</h3>
+      <p>Explore image format conversion, compression and resizing tools.</p>
+      <span class="hub-link">Open Image Tools →</span>
+    </a>
+  </section>
+
+  <section class="hub-about" id="about">
+    <h2>Welcome to Websitewire</h2>
+    <p>A growing collection of useful information, browser games and file tools—all organised into easy-to-find sections.</p>
+  </section>
+</main>
+
+<footer class="hub-footer">
+  <p>© Websitewire</p>
+  <a href="/contact/">Contact</a>
+  <a href="/privacy-policy/">Privacy Policy</a>
+  <a href="/disclaimer/">Disclaimer</a>
 </footer>
 
-<script>
-(function(){
- const toggle=document.getElementById('menuToggle');
- const menu=document.getElementById('siteMenu');
- if(!toggle||!menu)return;
- toggle.addEventListener('click',()=>{
-   const open=menu.classList.toggle('open');
-   toggle.setAttribute('aria-expanded',String(open));
-   toggle.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu');
-   toggle.textContent=open?'✕':'☰';
- });
- menu.querySelectorAll('.submenu-toggle').forEach(btn=>{
-   btn.addEventListener('click',()=>{
-     const group=btn.closest('.menu-group');
-     const open=group.classList.toggle('expanded');
-     btn.setAttribute('aria-expanded',String(open));
-   });
- });
- menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-   menu.classList.remove('open');
-   toggle.setAttribute('aria-expanded','false');
-   toggle.setAttribute('aria-label','Open navigation menu');
-   toggle.textContent='☰';
- }));
-})();
-</script>
-
-</body>
 </html>
