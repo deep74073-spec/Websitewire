@@ -1,0 +1,3905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+
+
+<title>Car Race — SHIVIZONE</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#05080d;
+    font-family:Arial,Helvetica,sans-serif;
+    touch-action:none;
+    user-select:none;
+}
+
+body{
+    color:#fff;
+}
+
+button{
+    font:inherit;
+    border:0;
+    outline:0;
+    color:#fff;
+    touch-action:manipulation;
+}
+
+#game{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:#111;
+}
+
+canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    z-index:10;
+
+    display:flex;
+    justify-content:space-between;
+    gap:7px;
+
+    padding:
+        max(10px,env(safe-area-inset-top))
+        10px
+        8px;
+
+    pointer-events:none;
+}
+
+.hudBox{
+    min-width:78px;
+
+    padding:7px 10px;
+
+    text-align:center;
+
+    border-radius:13px;
+
+    background:rgba(0,0,0,.58);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    backdrop-filter:blur(7px);
+}
+
+.hudLabel{
+    display:block;
+
+    color:#a9b8c9;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+}
+
+.hudValue{
+    display:block;
+
+    margin-top:2px;
+
+    font-size:17px;
+
+    font-weight:900;
+}
+
+/* =========================
+   TOP CONTROLS
+========================= */
+
+#topControls{
+    position:absolute;
+
+    right:10px;
+
+    top:70px;
+
+    z-index:12;
+
+    display:flex;
+
+    gap:7px;
+}
+
+.topBtn{
+    width:43px;
+    height:43px;
+
+    border-radius:13px;
+
+    background:rgba(0,0,0,.62);
+
+    border:1px solid rgba(255,255,255,.16);
+
+    font-size:18px;
+}
+
+/* =========================
+   TOUCH INFO
+========================= */
+
+#touchInfo{
+    position:absolute;
+
+    left:50%;
+
+    bottom:
+        max(20px,env(safe-area-inset-bottom));
+
+    transform:translateX(-50%);
+
+    z-index:8;
+
+    color:rgba(255,255,255,.58);
+
+    font-size:11px;
+
+    white-space:nowrap;
+
+    pointer-events:none;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.6);
+}
+
+/* =========================
+   TOUCH AREA INDICATORS
+========================= */
+
+#touchLeftHint,
+#touchRightHint{
+    position:absolute;
+
+    bottom:12px;
+
+    z-index:7;
+
+    width:38%;
+
+    height:55px;
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    background:rgba(0,0,0,.06);
+
+    pointer-events:none;
+
+    opacity:.5;
+}
+
+#touchLeftHint{
+    left:3%;
+}
+
+#touchRightHint{
+    right:3%;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.overlay{
+    position:absolute;
+
+    inset:0;
+
+    z-index:30;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:18px;
+
+    background:rgba(0,5,12,.76);
+
+    backdrop-filter:blur(10px);
+}
+
+.panel{
+    width:min(430px,100%);
+
+    max-height:92vh;
+
+    overflow:auto;
+
+    padding:27px 21px 21px;
+
+    border-radius:27px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28,48,67,.98),
+            rgba(6,13,23,.99)
+        );
+
+    border:1px solid rgba(255,255,255,.14);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.58);
+}
+
+.carLogo{
+    width:88px;
+    height:88px;
+
+    margin:0 auto 14px;
+
+    border-radius:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ff3b3b,
+            #a90e18
+        );
+
+    box-shadow:
+        0 12px 30px rgba(220,30,45,.35);
+
+    font-size:48px;
+}
+
+h1{
+    margin:0;
+
+    font-size:34px;
+
+    font-weight:900;
+}
+
+h2{
+    margin:5px 0 12px;
+
+    font-size:28px;
+}
+
+.subtitle{
+    margin:8px 0 22px;
+
+    color:#9eb1c8;
+
+    font-size:14px;
+}
+
+.menu{
+    display:grid;
+
+    gap:10px;
+}
+
+.menuBtn{
+    min-height:52px;
+
+    width:100%;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #df2939,
+            #99151e
+        );
+
+    font-weight:900;
+
+    border:1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.25);
+}
+
+.menuBtn:active{
+    transform:scale(.98);
+}
+
+.menuBtn.secondary{
+    background:
+        rgba(255,255,255,.08);
+}
+
+.menuBtn.green{
+    background:
+        linear-gradient(
+            135deg,
+            #16a66a,
+            #087348
+        );
+}
+
+.menuBtn.gold{
+    color:#201600;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffd64a,
+            #d38b00
+        );
+}
+
+.help{
+    text-align:left;
+
+    color:#c3d0df;
+
+    font-size:14px;
+
+    line-height:1.55;
+}
+
+.help h3{
+    margin:15px 0 4px;
+
+    color:#fff;
+}
+
+.help p{
+    margin:4px 0;
+}
+
+.brand{
+    margin-top:16px;
+
+    color:#667d96;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+}
+
+.resultScore{
+    font-size:45px;
+
+    font-weight:900;
+
+    margin:10px 0 2px;
+}
+
+.best{
+    color:#9fb1c5;
+
+    margin-bottom:20px;
+}
+
+/* =========================
+   COUNTDOWN
+========================= */
+
+#countdown{
+    position:absolute;
+
+    inset:0;
+
+    z-index:25;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    pointer-events:none;
+}
+
+#countdownText{
+    font-size:95px;
+
+    font-weight:900;
+
+    text-shadow:
+        0 8px 35px rgba(0,0,0,.7);
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+    position:absolute;
+
+    left:50%;
+
+    top:22%;
+
+    transform:
+        translate(-50%,-50%);
+
+    z-index:50;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    padding:9px 15px;
+
+    border-radius:30px;
+
+    background:
+        rgba(0,0,0,.78);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    font-weight:800;
+
+    transition:.2s;
+}
+
+#toast.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,-55%);
+}
+
+.hidden{
+    display:none!important;
+}
+
+@media(max-height:620px){
+
+    .panel{
+        padding:18px;
+
+        max-height:95vh;
+    }
+
+    .carLogo{
+        width:62px;
+        height:62px;
+
+        border-radius:18px;
+
+        font-size:32px;
+
+        margin-bottom:8px;
+    }
+
+    h1{
+        font-size:27px;
+    }
+
+    .subtitle{
+        margin:5px 0 12px;
+    }
+
+    .menuBtn{
+        min-height:44px;
+    }
+
+    #topControls{
+        top:61px;
+    }
+
+    #touchInfo{
+        bottom:17px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<canvas id="canvas"></canvas>
+
+<!-- =========================
+     HUD
+========================= -->
+
+<div id="hud" class="hidden">
+
+    <div class="hudBox">
+        <span class="hudLabel">
+            Score
+        </span>
+
+        <span id="score" class="hudValue">
+            0
+        </span>
+    </div>
+
+    <div class="hudBox">
+        <span class="hudLabel">
+            Speed
+        </span>
+
+        <span id="speed" class="hudValue">
+            0
+        </span>
+    </div>
+
+    <div class="hudBox">
+        <span class="hudLabel">
+            Best
+        </span>
+
+        <span id="best" class="hudValue">
+            0
+        </span>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     TOP BUTTONS
+========================= -->
+
+<div id="topControls" class="hidden">
+
+    <button
+        id="soundBtn"
+        class="topBtn">
+        🔊
+    </button>
+
+    <button
+        id="pauseBtn"
+        class="topBtn">
+        ⏸
+    </button>
+
+</div>
+
+
+<!-- =========================
+     TOUCH HINTS
+========================= -->
+
+<div
+    id="touchLeftHint"
+    class="hidden">
+</div>
+
+<div
+    id="touchRightHint"
+    class="hidden">
+</div>
+
+<div
+    id="touchInfo"
+    class="hidden">
+
+    Touch left/right side or drag to steer
+
+</div>
+
+
+<!-- =========================
+     COUNTDOWN
+========================= -->
+
+<div
+    id="countdown"
+    class="hidden">
+
+    <div id="countdownText">
+        3
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN MENU
+========================= -->
+
+<div
+    id="mainMenu"
+    class="overlay">
+
+    <div class="panel">
+
+        <div class="carLogo">
+            🏎️
+        </div>
+
+        <h1>
+            Car Race
+        </h1>
+
+        <p class="subtitle">
+            Dodge traffic and survive as long as possible.
+        </p>
+
+        <div class="menu">
+
+            <button
+                id="startBtn"
+                class="menuBtn gold">
+                ▶ Start Race
+            </button>
+
+            <button
+                id="helpBtn"
+                class="menuBtn secondary">
+                📖 How to Play
+            </button>
+
+            <button
+                id="soundMenuBtn"
+                class="menuBtn secondary">
+                🔊 Sound: ON
+            </button>
+
+            <button
+                id="gamesBtn"
+                class="menuBtn secondary">
+                ← SHIVIZONE Games
+            </button>
+
+        </div>
+
+        <div class="brand">
+            SHIVIZONE • ORIGINAL GAME
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     HELP
+========================= -->
+
+<div
+    id="helpOverlay"
+    class="overlay hidden">
+
+    <div class="panel">
+
+        <h2>
+            How to Play
+        </h2>
+
+        <div class="help">
+
+            <h3>
+                🏎️ Touch Control
+            </h3>
+
+            <p>
+                Touch the left side of the screen
+                to move left and the right side
+                to move right.
+            </p>
+
+            <p>
+                You can also hold your finger and
+                drag left or right to steer smoothly.
+            </p>
+
+            <h3>
+                🚗 Traffic
+            </h3>
+
+            <p>
+                Avoid the cars coming down the road.
+            </p>
+
+            <h3>
+                📈 Score
+            </h3>
+
+            <p>
+                Your score increases while you survive.
+                Passing traffic gives additional points.
+            </p>
+
+            <h3>
+                ⚡ Speed
+            </h3>
+
+            <p>
+                The road becomes faster as your score increases.
+            </p>
+
+            <h3>
+                💥 Collision
+            </h3>
+
+            <p>
+                Hitting another car ends the race.
+            </p>
+
+            <h3>
+                🏆 Best Score
+            </h3>
+
+            <p>
+                Your best score is saved on this device.
+            </p>
+
+            <h3>
+                ⌨️ Keyboard
+            </h3>
+
+            <p>
+                Arrow Left/Right and A/D also work.
+            </p>
+
+        </div>
+
+        <button
+            id="helpBack"
+            class="menuBtn secondary">
+            ← Back
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PAUSE
+========================= -->
+
+<div
+    id="pauseOverlay"
+    class="overlay hidden">
+
+    <div class="panel">
+
+        <div class="carLogo">
+            ⏸
+        </div>
+
+        <h2>
+            Race Paused
+        </h2>
+
+        <p class="subtitle">
+            The traffic is waiting.
+        </p>
+
+        <div class="menu">
+
+            <button
+                id="resumeBtn"
+                class="menuBtn green">
+                ▶ Resume
+            </button>
+
+            <button
+                id="restartPause"
+                class="menuBtn">
+                🔄 Restart Race
+            </button>
+
+            <button
+                id="pauseMenu"
+                class="menuBtn secondary">
+                🏠 Main Menu
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     GAME OVER
+========================= -->
+
+<div
+    id="gameOverOverlay"
+    class="overlay hidden">
+
+    <div class="panel">
+
+        <div class="carLogo">
+            🏁
+        </div>
+
+        <h2>
+            Race Over
+        </h2>
+
+        <div
+            id="finalScore"
+            class="resultScore">
+            0
+        </div>
+
+        <div
+            id="finalBest"
+            class="best">
+            Best: 0
+        </div>
+
+        <div class="menu">
+
+            <button
+                id="againBtn"
+                class="menuBtn gold">
+                🔄 Race Again
+            </button>
+
+            <button
+                id="overMenuBtn"
+                class="menuBtn secondary">
+                🏠 Main Menu
+            </button>
+
+            <button
+                id="overGamesBtn"
+                class="menuBtn secondary">
+                ← SHIVIZONE Games
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="toast"></div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================================
+   CAR RACE
+   SHIVIZONE
+   TOUCH BUTTONS REMOVED
+   FULL SCREEN TOUCH CONTROL
+========================================================= */
+
+
+/* =========================
+   DOM
+========================= */
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const hud =
+    document.getElementById("hud");
+
+const topControls =
+    document.getElementById("topControls");
+
+const touchInfo =
+    document.getElementById("touchInfo");
+
+const touchLeftHint =
+    document.getElementById("touchLeftHint");
+
+const touchRightHint =
+    document.getElementById("touchRightHint");
+
+const mainMenu =
+    document.getElementById("mainMenu");
+
+const helpOverlay =
+    document.getElementById("helpOverlay");
+
+const pauseOverlay =
+    document.getElementById("pauseOverlay");
+
+const gameOverOverlay =
+    document.getElementById("gameOverOverlay");
+
+const scoreEl =
+    document.getElementById("score");
+
+const speedEl =
+    document.getElementById("speed");
+
+const bestEl =
+    document.getElementById("best");
+
+const soundBtn =
+    document.getElementById("soundBtn");
+
+const soundMenuBtn =
+    document.getElementById("soundMenuBtn");
+
+const countdown =
+    document.getElementById("countdown");
+
+const countdownText =
+    document.getElementById("countdownText");
+
+
+/* =========================
+   CANVAS
+========================= */
+
+let W = 0;
+let H = 0;
+let dpr = 1;
+
+
+/* =========================
+   GAME STATE
+========================= */
+
+const STATE = {
+
+    MENU:"menu",
+
+    COUNTDOWN:"countdown",
+
+    PLAYING:"playing",
+
+    PAUSED:"paused",
+
+    OVER:"over"
+
+};
+
+let state = STATE.MENU;
+
+let score = 0;
+
+let bestScore =
+    Number(
+        localStorage.getItem(
+            "carRaceBest"
+        ) || 0
+    );
+
+let distanceScore = 0;
+
+let level = 1;
+
+let roadOffset = 0;
+
+let trafficTimer = 0;
+
+let lastTime =
+    performance.now();
+
+
+/* =========================
+   ROAD
+========================= */
+
+const road = {
+
+    left:0,
+
+    right:0,
+
+    width:0,
+
+    laneWidth:0
+
+};
+
+const laneCount = 3;
+
+
+/* =========================
+   PLAYER
+========================= */
+
+const player = {
+
+    x:0,
+
+    y:0,
+
+    width:46,
+
+    height:84,
+
+    targetX:0,
+
+    tilt:0,
+
+    color:0
+
+};
+
+
+/* =========================
+   TRAFFIC
+========================= */
+
+let traffic = [];
+
+const trafficColors = [
+
+    "#ff3d4d",
+
+    "#28a9ff",
+
+    "#ffc62e",
+
+    "#9b67ff",
+
+    "#20c878",
+
+    "#f27a31",
+
+    "#d9e1ea"
+
+];
+
+
+/* =========================
+   KEYBOARD INPUT
+========================= */
+
+const keys = {};
+
+
+/* =========================================================
+   TOUCH CONTROL
+========================================================= */
+
+/*
+   No steering buttons.
+
+   User can:
+
+   1. Tap left half  -> move left
+   2. Tap right half -> move right
+   3. Hold finger    -> keep control
+   4. Drag anywhere  -> direct steering
+*/
+
+let touching = false;
+
+let touchPointerId = null;
+
+
+/* =========================
+   AUDIO
+========================= */
+
+let audioContext = null;
+
+let soundEnabled = true;
+
+
+/* =========================
+   ADS
+========================= */
+
+function showGameAd(position){
+
+    if(
+        window.AndroidAds &&
+        typeof window.AndroidAds.showAd ===
+        "function"
+    ){
+
+        try{
+
+            window.AndroidAds.showAd(
+                position || "game_event"
+            );
+
+        }catch(e){
+
+            console.log(
+                "Ad bridge unavailable"
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   RESIZE
+========================= */
+
+function resize(){
+
+    dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    W =
+        window.innerWidth;
+
+    H =
+        window.innerHeight;
+
+
+    canvas.width =
+        Math.floor(
+            W * dpr
+        );
+
+    canvas.height =
+        Math.floor(
+            H * dpr
+        );
+
+
+    canvas.style.width =
+        W + "px";
+
+    canvas.style.height =
+        H + "px";
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    road.width =
+        Math.min(
+            W * .82,
+            430
+        );
+
+
+    road.left =
+        (W - road.width) / 2;
+
+
+    road.right =
+        road.left +
+        road.width;
+
+
+    road.laneWidth =
+        road.width /
+        laneCount;
+
+
+    player.y =
+        H * .78;
+
+
+    player.x =
+        clamp(
+            player.x || W / 2,
+
+            road.left +
+            player.width / 2,
+
+            road.right -
+            player.width / 2
+        );
+
+
+    player.targetX =
+        clamp(
+            player.targetX || player.x,
+
+            road.left +
+            player.width / 2,
+
+            road.right -
+            player.width / 2
+        );
+
+}
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+resize();
+
+
+/* =========================
+   UTILITY
+========================= */
+
+function clamp(
+    v,
+    min,
+    max
+){
+
+    return Math.max(
+        min,
+        Math.min(
+            max,
+            v
+        )
+    );
+
+}
+
+
+function random(
+    min,
+    max
+){
+
+    return Math.random() *
+        (max - min) +
+        min;
+
+}
+
+
+/* =========================
+   AUDIO
+========================= */
+
+function ensureAudio(){
+
+    if(!soundEnabled){
+        return;
+    }
+
+
+    if(!audioContext){
+
+        try{
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+        }catch(e){
+
+            audioContext = null;
+
+        }
+
+    }
+
+
+    if(
+        audioContext &&
+        audioContext.state ===
+        "suspended"
+    ){
+
+        audioContext
+            .resume()
+            .catch(()=>{});
+
+    }
+
+}
+
+
+function beep(type){
+
+    if(!soundEnabled){
+        return;
+    }
+
+
+    ensureAudio();
+
+
+    if(!audioContext){
+        return;
+    }
+
+
+    const osc =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+
+    osc.connect(gain);
+
+    gain.connect(
+        audioContext.destination
+    );
+
+
+    const now =
+        audioContext.currentTime;
+
+
+    let freq = 300;
+
+    let duration = .08;
+
+
+    if(type === "start"){
+
+        freq = 700;
+
+        duration = .12;
+
+    }
+
+
+    if(type === "pass"){
+
+        freq = 850;
+
+        duration = .07;
+
+    }
+
+
+    if(type === "hit"){
+
+        freq = 90;
+
+        duration = .25;
+
+    }
+
+
+    if(type === "click"){
+
+        freq = 500;
+
+        duration = .06;
+
+    }
+
+
+    osc.frequency.setValueAtTime(
+        freq,
+        now
+    );
+
+
+    if(type === "start"){
+
+        osc.frequency
+            .exponentialRampToValueAtTime(
+                1000,
+                now + duration
+            );
+
+    }
+
+
+    if(type === "hit"){
+
+        osc.frequency
+            .exponentialRampToValueAtTime(
+                45,
+                now + duration
+            );
+
+    }
+
+
+    gain.gain.setValueAtTime(
+        .0001,
+        now
+    );
+
+
+    gain.gain
+        .exponentialRampToValueAtTime(
+            .11,
+            now + .01
+        );
+
+
+    gain.gain
+        .exponentialRampToValueAtTime(
+            .0001,
+            now + duration
+        );
+
+
+    osc.start(now);
+
+    osc.stop(
+        now +
+        duration +
+        .03
+    );
+
+}
+
+
+/* =========================
+   SOUND UI
+========================= */
+
+function updateSoundUI(){
+
+    soundBtn.textContent =
+        soundEnabled
+            ? "🔊"
+            : "🔇";
+
+
+    soundMenuBtn.textContent =
+        soundEnabled
+            ? "🔊 Sound: ON"
+            : "🔇 Sound: OFF";
+
+}
+
+
+function toggleSound(){
+
+    soundEnabled =
+        !soundEnabled;
+
+
+    if(soundEnabled){
+
+        ensureAudio();
+
+        beep("click");
+
+    }
+
+
+    updateSoundUI();
+
+}
+
+
+soundBtn.addEventListener(
+    "click",
+    toggleSound
+);
+
+soundMenuBtn.addEventListener(
+    "click",
+    toggleSound
+);
+
+updateSoundUI();
+
+
+/* =========================
+   HUD
+========================= */
+
+function updateHud(){
+
+    scoreEl.textContent =
+        Math.floor(score);
+
+
+    speedEl.textContent =
+        Math.floor(
+            currentSpeed()
+        );
+
+
+    bestEl.textContent =
+        Math.max(
+            bestScore,
+            Math.floor(score)
+        );
+
+}
+
+
+/* =========================
+   SPEED
+========================= */
+
+function currentSpeed(){
+
+    return 270 +
+        Math.min(
+            360,
+            level * 18
+        );
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetGame(){
+
+    score = 0;
+
+    distanceScore = 0;
+
+    level = 1;
+
+    roadOffset = 0;
+
+    trafficTimer = 0;
+
+    traffic = [];
+
+
+    player.x =
+        W / 2;
+
+    player.targetX =
+        W / 2;
+
+    player.y =
+        H * .78;
+
+    player.tilt = 0;
+
+
+    touching = false;
+
+    touchPointerId = null;
+
+
+    updateHud();
+
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame(){
+
+    ensureAudio();
+
+    resetGame();
+
+
+    state =
+        STATE.COUNTDOWN;
+
+
+    mainMenu.classList.add(
+        "hidden"
+    );
+
+    helpOverlay.classList.add(
+        "hidden"
+    );
+
+    pauseOverlay.classList.add(
+        "hidden"
+    );
+
+    gameOverOverlay.classList.add(
+        "hidden"
+    );
+
+
+    hud.classList.remove(
+        "hidden"
+    );
+
+    topControls.classList.remove(
+        "hidden"
+    );
+
+    touchInfo.classList.remove(
+        "hidden"
+    );
+
+    touchLeftHint.classList.remove(
+        "hidden"
+    );
+
+    touchRightHint.classList.remove(
+        "hidden"
+    );
+
+
+    showGameAd(
+        "game_start"
+    );
+
+
+    runCountdown();
+
+}
+
+
+/* =========================
+   COUNTDOWN
+========================= */
+
+function runCountdown(){
+
+    countdown.classList.remove(
+        "hidden"
+    );
+
+
+    let n = 3;
+
+
+    countdownText.textContent =
+        String(n);
+
+
+    beep("start");
+
+
+    const timer =
+        setInterval(()=>{
+
+            n--;
+
+
+            if(n > 0){
+
+                countdownText.textContent =
+                    String(n);
+
+                beep("start");
+
+            }else{
+
+                clearInterval(
+                    timer
+                );
+
+
+                countdownText.textContent =
+                    "GO!";
+
+
+                beep("start");
+
+
+                setTimeout(()=>{
+
+                    countdown.classList.add(
+                        "hidden"
+                    );
+
+
+                    if(
+                        state ===
+                        STATE.COUNTDOWN
+                    ){
+
+                        state =
+                            STATE.PLAYING;
+
+
+                        lastTime =
+                            performance.now();
+
+                    }
+
+                },550);
+
+            }
+
+        },700);
+
+}
+
+
+/* =========================
+   PAUSE
+========================= */
+
+function pauseGame(){
+
+    if(
+        state !== STATE.PLAYING
+    ){
+
+        return;
+
+    }
+
+
+    state =
+        STATE.PAUSED;
+
+
+    pauseOverlay.classList.remove(
+        "hidden"
+    );
+
+
+    touchInfo.classList.add(
+        "hidden"
+    );
+
+    touchLeftHint.classList.add(
+        "hidden"
+    );
+
+    touchRightHint.classList.add(
+        "hidden"
+    );
+
+
+    touching = false;
+
+    touchPointerId = null;
+
+
+    beep("click");
+
+}
+
+
+function resumeGame(){
+
+    if(
+        state !== STATE.PAUSED
+    ){
+
+        return;
+
+    }
+
+
+    ensureAudio();
+
+
+    state =
+        STATE.PLAYING;
+
+
+    pauseOverlay.classList.add(
+        "hidden"
+    );
+
+
+    touchInfo.classList.remove(
+        "hidden"
+    );
+
+    touchLeftHint.classList.remove(
+        "hidden"
+    );
+
+    touchRightHint.classList.remove(
+        "hidden"
+    );
+
+
+    lastTime =
+        performance.now();
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+function restartGame(){
+
+    pauseOverlay.classList.add(
+        "hidden"
+    );
+
+    gameOverOverlay.classList.add(
+        "hidden"
+    );
+
+
+    startGame();
+
+}
+
+
+/* =========================
+   MAIN MENU
+========================= */
+
+function goMainMenu(){
+
+    state =
+        STATE.MENU;
+
+
+    traffic = [];
+
+
+    hud.classList.add(
+        "hidden"
+    );
+
+    topControls.classList.add(
+        "hidden"
+    );
+
+    touchInfo.classList.add(
+        "hidden"
+    );
+
+    touchLeftHint.classList.add(
+        "hidden"
+    );
+
+    touchRightHint.classList.add(
+        "hidden"
+    );
+
+    countdown.classList.add(
+        "hidden"
+    );
+
+    pauseOverlay.classList.add(
+        "hidden"
+    );
+
+    gameOverOverlay.classList.add(
+        "hidden"
+    );
+
+    helpOverlay.classList.add(
+        "hidden"
+    );
+
+    mainMenu.classList.remove(
+        "hidden"
+    );
+
+
+    touching = false;
+
+    touchPointerId = null;
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function gameOver(){
+
+    if(
+        state !== STATE.PLAYING
+    ){
+
+        return;
+
+    }
+
+
+    state =
+        STATE.OVER;
+
+
+    hud.classList.add(
+        "hidden"
+    );
+
+    topControls.classList.add(
+        "hidden"
+    );
+
+    touchInfo.classList.add(
+        "hidden"
+    );
+
+    touchLeftHint.classList.add(
+        "hidden"
+    );
+
+    touchRightHint.classList.add(
+        "hidden"
+    );
+
+
+    touching = false;
+
+    touchPointerId = null;
+
+
+    if(
+        score > bestScore
+    ){
+
+        bestScore =
+            Math.floor(score);
+
+
+        localStorage.setItem(
+            "carRaceBest",
+            String(bestScore)
+        );
+
+    }
+
+
+    document.getElementById(
+        "finalScore"
+    ).textContent =
+        Math.floor(score);
+
+
+    document.getElementById(
+        "finalBest"
+    ).textContent =
+        "Best: " +
+        bestScore;
+
+
+    gameOverOverlay.classList.remove(
+        "hidden"
+    );
+
+
+    showGameAd(
+        "game_over"
+    );
+
+
+    beep("hit");
+
+}
+
+
+/* =========================
+   SPAWN TRAFFIC
+========================= */
+
+function spawnTraffic(){
+
+    const lane =
+        Math.floor(
+            Math.random() *
+            laneCount
+        );
+
+
+    const laneCenter =
+        road.left +
+        road.laneWidth *
+        (lane + .5);
+
+
+    const width =
+        random(
+            38,
+            48
+        );
+
+
+    const height =
+        random(
+            68,
+            88
+        );
+
+
+    traffic.push({
+
+        x:laneCenter,
+
+        y:-height-30,
+
+        width:width,
+
+        height:height,
+
+        speed:
+            random(
+                70,
+                145
+            ) +
+            level * 8,
+
+        color:
+            trafficColors[
+                Math.floor(
+                    Math.random() *
+                    trafficColors.length
+                )
+            ],
+
+        lane:lane,
+
+        passed:false,
+
+        phase:random(
+            0,
+            Math.PI * 2
+        )
+
+    });
+
+}
+
+
+/* =========================
+   COLLISION
+========================= */
+
+function intersects(
+    a,
+    b
+){
+
+    const ax =
+        a.x -
+        a.width / 2;
+
+
+    const ay =
+        a.y -
+        a.height / 2;
+
+
+    const bx =
+        b.x -
+        b.width / 2;
+
+
+    const by =
+        b.y -
+        b.height / 2;
+
+
+    const paddingX = 7;
+
+    const paddingY = 9;
+
+
+    return (
+
+        ax +
+        a.width -
+        paddingX >
+
+        bx +
+        paddingX &&
+
+
+        ax +
+        paddingX <
+
+        bx +
+        b.width -
+        paddingX &&
+
+
+        ay +
+        a.height -
+        paddingY >
+
+        by +
+        paddingY &&
+
+
+        ay +
+        paddingY <
+
+        by +
+        b.height -
+        paddingY
+
+    );
+
+}
+
+
+/* =========================
+   UPDATE PLAYER
+========================= */
+
+function updatePlayer(dt){
+
+    /*
+       Keyboard controls remain available.
+       Touch controls are handled separately.
+    */
+
+    let direction = 0;
+
+
+    if(
+        keys["ArrowLeft"] ||
+        keys["a"]
+    ){
+
+        direction -= 1;
+
+    }
+
+
+    if(
+        keys["ArrowRight"] ||
+        keys["d"]
+    ){
+
+        direction += 1;
+
+    }
+
+
+    if(direction !== 0){
+
+        player.targetX +=
+            direction *
+            380 *
+            dt;
+
+    }
+
+
+    /*
+       Keep car inside road.
+    */
+
+    player.targetX =
+        clamp(
+            player.targetX,
+
+            road.left +
+            player.width / 2,
+
+            road.right -
+            player.width / 2
+        );
+
+
+    /*
+       Smooth movement.
+    */
+
+    const difference =
+        player.targetX -
+        player.x;
+
+
+    player.x +=
+        difference *
+        Math.min(
+            1,
+            dt * 13
+        );
+
+
+    player.tilt =
+        clamp(
+            difference * .004,
+            -.13,
+            .13
+        );
+
+}
+
+
+/* =========================
+   UPDATE TRAFFIC
+========================= */
+
+function updateTraffic(dt){
+
+    const roadSpeed =
+        currentSpeed();
+
+
+    roadOffset +=
+        roadSpeed *
+        dt;
+
+
+    const spawnInterval =
+        Math.max(
+            .32,
+            .85 -
+            level * .035
+        );
+
+
+    trafficTimer += dt;
+
+
+    if(
+        trafficTimer >=
+        spawnInterval
+    ){
+
+        trafficTimer = 0;
+
+
+        spawnTraffic();
+
+
+        if(
+            level >= 6 &&
+            Math.random() < .18
+        ){
+
+            spawnTraffic();
+
+        }
+
+    }
+
+
+    for(
+        let i =
+            traffic.length - 1;
+
+        i >= 0;
+
+        i--
+    ){
+
+        const car =
+            traffic[i];
+
+
+        car.y +=
+            (
+                roadSpeed +
+                car.speed
+            ) *
+            dt;
+
+
+        car.phase +=
+            dt * 3;
+
+
+        if(
+            intersects(
+                player,
+                car
+            )
+        ){
+
+            createCrashParticles(
+                player.x,
+                player.y
+            );
+
+
+            gameOver();
+
+            return;
+
+        }
+
+
+        if(
+            !car.passed &&
+            car.y >
+            player.y +
+            player.height / 2
+        ){
+
+            car.passed = true;
+
+            score += 15;
+
+            beep("pass");
+
+        }
+
+
+        if(
+            car.y >
+            H +
+            car.height +
+            40
+        ){
+
+            traffic.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+let particles = [];
+
+
+function createCrashParticles(
+    x,
+    y
+){
+
+    for(
+        let i=0;
+        i<32;
+        i++
+    ){
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+
+        const speed =
+            random(
+                70,
+                260
+            );
+
+
+        particles.push({
+
+            x:x,
+
+            y:y,
+
+            vx:
+                Math.cos(angle) *
+                speed,
+
+            vy:
+                Math.sin(angle) *
+                speed,
+
+            life:
+                random(
+                    .35,
+                    .9
+                ),
+
+            size:
+                random(
+                    2,
+                    7
+                )
+
+        });
+
+    }
+
+}
+
+
+function updateParticles(dt){
+
+    for(
+        let i =
+            particles.length - 1;
+
+        i >= 0;
+
+        i--
+    ){
+
+        const p =
+            particles[i];
+
+
+        p.x +=
+            p.vx *
+            dt;
+
+
+        p.y +=
+            p.vy *
+            dt;
+
+
+        p.vy +=
+            300 *
+            dt;
+
+
+        p.life -=
+            dt;
+
+
+        if(
+            p.life <= 0
+        ){
+
+            particles.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+function drawParticles(){
+
+    for(
+        const p of particles
+    ){
+
+        ctx.globalAlpha =
+            Math.max(
+                0,
+                p.life
+            );
+
+
+        ctx.fillStyle =
+            "#ffb52e";
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+    }
+
+
+    ctx.globalAlpha = 1;
+
+}
+
+
+/* =========================
+   UPDATE
+========================= */
+
+function update(dt){
+
+    if(
+        state !== STATE.PLAYING
+    ){
+
+        return;
+
+    }
+
+
+    score +=
+        dt *
+        (
+            10 +
+            level * 1.4
+        );
+
+
+    distanceScore +=
+        dt * 10;
+
+
+    level =
+        Math.floor(
+            score / 250
+        ) + 1;
+
+
+    updatePlayer(dt);
+
+    updateTraffic(dt);
+
+    updateParticles(dt);
+
+    updateHud();
+
+}
+
+
+/* =========================
+   ROAD DRAWING
+========================= */
+
+function drawRoad(){
+
+    const bg =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+
+    bg.addColorStop(
+        0,
+        "#27472d"
+    );
+
+
+    bg.addColorStop(
+        1,
+        "#102617"
+    );
+
+
+    ctx.fillStyle =
+        bg;
+
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /*
+       Road
+    */
+
+    ctx.fillStyle =
+        "#252a30";
+
+
+    ctx.fillRect(
+        road.left,
+        0,
+        road.width,
+        H
+    );
+
+
+    /*
+       Road edges
+    */
+
+    ctx.fillStyle =
+        "#e7e7e7";
+
+
+    ctx.fillRect(
+        road.left,
+        0,
+        5,
+        H
+    );
+
+
+    ctx.fillRect(
+        road.right - 5,
+        0,
+        5,
+        H
+    );
+
+
+    /*
+       Road texture
+    */
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.025)";
+
+
+    for(
+        let y =
+            -60 +
+            (
+                roadOffset %
+                60
+            );
+
+        y < H;
+
+        y += 60
+    ){
+
+        ctx.fillRect(
+            road.left + 8,
+            y,
+            road.width - 16,
+            2
+        );
+
+    }
+
+
+    /*
+       Lane markings
+    */
+
+    ctx.fillStyle =
+        "#f4f4f4";
+
+
+    const dashHeight = 46;
+
+    const gap = 34;
+
+    const step =
+        dashHeight +
+        gap;
+
+
+    const offset =
+        roadOffset %
+        step;
+
+
+    for(
+        let lane=1;
+
+        lane<laneCount;
+
+        lane++
+    ){
+
+        const x =
+            road.left +
+            road.laneWidth *
+            lane;
+
+
+        for(
+            let y =
+                -step +
+                offset;
+
+            y <
+                H +
+                step;
+
+            y += step
+        ){
+
+            ctx.fillRect(
+                x - 3,
+                y,
+                6,
+                dashHeight
+            );
+
+        }
+
+    }
+
+
+    /*
+       Shoulder markers
+    */
+
+    ctx.fillStyle =
+        "#f4bd2e";
+
+
+    const markerStep = 72;
+
+
+    const markerOffset =
+        roadOffset %
+        markerStep;
+
+
+    for(
+        let y =
+            -markerStep +
+            markerOffset;
+
+        y <
+            H +
+            markerStep;
+
+        y += markerStep
+    ){
+
+        ctx.fillRect(
+            road.left - 12,
+            y,
+            7,
+            32
+        );
+
+
+        ctx.fillRect(
+            road.right + 5,
+            y,
+            7,
+            32
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CAR DRAWING
+========================= */
+
+function drawCar(
+    x,
+    y,
+    width,
+    height,
+    color,
+    rotation=0,
+    playerCar=false
+){
+
+    ctx.save();
+
+
+    ctx.translate(
+        x,
+        y
+    );
+
+
+    ctx.rotate(
+        rotation
+    );
+
+
+    /*
+       Shadow
+    */
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.35)";
+
+
+    ctx.beginPath();
+
+
+    ctx.ellipse(
+        3,
+        height * .38,
+        width * .58,
+        height * .16,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.fill();
+
+
+    /*
+       Wheels
+    */
+
+    ctx.fillStyle =
+        "#090a0c";
+
+
+    const wheelW =
+        width * .20;
+
+
+    const wheelH =
+        height * .25;
+
+
+    ctx.fillRect(
+        -width / 2 -
+        wheelW * .15,
+        -height * .28,
+        wheelW,
+        wheelH
+    );
+
+
+    ctx.fillRect(
+        width / 2 -
+        wheelW * .85,
+        -height * .28,
+        wheelW,
+        wheelH
+    );
+
+
+    ctx.fillRect(
+        -width / 2 -
+        wheelW * .15,
+        height * .03,
+        wheelW,
+        wheelH
+    );
+
+
+    ctx.fillRect(
+        width / 2 -
+        wheelW * .85,
+        height * .03,
+        wheelW,
+        wheelH
+    );
+
+
+    /*
+       Main body
+    */
+
+    const body =
+        ctx.createLinearGradient(
+            -width / 2,
+            0,
+            width / 2,
+            0
+        );
+
+
+    body.addColorStop(
+        0,
+        shadeColor(
+            color,
+            -35
+        )
+    );
+
+
+    body.addColorStop(
+        .5,
+        color
+    );
+
+
+    body.addColorStop(
+        1,
+        shadeColor(
+            color,
+            -25
+        )
+    );
+
+
+    ctx.fillStyle =
+        body;
+
+
+    roundRect(
+        ctx,
+        -width / 2,
+        -height / 2,
+        width,
+        height,
+        width * .23
+    );
+
+
+    ctx.fill();
+
+
+    /*
+       Windows
+    */
+
+    ctx.fillStyle =
+        playerCar
+            ? "#07243b"
+            : "#17202a";
+
+
+    roundRect(
+        ctx,
+        -width * .31,
+        -height * .27,
+        width * .62,
+        height * .31,
+        width * .12
+    );
+
+
+    ctx.fill();
+
+
+    /*
+       Window highlight
+    */
+
+    ctx.fillStyle =
+        "rgba(170,225,255,.25)";
+
+
+    ctx.fillRect(
+        -width * .24,
+        -height * .22,
+        width * .18,
+        height * .08
+    );
+
+
+    /*
+       Center line
+    */
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.18)";
+
+
+    ctx.fillRect(
+        -2,
+        -height * .43,
+        4,
+        height * .74
+    );
+
+
+    /*
+       Headlights
+    */
+
+    ctx.fillStyle =
+        "#fff5ba";
+
+
+    roundRect(
+        ctx,
+        -width * .34,
+        -height * .43,
+        width * .19,
+        height * .09,
+        3
+    );
+
+
+    ctx.fill();
+
+
+    roundRect(
+        ctx,
+        width * .15,
+        -height * .43,
+        width * .19,
+        height * .09,
+        3
+    );
+
+
+    ctx.fill();
+
+
+    /*
+       Tail lights
+    */
+
+    ctx.fillStyle =
+        "#ff2638";
+
+
+    roundRect(
+        ctx,
+        -width * .34,
+        height * .34,
+        width * .19,
+        height * .08,
+        3
+    );
+
+
+    ctx.fill();
+
+
+    roundRect(
+        ctx,
+        width * .15,
+        height * .34,
+        width * .19,
+        height * .08,
+        3
+    );
+
+
+    ctx.fill();
+
+
+    /*
+       Player windshield shine
+    */
+
+    if(playerCar){
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.18)";
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            -width * .25,
+            -height * .03
+        );
+
+
+        ctx.lineTo(
+            width * .25,
+            -height * .03
+        );
+
+
+        ctx.lineTo(
+            width * .16,
+            height * .17
+        );
+
+
+        ctx.lineTo(
+            -width * .16,
+            height * .17
+        );
+
+
+        ctx.closePath();
+
+
+        ctx.fill();
+
+    }
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================
+   ROUNDED RECT
+========================= */
+
+function roundRect(
+    context,
+    x,
+    y,
+    width,
+    height,
+    radius
+){
+
+    const r =
+        Math.min(
+            radius,
+            width / 2,
+            height / 2
+        );
+
+
+    context.beginPath();
+
+
+    context.moveTo(
+        x + r,
+        y
+    );
+
+
+    context.arcTo(
+        x + width,
+        y,
+        x + width,
+        y + height,
+        r
+    );
+
+
+    context.arcTo(
+        x + width,
+        y + height,
+        x,
+        y + height,
+        r
+    );
+
+
+    context.arcTo(
+        x,
+        y + height,
+        x,
+        y,
+        r
+    );
+
+
+    context.arcTo(
+        x,
+        y,
+        x + width,
+        y,
+        r
+    );
+
+
+    context.closePath();
+
+}
+
+
+/* =========================
+   SHADE COLOR
+========================= */
+
+function shadeColor(
+    color,
+    amount
+){
+
+    let c =
+        color.replace(
+            "#",
+            ""
+        );
+
+
+    if(c.length === 3){
+
+        c =
+            c[0] + c[0] +
+            c[1] + c[1] +
+            c[2] + c[2];
+
+    }
+
+
+    const num =
+        parseInt(
+            c,
+            16
+        );
+
+
+    const r =
+        clamp(
+            (num >> 16) +
+            amount,
+            0,
+            255
+        );
+
+
+    const g =
+        clamp(
+            ((num >> 8) & 255) +
+            amount,
+            0,
+            255
+        );
+
+
+    const b =
+        clamp(
+            (num & 255) +
+            amount,
+            0,
+            255
+        );
+
+
+    return "#" +
+        (
+            (1 << 24) +
+            (r << 16) +
+            (g << 8) +
+            b
+        )
+        .toString(16)
+        .slice(1);
+
+}
+
+
+/* =========================
+   DRAW TRAFFIC
+========================= */
+
+function drawTraffic(){
+
+    for(
+        const car of traffic
+    ){
+
+        drawCar(
+            car.x,
+            car.y,
+            car.width,
+            car.height,
+            car.color,
+            Math.sin(
+                car.phase
+            ) * .015,
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================
+   DRAW PLAYER
+========================= */
+
+function drawPlayer(){
+
+    drawCar(
+        player.x,
+        player.y,
+        player.width,
+        player.height,
+        "#e9283d",
+        player.tilt,
+        true
+    );
+
+}
+
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    drawRoad();
+
+    drawTraffic();
+
+    drawPlayer();
+
+    drawParticles();
+
+
+    if(
+        state === STATE.PLAYING ||
+        state === STATE.PAUSED
+    ){
+
+        ctx.save();
+
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.62)";
+
+
+        ctx.font =
+            "bold 12px Arial";
+
+
+        ctx.textAlign =
+            "left";
+
+
+        ctx.fillText(
+            "LEVEL " +
+            level,
+            road.left + 13,
+            H - 17
+        );
+
+
+        ctx.restore();
+
+    }
+
+}
+
+
+/* =========================
+   MAIN LOOP
+========================= */
+
+function loop(now){
+
+    const dt =
+        Math.min(
+            .035,
+            (
+                now -
+                lastTime
+            ) / 1000 ||
+            0
+        );
+
+
+    lastTime = now;
+
+
+    update(dt);
+
+    draw();
+
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+
+requestAnimationFrame(
+    loop
+);
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        keys[event.key] = true;
+
+
+        if(
+            [
+                "ArrowLeft",
+                "ArrowRight",
+                "ArrowUp",
+                "ArrowDown",
+                " "
+            ].includes(
+                event.key
+            )
+        ){
+
+            event.preventDefault();
+
+        }
+
+
+        if(
+            event.key ===
+            "Escape"
+        ){
+
+            if(
+                state ===
+                STATE.PLAYING
+            ){
+
+                pauseGame();
+
+            }else if(
+                state ===
+                STATE.PAUSED
+            ){
+
+                resumeGame();
+
+            }
+
+        }
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    event => {
+
+        keys[event.key] =
+            false;
+
+    }
+);
+
+
+/* =========================================================
+   FULL SCREEN TOUCH CONTROL
+========================================================= */
+
+/*
+   IMPORTANT:
+
+   There are NO LEFT / RIGHT BUTTONS.
+
+   Touch behavior:
+
+   - Touch left half:
+       car moves left
+
+   - Touch right half:
+       car moves right
+
+   - Drag finger:
+       car follows finger horizontally
+
+   - Hold finger:
+       keeps steering active
+*/
+
+
+canvas.addEventListener(
+    "pointerdown",
+    event => {
+
+        if(
+            state !== STATE.PLAYING
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           Only one active touch/pointer.
+        */
+
+        if(touching){
+
+            return;
+
+        }
+
+
+        touching = true;
+
+        touchPointerId =
+            event.pointerId;
+
+
+        ensureAudio();
+
+
+        /*
+           Determine which side
+           was touched.
+        */
+
+        if(
+            event.clientX <
+            W / 2
+        ){
+
+            player.targetX -= 90;
+
+        }else{
+
+            player.targetX += 90;
+
+        }
+
+
+        /*
+           Keep inside road.
+        */
+
+        player.targetX =
+            clamp(
+                player.targetX,
+
+                road.left +
+                player.width / 2,
+
+                road.right -
+                player.width / 2
+            );
+
+
+        /*
+           Capture pointer so
+           drag continues outside
+           the canvas.
+        */
+
+        try{
+
+            canvas.setPointerCapture(
+                event.pointerId
+            );
+
+        }catch(e){}
+
+
+        event.preventDefault();
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/*
+   Direct drag steering.
+*/
+
+canvas.addEventListener(
+    "pointermove",
+    event => {
+
+        if(
+            !touching
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            event.pointerId !==
+            touchPointerId
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            state !== STATE.PLAYING
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           Finger X becomes
+           target car X.
+        */
+
+        player.targetX =
+            clamp(
+                event.clientX,
+
+                road.left +
+                player.width / 2,
+
+                road.right -
+                player.width / 2
+            );
+
+
+        event.preventDefault();
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/*
+   End touch.
+*/
+
+function endTouch(event){
+
+    if(
+        event.pointerId !==
+        touchPointerId
+    ){
+
+        return;
+
+    }
+
+
+    touching = false;
+
+    touchPointerId = null;
+
+
+    try{
+
+        canvas.releasePointerCapture(
+            event.pointerId
+        );
+
+    }catch(e){}
+
+}
+
+
+canvas.addEventListener(
+    "pointerup",
+    endTouch
+);
+
+
+canvas.addEventListener(
+    "pointercancel",
+    endTouch
+);
+
+
+/*
+   Extra protection for Android
+   touch interruption.
+*/
+
+window.addEventListener(
+    "blur",
+    () => {
+
+        touching = false;
+
+        touchPointerId = null;
+
+    }
+);
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document.getElementById(
+    "startBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+
+document.getElementById(
+    "pauseBtn"
+).addEventListener(
+    "click",
+    pauseGame
+);
+
+
+document.getElementById(
+    "resumeBtn"
+).addEventListener(
+    "click",
+    resumeGame
+);
+
+
+document.getElementById(
+    "restartPause"
+).addEventListener(
+    "click",
+    restartGame
+);
+
+
+document.getElementById(
+    "pauseMenu"
+).addEventListener(
+    "click",
+    goMainMenu
+);
+
+
+document.getElementById(
+    "againBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+
+document.getElementById(
+    "overMenuBtn"
+).addEventListener(
+    "click",
+    goMainMenu
+);
+
+
+/* =========================
+   HELP
+========================= */
+
+document.getElementById(
+    "helpBtn"
+).addEventListener(
+    "click",
+    () => {
+
+        mainMenu.classList.add(
+            "hidden"
+        );
+
+
+        helpOverlay.classList.remove(
+            "hidden"
+        );
+
+    }
+);
+
+
+document.getElementById(
+    "helpBack"
+).addEventListener(
+    "click",
+    () => {
+
+        helpOverlay.classList.add(
+            "hidden"
+        );
+
+
+        mainMenu.classList.remove(
+            "hidden"
+        );
+
+    }
+);
+
+
+/* =========================
+   GAMES PAGE
+========================= */
+
+function goToGames(){
+
+    window.location.href =
+        "../../pages/games.html";
+
+}
+
+
+document.getElementById(
+    "gamesBtn"
+).addEventListener(
+    "click",
+    goToGames
+);
+
+
+document.getElementById(
+    "overGamesBtn"
+).addEventListener(
+    "click",
+    goToGames
+);
+
+
+/* =========================
+   VISIBILITY
+========================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if(
+            document.hidden &&
+            state === STATE.PLAYING
+        ){
+
+            pauseGame();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   DISABLE CONTEXT MENU
+========================= */
+
+document.addEventListener(
+    "contextmenu",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+/* =========================
+   DISABLE SCROLLING
+========================= */
+
+document.addEventListener(
+    "touchmove",
+    event => {
+
+        event.preventDefault();
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================
+   INIT
+========================= */
+
+player.x =
+    W / 2;
+
+player.targetX =
+    W / 2;
+
+player.y =
+    H * .78;
+
+
+updateHud();
+
+</script>
+
+</body>
+</html>

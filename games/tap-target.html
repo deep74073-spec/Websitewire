@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Tap Target - A fast reaction game by SHIVI Games.">
+
+
+    <title>Tap Target - SHIVI Games</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+
+        .topbar {
+            min-height: 60px;
+            background: #11182d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #27304d;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            background: #202a47;
+            padding: 9px 13px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+
+        .back:hover {
+            background: #2b385c;
+        }
+
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+
+        .score-box {
+            background: #202a47;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+
+        .ad {
+            width: calc(100% - 24px);
+            max-width: 728px;
+            min-height: 70px;
+            margin: 15px auto;
+            border: 1px dashed #4c587a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8d98b8;
+            font-size: 13px;
+        }
+
+
+        .stats {
+            width: calc(100% - 24px);
+            max-width: 700px;
+            margin: 15px auto 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+
+        .stat {
+            background: #11182d;
+            border: 1px solid #27304d;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+
+        .stat-label {
+            color: #8995b8;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .game-area {
+            width: calc(100% - 24px);
+            max-width: 700px;
+            margin: 15px auto;
+            background: #11182d;
+            border: 1px solid #27304d;
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+
+        .timer-bar {
+            width: 100%;
+            height: 7px;
+            background: #202a47;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+
+        #timerProgress {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            transition: width 1s linear;
+        }
+
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            max-width: 650px;
+            height: 500px;
+            margin: auto;
+            background: #080c18;
+            border-radius: 14px;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+
+        .controls {
+            text-align: center;
+            padding: 16px 5px 5px;
+        }
+
+
+        #startBtn {
+            border: none;
+            background: #ffffff;
+            color: #0b1020;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+
+        #startBtn:hover {
+            opacity: 0.88;
+        }
+
+
+        #startBtn:active {
+            transform: scale(0.96);
+        }
+
+
+        .info {
+            text-align: center;
+            color: #9da8c4;
+            font-size: 14px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+
+        .result {
+            text-align: center;
+            display: none;
+            padding: 18px 5px 8px;
+        }
+
+
+        .result h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+
+        .result p {
+            color: #aab4ce;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+
+        .final-score {
+            font-size: 34px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+
+        .best-message {
+            color: #c7d0ea;
+            font-size: 13px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                min-height: 56px;
+                padding: 9px 10px;
+            }
+
+
+            .title {
+                font-size: 17px;
+            }
+
+
+            .back,
+            .score-box {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+
+            .ad {
+                min-height: 60px;
+                margin: 10px auto;
+            }
+
+
+            .stats {
+                margin-top: 12px;
+            }
+
+
+            .game-area {
+                padding: 8px;
+                border-radius: 14px;
+            }
+
+
+            #gameCanvas {
+                height: 430px;
+                border-radius: 12px;
+            }
+
+        }
+
+
+        @media (max-width: 400px) {
+
+            .title {
+                font-size: 15px;
+            }
+
+
+            .stats {
+                gap: 6px;
+            }
+
+
+            .stat {
+                padding: 8px 5px;
+            }
+
+
+            .stat-value {
+                font-size: 16px;
+            }
+
+
+            #gameCanvas {
+                height: 380px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="topbar">
+
+        <a class="back" href="../index.html">
+            ← Back
+        </a>
+
+
+        <div class="title">
+            🎯 Tap Target
+        </div>
+
+
+        <div class="score-box">
+            Score: <span id="score">0</span>
+        </div>
+
+    </div>
+
+
+
+    <div class="ad">
+        Advertisement
+    </div>
+
+
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <div class="stat-label">
+                TIME
+            </div>
+
+            <div class="stat-value">
+                <span id="time">30</span>s
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                LIVES
+            </div>
+
+            <div class="stat-value">
+                <span id="lives">3</span>
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                SCORE
+            </div>
+
+            <div class="stat-value">
+                <span id="statScore">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-label">
+                BEST
+            </div>
+
+            <div class="stat-value">
+                <span id="bestScore">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="game-area">
+
+
+        <div class="timer-bar">
+
+            <div id="timerProgress"></div>
+
+        </div>
+
+
+
+        <canvas id="gameCanvas"></canvas>
+
+
+
+        <div class="controls">
+
+            <button id="startBtn">
+                START GAME
+            </button>
+
+
+            <div class="info">
+                🎯 Target par tap/click karo.<br>
+                30 seconds mein maximum score banao!
+            </div>
+
+        </div>
+
+
+
+        <div class="result" id="result">
+
+            <h2>
+                🎉 Game Over!
+            </h2>
+
+
+            <div class="final-score">
+                <span id="finalScore">0</span>
+            </div>
+
+
+            <p>
+                Final Score
+            </p>
+
+
+            <p class="best-message"
+               id="bestMessage">
+
+                Keep playing and beat your best score!
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="ad">
+        Advertisement
+    </div>
+
+
+
+    <script>
+
+
+        const canvas =
+            document.getElementById("gameCanvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        const scoreElement =
+            document.getElementById("score");
+
+        const statScore =
+            document.getElementById("statScore");
+
+        const livesElement =
+            document.getElementById("lives");
+
+        const timeElement =
+            document.getElementById("time");
+
+        const bestScoreElement =
+            document.getElementById("bestScore");
+
+        const timerProgress =
+            document.getElementById("timerProgress");
+
+        const startBtn =
+            document.getElementById("startBtn");
+
+        const result =
+            document.getElementById("result");
+
+        const finalScore =
+            document.getElementById("finalScore");
+
+        const bestMessage =
+            document.getElementById("bestMessage");
+
+
+
+        let score = 0;
+        let lives = 3;
+
+        let timeLeft = 30;
+
+        let gameRunning = false;
+
+        let timer = null;
+
+
+        let bestScore =
+            Number(
+                localStorage.getItem(
+                    "shiviTapTargetBest"
+                )
+            ) || 0;
+
+
+        let target = {
+            x: 0,
+            y: 0,
+            radius: 35
+        };
+
+
+
+        bestScoreElement.textContent =
+            bestScore;
+
+
+
+        function resizeCanvas() {
+
+            const rect =
+                canvas.getBoundingClientRect();
+
+            const ratio =
+                window.devicePixelRatio || 1;
+
+
+            canvas.width =
+                rect.width * ratio;
+
+            canvas.height =
+                rect.height * ratio;
+
+
+            ctx.setTransform(
+                ratio,
+                0,
+                0,
+                ratio,
+                0,
+                0
+            );
+
+
+            if (!gameRunning) {
+
+                drawStartScreen();
+
+            }
+
+        }
+
+
+
+        function getWidth() {
+
+            return canvas
+                .getBoundingClientRect()
+                .width;
+
+        }
+
+
+
+        function getHeight() {
+
+            return canvas
+                .getBoundingClientRect()
+                .height;
+
+        }
+
+
+
+        function randomTarget() {
+
+            const width =
+                getWidth();
+
+            const height =
+                getHeight();
+
+
+            const minX =
+                target.radius + 10;
+
+            const maxX =
+                width -
+                target.radius -
+                10;
+
+
+            const minY =
+                target.radius + 10;
+
+            const maxY =
+                height -
+                target.radius -
+                10;
+
+
+            target.x =
+                minX +
+                Math.random() *
+                Math.max(
+                    1,
+                    maxX - minX
+                );
+
+
+            target.y =
+                minY +
+                Math.random() *
+                Math.max(
+                    1,
+                    maxY - minY
+                );
+
+
+            draw();
+
+        }
+
+
+
+        function drawBackground() {
+
+            const width =
+                getWidth();
+
+            const height =
+                getHeight();
+
+
+            ctx.fillStyle =
+                "#080c18";
+
+            ctx.fillRect(
+                0,
+                0,
+                width,
+                height
+            );
+
+
+            ctx.strokeStyle =
+                "#151e35";
+
+            ctx.lineWidth = 1;
+
+
+            for (
+                let x = 0;
+                x < width;
+                x += 40
+            ) {
+
+                ctx.beginPath();
+
+                ctx.moveTo(x, 0);
+
+                ctx.lineTo(
+                    x,
+                    height
+                );
+
+                ctx.stroke();
+
+            }
+
+
+            for (
+                let y = 0;
+                y < height;
+                y += 40
+            ) {
+
+                ctx.beginPath();
+
+                ctx.moveTo(0, y);
+
+                ctx.lineTo(
+                    width,
+                    y
+                );
+
+                ctx.stroke();
+
+            }
+
+        }
+
+
+
+        function drawTarget() {
+
+            ctx.beginPath();
+
+            ctx.arc(
+                target.x,
+                target.y,
+                target.radius,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ef4444";
+
+            ctx.fill();
+
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                target.x,
+                target.y,
+                target.radius * 0.68,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.fill();
+
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                target.x,
+                target.y,
+                target.radius * 0.38,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ef4444";
+
+            ctx.fill();
+
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                target.x,
+                target.y,
+                5,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.fill();
+
+        }
+
+
+
+        function draw() {
+
+            drawBackground();
+
+
+            if (gameRunning) {
+
+                drawTarget();
+
+            }
+
+        }
+
+
+
+        function drawStartScreen() {
+
+            drawBackground();
+
+
+            const width =
+                getWidth();
+
+            const height =
+                getHeight();
+
+
+            ctx.textAlign =
+                "center";
+
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.font =
+                "bold 28px Arial";
+
+
+            ctx.fillText(
+                "🎯 Tap Target",
+                width / 2,
+                height / 2 - 25
+            );
+
+
+            ctx.fillStyle =
+                "#9da8c4";
+
+            ctx.font =
+                "16px Arial";
+
+
+            ctx.fillText(
+                "Press START GAME",
+                width / 2,
+                height / 2 + 12
+            );
+
+
+            ctx.font =
+                "13px Arial";
+
+
+            ctx.fillText(
+                "Tap the target as fast as you can!",
+                width / 2,
+                height / 2 + 38
+            );
+
+        }
+
+
+
+        function updateUI() {
+
+            scoreElement.textContent =
+                score;
+
+            statScore.textContent =
+                score;
+
+            livesElement.textContent =
+                lives;
+
+            timeElement.textContent =
+                timeLeft;
+
+
+            const percentage =
+                Math.max(
+                    0,
+                    (timeLeft / 30) * 100
+                );
+
+
+            timerProgress.style.width =
+                percentage + "%";
+
+        }
+
+
+
+        function startGame() {
+
+            score = 0;
+            lives = 3;
+
+            timeLeft = 30;
+
+            gameRunning = true;
+
+
+            result.style.display =
+                "none";
+
+
+            startBtn.textContent =
+                "RESTART GAME";
+
+
+            target.radius = 35;
+
+
+            updateUI();
+
+            randomTarget();
+
+
+            clearInterval(timer);
+
+
+            timer =
+                setInterval(
+                    function() {
+
+                        timeLeft--;
+
+                        updateUI();
+
+
+                        if (
+                            timeLeft <= 0
+                        ) {
+
+                            endGame();
+
+                        }
+
+                    },
+                    1000
+                );
+
+        }
+
+
+
+        function endGame() {
+
+            gameRunning = false;
+
+
+            clearInterval(timer);
+
+            timer = null;
+
+
+            finalScore.textContent =
+                score;
+
+
+            if (score > bestScore) {
+
+                bestScore = score;
+
+
+                localStorage.setItem(
+                    "shiviTapTargetBest",
+                    bestScore
+                );
+
+
+                bestScoreElement.textContent =
+                    bestScore;
+
+
+                bestMessage.textContent =
+                    "🏆 New Best Score!";
+
+            } else {
+
+                bestMessage.textContent =
+                    "Keep playing and beat your best score!";
+
+            }
+
+
+            result.style.display =
+                "block";
+
+
+            startBtn.textContent =
+                "PLAY AGAIN";
+
+
+            updateUI();
+
+            drawStartScreen();
+
+        }
+
+
+
+        function hitTarget(
+            clientX,
+            clientY
+        ) {
+
+            if (!gameRunning) {
+
+                return;
+
+            }
+
+
+            const rect =
+                canvas.getBoundingClientRect();
+
+
+            const x =
+                clientX -
+                rect.left;
+
+
+            const y =
+                clientY -
+                rect.top;
+
+
+            const dx =
+                x -
+                target.x;
+
+
+            const dy =
+                y -
+                target.y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if (
+                distance <=
+                target.radius
+            ) {
+
+                score++;
+
+                updateUI();
+
+                randomTarget();
+
+            } else {
+
+                lives--;
+                updateUI();
+
+                if (lives <= 0) {
+                    endGame();
+                }
+
+            }
+
+        }
+
+
+
+        canvas.addEventListener(
+            "click",
+            function(event) {
+
+                hitTarget(
+                    event.clientX,
+                    event.clientY
+                );
+
+            }
+        );
+
+
+
+        canvas.addEventListener(
+            "touchstart",
+            function(event) {
+
+                event.preventDefault();
+
+
+                if (
+                    event.touches.length > 0
+                ) {
+
+                    const touch =
+                        event.touches[0];
+
+
+                    hitTarget(
+                        touch.clientX,
+                        touch.clientY
+                    );
+
+                }
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+
+        startBtn.addEventListener(
+            "click",
+            startGame
+        );
+
+
+
+        window.addEventListener(
+            "resize",
+            resizeCanvas
+        );
+
+
+
+        updateUI();
+
+        resizeCanvas();
+
+
+    </script>
+
+
+</body>
+
+</html>

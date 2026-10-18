@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+
+<title>Stack Tower</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#070a13;
+    font-family:Arial,sans-serif;
+    touch-action:none;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#gameCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+#hud{
+    position:fixed;
+    top:12px;
+    left:12px;
+    right:12px;
+
+    display:none;
+
+    justify-content:space-between;
+    align-items:center;
+
+    color:white;
+    pointer-events:none;
+}
+
+.stat{
+    background:rgba(10,14,28,.85);
+    border:1px solid rgba(255,255,255,.1);
+
+    padding:8px 12px;
+    border-radius:12px;
+
+    font-size:15px;
+    font-weight:bold;
+}
+
+#pauseBtn{
+    position:fixed;
+    top:62px;
+    right:12px;
+
+    display:none;
+
+    border:0;
+    border-radius:10px;
+
+    padding:8px 12px;
+
+    color:white;
+    background:#202844;
+
+    font-weight:bold;
+}
+
+#menu,
+#gameOver,
+#pauseScreen{
+
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    background:rgba(4,7,15,.94);
+
+    color:white;
+}
+
+#gameOver,
+#pauseScreen{
+    display:none;
+}
+
+.title{
+
+    font-size:46px;
+    font-weight:900;
+
+    letter-spacing:2px;
+
+    margin-bottom:8px;
+}
+
+.subtitle{
+
+    color:#aab2ca;
+
+    font-size:16px;
+
+    margin-bottom:30px;
+}
+
+button{
+
+    border:0;
+
+    border-radius:14px;
+
+    padding:14px 30px;
+
+    min-width:180px;
+
+    color:white;
+
+    background:#315cff;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    margin:6px;
+
+}
+
+button:active{
+    transform:scale(.96);
+}
+
+.secondary{
+    background:#202844;
+}
+
+.finalScore{
+
+    font-size:25px;
+
+    margin:8px 0 25px;
+}
+
+.help{
+
+    position:absolute;
+
+    bottom:20px;
+
+    color:#747e9e;
+
+    font-size:13px;
+
+    padding:0 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="hud">
+
+    <div class="stat">
+        SCORE: <span id="score">0</span>
+    </div>
+
+    <div class="stat">
+        LIVES: <span id="lives">3</span>
+    </div>
+
+    <div class="stat">
+        BEST: <span id="best">0</span>
+    </div>
+
+</div>
+
+<button id="pauseBtn">PAUSE</button>
+
+
+<!-- MENU -->
+
+<div id="menu">
+
+    <div class="title">
+        STACK TOWER
+    </div>
+
+    <div class="subtitle">
+        Stack bricks • Complete lines • Beat your score
+    </div>
+
+    <button id="playBtn">
+        PLAY
+    </button>
+
+    <div class="help">
+        Swipe left/right to move • Swipe down to drop • Tap to rotate
+    </div>
+
+</div>
+
+
+<!-- GAME OVER -->
+
+<div id="gameOver">
+
+    <div class="title">
+        GAME OVER
+    </div>
+
+    <div class="finalScore">
+        Score: <span id="finalScore">0</span>
+    </div>
+
+    <div class="finalScore">
+        Best: <span id="finalBest">0</span>
+    </div>
+
+    <button id="againBtn">
+        PLAY AGAIN
+    </button>
+
+    <button class="secondary" id="menuBtn">
+        MENU
+    </button>
+
+</div>
+
+
+<!-- PAUSE -->
+
+<div id="pauseScreen">
+
+    <div class="title">
+        PAUSED
+    </div>
+
+    <button id="resumeBtn">
+        RESUME
+    </button>
+
+    <button class="secondary" id="pauseMenuBtn">
+        MENU
+    </button>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================
+   CANVAS
+========================= */
+
+const canvas =
+    document.getElementById("gameCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+let W = 0;
+let H = 0;
+let DPR = 1;
+
+function resize(){
+
+    DPR =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(
+        DPR,0,0,DPR,0,0
+    );
+}
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+resize();
+
+
+/* =========================
+   GAME SETTINGS
+========================= */
+
+const COLS = 10;
+const ROWS = 20;
+
+let CELL = 30;
+
+let board = [];
+
+let current = null;
+
+let score = 0;
+let lives = 3;
+
+let best =
+    Number(
+        localStorage.getItem(
+            "stackTowerBest"
+        ) || 0
+    );
+
+let playing = false;
+let paused = false;
+let gameOver = false;
+
+let lastTime = 0;
+
+let fallTimer = 0;
+
+let fallSpeed = 750;
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+
+/* =========================
+   COLORS
+========================= */
+
+const COLORS = [
+
+    "#3b82f6",
+    "#8b5cf6",
+    "#22c55e",
+    "#06b6d4",
+    "#f59e0b",
+    "#ef4444",
+    "#ec4899"
+
+];
+
+
+/* =========================
+   TETROMINO SHAPES
+========================= */
+
+const SHAPES = [
+
+    [
+        [1,1,1,1]
+    ],
+
+    [
+        [1,1],
+        [1,1]
+    ],
+
+    [
+        [0,1,0],
+        [1,1,1]
+    ],
+
+    [
+        [1,0,0],
+        [1,1,1]
+    ],
+
+    [
+        [0,0,1],
+        [1,1,1]
+    ],
+
+    [
+        [0,1,1],
+        [1,1,0]
+    ],
+
+    [
+        [1,1,0],
+        [0,1,1]
+    ]
+
+];
+
+
+/* =========================
+   BOARD SIZE
+========================= */
+
+function updateCellSize(){
+
+    const maxWidth =
+        Math.min(
+            W * .92,
+            420
+        );
+
+    const maxHeight =
+        H * .72;
+
+    CELL =
+        Math.floor(
+            Math.min(
+                maxWidth / COLS,
+                maxHeight / ROWS
+            )
+        );
+
+    if(CELL < 16){
+        CELL = 16;
+    }
+}
+
+
+/* =========================
+   NEW BOARD
+========================= */
+
+function createBoard(){
+
+    board = [];
+
+    for(let y=0;y<ROWS;y++){
+
+        board[y] = [];
+
+        for(let x=0;x<COLS;x++){
+
+            board[y][x] = 0;
+        }
+    }
+}
+
+
+/* =========================
+   COPY SHAPE
+========================= */
+
+function copyShape(shape){
+
+    return shape.map(
+        row => row.slice()
+    );
+}
+
+
+/* =========================
+   NEW BRICK
+========================= */
+
+function spawnPiece(){
+
+    const index =
+        Math.floor(
+            Math.random() *
+            SHAPES.length
+        );
+
+    const shape =
+        copyShape(
+            SHAPES[index]
+        );
+
+    current = {
+
+        shape:shape,
+
+        x:
+            Math.floor(
+                (COLS - shape[0].length) / 2
+            ),
+
+        y:-1,
+
+        color:
+            COLORS[
+                Math.floor(
+                    Math.random() *
+                    COLORS.length
+                )
+            ]
+
+    };
+
+    if(
+        !validPosition(
+            current,
+            0,
+            0
+        )
+    ){
+
+        loseLife();
+
+    }
+}
+
+
+/* =========================
+   VALID POSITION
+========================= */
+
+function validPosition(
+    piece,
+    moveX,
+    moveY,
+    newShape
+){
+
+    const shape =
+        newShape ||
+        piece.shape;
+
+    for(
+        let y=0;
+        y<shape.length;
+        y++
+    ){
+
+        for(
+            let x=0;
+            x<shape[y].length;
+            x++
+        ){
+
+            if(!shape[y][x]){
+                continue;
+            }
+
+            const nx =
+                piece.x +
+                x +
+                moveX;
+
+            const ny =
+                piece.y +
+                y +
+                moveY;
+
+            if(nx < 0 || nx >= COLS){
+                return false;
+            }
+
+            if(ny >= ROWS){
+                return false;
+            }
+
+            if(
+                ny >= 0 &&
+                board[ny][nx]
+            ){
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+/* =========================
+   MOVE
+========================= */
+
+function movePiece(dx){
+
+    if(
+        !playing ||
+        paused ||
+        gameOver ||
+        !current
+    ){
+        return;
+    }
+
+    if(
+        validPosition(
+            current,
+            dx,
+            0
+        )
+    ){
+
+        current.x += dx;
+    }
+}
+
+
+/* =========================
+   ROTATE
+========================= */
+
+function rotateMatrix(matrix){
+
+    const rows =
+        matrix.length;
+
+    const cols =
+        matrix[0].length;
+
+    const result = [];
+
+    for(
+        let x=0;
+        x<cols;
+        x++
+    ){
+
+        result[x] = [];
+
+        for(
+            let y=rows-1;
+            y>=0;
+            y--
+        ){
+
+            result[x].push(
+                matrix[y][x]
+            );
+        }
+    }
+
+    return result;
+}
+
+
+function rotatePiece(){
+
+    if(
+        !playing ||
+        paused ||
+        gameOver ||
+        !current
+    ){
+        return;
+    }
+
+    const rotated =
+        rotateMatrix(
+            current.shape
+        );
+
+    if(
+        validPosition(
+            current,
+            0,
+            0,
+            rotated
+        )
+    ){
+
+        current.shape =
+            rotated;
+
+        return;
+    }
+
+    if(
+        validPosition(
+            current,
+            -1,
+            0,
+            rotated
+        )
+    ){
+
+        current.x--;
+
+        current.shape =
+            rotated;
+
+        return;
+    }
+
+    if(
+        validPosition(
+            current,
+            1,
+            0,
+            rotated
+        )
+    ){
+
+        current.x++;
+
+        current.shape =
+            rotated;
+    }
+}
+
+
+/* =========================
+   SOFT DROP
+========================= */
+
+function softDrop(){
+
+    if(
+        !playing ||
+        paused ||
+        gameOver ||
+        !current
+    ){
+        return;
+    }
+
+    if(
+        validPosition(
+            current,
+            0,
+            1
+        )
+    ){
+
+        current.y++;
+
+        score++;
+
+        updateScore();
+
+    }else{
+
+        lockPiece();
+    }
+}
+
+
+/* =========================
+   HARD DROP
+========================= */
+
+function hardDrop(){
+
+    if(
+        !playing ||
+        paused ||
+        gameOver ||
+        !current
+    ){
+        return;
+    }
+
+    while(
+        validPosition(
+            current,
+            0,
+            1
+        )
+    ){
+
+        current.y++;
+
+        score += 2;
+    }
+
+    updateScore();
+
+    lockPiece();
+}
+
+
+/* =========================
+   LOCK BRICK
+========================= */
+
+function lockPiece(){
+
+    if(!current){
+        return;
+    }
+
+    let blocksAbove =
+        false;
+
+    for(
+        let y=0;
+        y<current.shape.length;
+        y++
+    ){
+
+        for(
+            let x=0;
+            x<current.shape[y].length;
+            x++
+        ){
+
+            if(
+                !current.shape[y][x]
+            ){
+                continue;
+            }
+
+            const bx =
+                current.x + x;
+
+            const by =
+                current.y + y;
+
+            if(by < 0){
+
+                blocksAbove = true;
+
+            }else{
+
+                board[by][bx] =
+                    current.color;
+            }
+        }
+    }
+
+    current = null;
+
+    if(blocksAbove){
+
+        loseLife();
+
+        return;
+    }
+
+    clearLines();
+
+    increaseSpeed();
+
+    spawnPiece();
+}
+
+
+/* =========================
+   CLEAR COMPLETE LINES
+========================= */
+
+function clearLines(){
+
+    let lines = 0;
+
+    for(
+        let y=ROWS-1;
+        y>=0;
+        y--
+    ){
+
+        let full = true;
+
+        for(
+            let x=0;
+            x<COLS;
+            x++
+        ){
+
+            if(!board[y][x]){
+
+                full = false;
+
+                break;
+            }
+        }
+
+        if(full){
+
+            board.splice(y,1);
+
+            board.unshift(
+                new Array(COLS).fill(0)
+            );
+
+            lines++;
+
+            y++;
+        }
+    }
+
+    if(lines > 0){
+
+        if(lines === 1){
+            score += 100;
+        }
+
+        if(lines === 2){
+            score += 300;
+        }
+
+        if(lines === 3){
+            score += 600;
+        }
+
+        if(lines >= 4){
+            score += 1000;
+        }
+
+        updateScore();
+    }
+}
+
+
+/* =========================
+   SPEED
+========================= */
+
+function increaseSpeed(){
+
+    fallSpeed =
+        Math.max(
+            160,
+            750 -
+            Math.floor(score / 500) * 45
+        );
+}
+
+
+/* =========================
+   SCORE
+========================= */
+
+function updateScore(){
+
+    document.getElementById(
+        "score"
+    ).textContent = score;
+
+    if(score > best){
+
+        best = score;
+
+        localStorage.setItem(
+            "stackTowerBest",
+            best
+        );
+    }
+
+    document.getElementById(
+        "best"
+    ).textContent = best;
+}
+
+
+/* =========================
+   GAME START
+========================= */
+
+function updateLives(){
+
+    document.getElementById("lives").textContent = lives;
+}
+
+function loseLife(){
+
+    lives--;
+    current = null;
+    updateLives();
+
+    if(lives <= 0){
+        finishGame();
+        return;
+    }
+
+    // A lost life starts a fresh tower while preserving the score.
+    createBoard();
+    fallTimer = 0;
+    spawnPiece();
+}
+
+
+function startGame(){
+
+    updateCellSize();
+
+    createBoard();
+
+    score = 0;
+    lives = 3;
+
+    fallTimer = 0;
+
+    fallSpeed = 750;
+
+    gameOver = false;
+
+    paused = false;
+
+    playing = true;
+
+    updateScore();
+    updateLives();
+
+    spawnPiece();
+
+    document.getElementById(
+        "menu"
+    ).style.display = "none";
+
+    document.getElementById(
+        "gameOver"
+    ).style.display = "none";
+
+    document.getElementById(
+        "pauseScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "hud"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "pauseBtn"
+    ).style.display = "block";
+
+    lastTime =
+        performance.now();
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function finishGame(){
+
+    if(gameOver){
+        return;
+    }
+
+    gameOver = true;
+
+    playing = false;
+
+    paused = false;
+
+    document.getElementById(
+        "finalScore"
+    ).textContent = score;
+
+    document.getElementById(
+        "finalBest"
+    ).textContent = best;
+
+    document.getElementById(
+        "gameOver"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "pauseBtn"
+    ).style.display = "none";
+}
+
+
+/* =========================
+   PAUSE
+========================= */
+
+function togglePause(){
+
+    if(
+        gameOver ||
+        !playing && !paused
+    ){
+        return;
+    }
+
+    if(paused){
+
+        paused = false;
+
+        playing = true;
+
+        document.getElementById(
+            "pauseScreen"
+        ).style.display = "none";
+
+        lastTime =
+            performance.now();
+
+    }else{
+
+        paused = true;
+
+        playing = false;
+
+        document.getElementById(
+            "pauseScreen"
+        ).style.display = "flex";
+    }
+}
+
+
+/* =========================
+   DRAW BACKGROUND
+========================= */
+
+function drawBackground(){
+
+    ctx.fillStyle =
+        "#070a13";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+}
+
+
+/* =========================
+   DRAW BOARD
+========================= */
+
+function drawBoard(){
+
+    updateCellSize();
+
+    const boardWidth =
+        COLS * CELL;
+
+    const boardHeight =
+        ROWS * CELL;
+
+    const bx =
+        (W - boardWidth) / 2;
+
+    const by =
+        Math.max(
+            85,
+            (H - boardHeight) / 2
+        );
+
+    ctx.fillStyle =
+        "#101629";
+
+    ctx.fillRect(
+        bx,
+        by,
+        boardWidth,
+        boardHeight
+    );
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.055)";
+
+    ctx.lineWidth = 1;
+
+    for(
+        let x=0;
+        x<=COLS;
+        x++
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            bx + x * CELL,
+            by
+        );
+
+        ctx.lineTo(
+            bx + x * CELL,
+            by + boardHeight
+        );
+
+        ctx.stroke();
+    }
+
+    for(
+        let y=0;
+        y<=ROWS;
+        y++
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            bx,
+            by + y * CELL
+        );
+
+        ctx.lineTo(
+            bx + boardWidth,
+            by + y * CELL
+        );
+
+        ctx.stroke();
+    }
+
+    for(
+        let y=0;
+        y<ROWS;
+        y++
+    ){
+
+        for(
+            let x=0;
+            x<COLS;
+            x++
+        ){
+
+            if(board[y][x]){
+
+                drawCell(
+                    bx + x * CELL,
+                    by + y * CELL,
+                    board[y][x]
+                );
+            }
+        }
+    }
+
+    if(current){
+
+        for(
+            let y=0;
+            y<current.shape.length;
+            y++
+        ){
+
+            for(
+                let x=0;
+                x<current.shape[y].length;
+                x++
+            ){
+
+                if(
+                    !current.shape[y][x]
+                ){
+                    continue;
+                }
+
+                const px =
+                    bx +
+                    (current.x + x) *
+                    CELL;
+
+                const py =
+                    by +
+                    (current.y + y) *
+                    CELL;
+
+                if(
+                    current.y + y >= 0
+                ){
+
+                    drawCell(
+                        px,
+                        py,
+                        current.color
+                    );
+                }
+            }
+        }
+    }
+}
+
+
+/* =========================
+   DRAW CELL
+========================= */
+
+function drawCell(
+    x,
+    y,
+    color
+){
+
+    const gap = 2;
+
+    ctx.fillStyle =
+        color;
+
+    ctx.fillRect(
+        x + gap,
+        y + gap,
+        CELL - gap * 2,
+        CELL - gap * 2
+    );
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.18)";
+
+    ctx.fillRect(
+        x + gap,
+        y + gap,
+        CELL - gap * 2,
+        Math.max(
+            2,
+            CELL * .12
+        )
+    );
+}
+
+
+/* =========================
+   UPDATE
+========================= */
+
+function update(dt){
+
+    if(
+        !playing ||
+        paused ||
+        gameOver
+    ){
+        return;
+    }
+
+    fallTimer += dt;
+
+    if(fallTimer >= fallSpeed){
+
+        fallTimer = 0;
+
+        if(
+            current &&
+            validPosition(
+                current,
+                0,
+                1
+            )
+        ){
+
+            current.y++;
+
+        }else{
+
+            lockPiece();
+        }
+    }
+}
+
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(){
+
+    drawBackground();
+
+    if(
+        playing ||
+        paused ||
+        gameOver
+    ){
+
+        drawBoard();
+    }
+}
+
+
+/* =========================
+   LOOP
+========================= */
+
+function loop(time){
+
+    const dt =
+        Math.min(
+            (time - lastTime) || 0,
+            50
+        );
+
+    lastTime = time;
+
+    update(dt);
+
+    draw();
+
+    requestAnimationFrame(
+        loop
+    );
+}
+
+lastTime =
+    performance.now();
+
+requestAnimationFrame(
+    loop
+);
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document.getElementById(
+    "playBtn"
+).onclick = startGame;
+
+document.getElementById(
+    "againBtn"
+).onclick = startGame;
+
+document.getElementById(
+    "menuBtn"
+).onclick = showMenu;
+
+document.getElementById(
+    "pauseMenuBtn"
+).onclick = showMenu;
+
+document.getElementById(
+    "resumeBtn"
+).onclick = function(){
+
+    paused = false;
+
+    playing = true;
+
+    document.getElementById(
+        "pauseScreen"
+    ).style.display = "none";
+
+    lastTime =
+        performance.now();
+};
+
+document.getElementById(
+    "pauseBtn"
+).onclick =
+    togglePause;
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "ArrowLeft" ||
+            e.key.toLowerCase() === "a"
+        ){
+
+            e.preventDefault();
+
+            movePiece(-1);
+        }
+
+        else if(
+            e.key === "ArrowRight" ||
+            e.key.toLowerCase() === "d"
+        ){
+
+            e.preventDefault();
+
+            movePiece(1);
+        }
+
+        else if(
+            e.key === "ArrowDown"
+        ){
+
+            e.preventDefault();
+
+            softDrop();
+        }
+
+        else if(
+            e.key === "ArrowUp" ||
+            e.key === " "
+        ){
+
+            e.preventDefault();
+
+            rotatePiece();
+        }
+
+        else if(
+            e.key === "Enter"
+        ){
+
+            hardDrop();
+        }
+
+        else if(
+            e.key === "Escape"
+        ){
+
+            togglePause();
+        }
+    }
+);
+
+
+/* =========================
+   TOUCH CONTROL
+========================= */
+
+canvas.addEventListener(
+    "pointerdown",
+    function(e){
+
+        if(
+            !playing ||
+            paused ||
+            gameOver
+        ){
+            return;
+        }
+
+        /*
+           Touch position
+        */
+
+        const x = e.clientX;
+        const y = e.clientY;
+
+        /*
+           Board position calculate karo
+        */
+
+        const boardWidth =
+            COLS * CELL;
+
+        const boardHeight =
+            ROWS * CELL;
+
+        const bx =
+            (W - boardWidth) / 2;
+
+        const by =
+            Math.max(
+                85,
+                (H - boardHeight) / 2
+            );
+
+
+        /*
+           =========================
+           BRICK / PIECE TOUCH
+           =========================
+
+           Agar current falling brick ke
+           block par touch hua to ROTATE
+        */
+
+        if(current){
+
+            for(
+                let py = 0;
+                py < current.shape.length;
+                py++
+            ){
+
+                for(
+                    let px = 0;
+                    px < current.shape[py].length;
+                    px++
+                ){
+
+                    if(
+                        !current.shape[py][px]
+                    ){
+                        continue;
+                    }
+
+                    const blockX =
+                        bx +
+                        (current.x + px) *
+                        CELL;
+
+                    const blockY =
+                        by +
+                        (current.y + py) *
+                        CELL;
+
+                    /*
+                       Sirf visible brick ko check karo
+                    */
+
+                    if(
+                        current.y + py >= 0 &&
+                        x >= blockX &&
+                        x <= blockX + CELL &&
+                        y >= blockY &&
+                        y <= blockY + CELL
+                    ){
+
+                        rotatePiece();
+
+                        return;
+                    }
+                }
+            }
+        }
+
+
+        /*
+           =========================
+           DOWN AREA
+           =========================
+
+           Screen ke lower 25% area me
+           touch = DOWN
+        */
+
+        if(
+            y > H * 0.75
+        ){
+
+            softDrop();
+
+            return;
+        }
+
+
+        /*
+           =========================
+           LEFT / RIGHT
+           =========================
+
+           Screen ke left half par
+           kahin bhi touch = LEFT
+
+           Screen ke right half par
+           kahin bhi touch = RIGHT
+        */
+
+        if(
+            x < W / 2
+        ){
+
+            movePiece(-1);
+
+        }else{
+
+            movePiece(1);
+        }
+
+    }
+);
+
+/* =========================
+   VISIBILITY
+========================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            document.hidden &&
+            playing &&
+            !gameOver
+        ){
+
+            paused = true;
+
+            playing = false;
+
+            document.getElementById(
+                "pauseScreen"
+            ).style.display = "flex";
+        }
+    }
+);
+
+
+/* =========================
+   MENU
+========================= */
+
+function showMenu(){
+
+    playing = false;
+
+    paused = false;
+
+    gameOver = false;
+
+    document.getElementById(
+        "menu"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "gameOver"
+    ).style.display = "none";
+
+    document.getElementById(
+        "pauseScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "hud"
+    ).style.display = "none";
+
+    document.getElementById(
+        "pauseBtn"
+    ).style.display = "none";
+}
+
+showMenu();
+
+</script>
+
+</body>
+</html>

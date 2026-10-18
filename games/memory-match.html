@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Memory Match - SHIVI Games</title>
+    <meta name="description" content="Play Memory Match free online on SHIVI Games.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            background: #080c18;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 900px;
+            min-height: 100vh;
+            background: #080c18;
+        }
+
+        .topbar {
+            height: 58px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background: #0b1020;
+            border-bottom: 1px solid #1d2942;
+        }
+
+        .back {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            margin-right: 14px;
+        }
+
+        .title {
+            color: #00ff88;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ad-box {
+            height: 60px;
+            margin: 14px 16px;
+            border: 1px dashed #33415f;
+            border-radius: 12px;
+            background: #0c1222;
+            color: #71809b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .game-card {
+            margin: 0 16px 20px;
+            padding: 16px;
+            background: #101729;
+            border: 1px solid #1d2942;
+            border-radius: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .stat {
+            background: #0b1222;
+            border: 1px solid #1d2942;
+            border-radius: 10px;
+            padding: 10px 5px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #7f8da6;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .board {
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            perspective: 900px;
+        }
+
+        .card {
+            aspect-ratio: 1 / 1;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+            perspective: 700px;
+            touch-action: manipulation;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.35s ease;
+        }
+
+        .card.flipped .card-inner,
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            inset: 0;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-front {
+            background: #17233a;
+            border: 2px solid #2a3b5c;
+            color: #00ff88;
+            font-size: clamp(22px, 7vw, 34px);
+            font-weight: bold;
+        }
+
+        .card-front::after {
+            content: "?";
+        }
+
+        .card-back {
+            background: #132b32;
+            border: 2px solid #00ff88;
+            transform: rotateY(180deg);
+            font-size: clamp(26px, 8vw, 42px);
+        }
+
+        .card.matched .card-back {
+            border-color: #ffe066;
+            background: #26332c;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        button.action {
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 28px;
+            background: #00ff88;
+            color: #06110b;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button.action:active {
+            transform: scale(0.97);
+        }
+
+        .message {
+            min-height: 22px;
+            margin-top: 11px;
+            color: #b9c4d8;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .description {
+            margin: 0 16px 30px;
+            color: #9ba8bf;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 500px) {
+
+            .game-card {
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 11px;
+            }
+
+            .ad-box {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .description {
+                margin-left: 12px;
+                margin-right: 12px;
+            }
+
+            .board {
+                gap: 7px;
+            }
+
+            .card-front,
+            .card-back {
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+        <a class="back" href="../index.html">← Back</a>
+        <div class="title">🧠 Memory Match</div>
+    </div>
+
+    <div class="ad-box">
+        Advertisement
+    </div>
+
+    <div class="game-card">
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">MOVES</div>
+                <div class="stat-value" id="moves">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">PAIRS</div>
+                <div class="stat-value">
+                    <span id="pairs">0</span>/8
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">LIVES</div>
+                <div class="stat-value" id="lives">3</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">BEST</div>
+                <div class="stat-value" id="best">-</div>
+            </div>
+
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="controls">
+
+            <button class="action" id="restartBtn">
+                RESTART
+            </button>
+
+            <div class="message" id="message">
+                Match all 8 pairs!
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="description">
+        Test your memory! Flip two cards at a time and find all matching pairs
+        using as few moves as possible.
+    </div>
+
+</div>
+
+<script>
+"use strict";
+
+const board = document.getElementById("board");
+const movesEl = document.getElementById("moves");
+const pairsEl = document.getElementById("pairs");
+const livesEl = document.getElementById("lives");
+const bestEl = document.getElementById("best");
+const messageEl = document.getElementById("message");
+const restartBtn = document.getElementById("restartBtn");
+
+const symbols = [
+    "🍎",
+    "🚀",
+    "⚽",
+    "🎮",
+    "🐱",
+    "🌟",
+    "🍕",
+    "🚗"
+];
+
+let cards = [];
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+
+let moves = 0;
+let pairs = 0;
+let lives = 3;
+let gameEnded = false;
+
+let bestMoves = Number(
+    localStorage.getItem("shiviMemoryBest") || 0
+);
+
+function updateBest() {
+    if (bestMoves > 0) {
+        bestEl.textContent = bestMoves;
+    } else {
+        bestEl.textContent = "-";
+    }
+}
+
+updateBest();
+
+
+function shuffle(array) {
+
+    const result = array.slice();
+
+    for (let i = result.length - 1; i > 0; i--) {
+
+        const j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        const temp = result[i];
+
+        result[i] = result[j];
+        result[j] = temp;
+    }
+
+    return result;
+}
+
+
+function createDeck() {
+
+    const deck = shuffle(
+        symbols.concat(symbols)
+    );
+
+    cards = deck.map(function(symbol, index) {
+
+        return {
+            id: index,
+            symbol: symbol,
+            matched: false
+        };
+
+    });
+}
+
+
+function renderBoard() {
+
+    board.innerHTML = "";
+
+    cards.forEach(function(cardData) {
+
+        const card = document.createElement("button");
+
+        card.className = "card";
+        card.type = "button";
+        card.setAttribute(
+            "aria-label",
+            "Memory card"
+        );
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-front"></div>
+                <div class="card-back">
+                    ${cardData.symbol}
+                </div>
+            </div>
+        `;
+
+        card.addEventListener(
+            "click",
+            function() {
+                flipCard(card, cardData);
+            }
+        );
+
+        card.dataset.cardId = cardData.id;
+
+        cardData.element = card;
+
+        board.appendChild(card);
+    });
+}
+
+
+function flipCard(element, cardData) {
+
+    if (gameEnded) {
+        return;
+    }
+
+    if (lockBoard) {
+        return;
+    }
+
+    if (cardData.matched) {
+        return;
+    }
+
+    if (element === firstCard) {
+        return;
+    }
+
+    element.classList.add("flipped");
+
+    if (!firstCard) {
+
+        firstCard = element;
+        return;
+    }
+
+    secondCard = element;
+
+    moves++;
+
+    movesEl.textContent = moves;
+
+    checkMatch();
+}
+
+
+function checkMatch() {
+
+    const firstId =
+        Number(firstCard.dataset.cardId);
+
+    const secondId =
+        Number(secondCard.dataset.cardId);
+
+    const firstData =
+        cards.find(function(card) {
+            return card.id === firstId;
+        });
+
+    const secondData =
+        cards.find(function(card) {
+            return card.id === secondId;
+        });
+
+    if (
+        firstData.symbol ===
+        secondData.symbol
+    ) {
+
+        firstData.matched = true;
+        secondData.matched = true;
+
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+
+        pairs++;
+
+        pairsEl.textContent = pairs;
+
+        resetSelection();
+
+        if (pairs === symbols.length) {
+            finishGame(true);
+        }
+
+    } else {
+
+        lives--;
+        livesEl.textContent = lives;
+
+        lockBoard = true;
+
+        setTimeout(function() {
+
+            if (firstCard) {
+                firstCard.classList.remove("flipped");
+            }
+
+            if (secondCard) {
+                secondCard.classList.remove("flipped");
+            }
+
+            resetSelection();
+
+            if (lives <= 0) {
+                finishGame(false);
+            }
+
+        }, 750);
+    }
+}
+
+
+function resetSelection() {
+
+    firstCard = null;
+    secondCard = null;
+    lockBoard = false;
+}
+
+
+function finishGame(success) {
+
+    gameEnded = true;
+
+    if (!success) {
+        messageEl.textContent =
+            "💔 Game Over! No lives left. Press RESTART to try again.";
+        return;
+    }
+
+    let newBest = false;
+
+    if (
+        bestMoves === 0 ||
+        moves < bestMoves
+    ) {
+
+        bestMoves = moves;
+
+        localStorage.setItem(
+            "shiviMemoryBest",
+            String(bestMoves)
+        );
+
+        updateBest();
+
+        newBest = true;
+    }
+
+    if (newBest) {
+
+        messageEl.textContent =
+            "🎉 New Best! Completed in " +
+            moves +
+            " moves!";
+
+    } else {
+
+        messageEl.textContent =
+            "🎉 You matched everything in " +
+            moves +
+            " moves!";
+    }
+}
+
+
+function startGame() {
+
+    moves = 0;
+    pairs = 0;
+    lives = 3;
+    gameEnded = false;
+
+    firstCard = null;
+    secondCard = null;
+
+    lockBoard = false;
+
+    movesEl.textContent = "0";
+    pairsEl.textContent = "0";
+    livesEl.textContent = "3";
+
+    messageEl.textContent =
+        "Match all 8 pairs!";
+
+    createDeck();
+    renderBoard();
+}
+
+
+restartBtn.addEventListener(
+    "click",
+    function() {
+        startGame();
+    }
+);
+
+
+startGame();
+
+</script>
+
+</body>
+</html>
