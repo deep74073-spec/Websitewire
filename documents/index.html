@@ -84,6 +84,7 @@ footer{text-align:center;padding:28px 16px;color:#64748b}
 <input id="pdfFiles" type="file" accept="application/pdf,.pdf" multiple>
 <button id="mergePdf">Merge PDFs</button>
 <div id="mergeStatus" class="status" role="status">No PDFs selected.</div>
+</section>
 
 <section class="panel">
 <h2>🖼️ PDF to JPG</h2>
@@ -95,8 +96,8 @@ footer{text-align:center;padding:28px 16px;color:#64748b}
 </section>
 
 <section class="panel">
-<h2>🗜️ Compress PDF</h2>
-<p>Optimize a PDF file. Size reduction depends on its contents.</p>
+<h2>🗜️ Optimize PDF</h2>
+<p>Re-save a PDF with optimized file structure. Embedded images are not recompressed, so the file may not become smaller.</p>
 <label for="compressFile">Choose PDF</label>
 <input id="compressFile" type="file" accept="application/pdf,.pdf">
 <button id="compressPdf">Optimize PDF</button>
@@ -115,7 +116,6 @@ footer{text-align:center;padding:28px 16px;color:#64748b}
 </section>
 
 <p class="note">Encrypted or damaged PDFs may not merge. Processing happens in your browser.</p>
-</section>
 </div>
 
 <div class="adbox" aria-label="Advertisement"></div>
