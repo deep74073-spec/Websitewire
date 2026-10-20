@@ -85,6 +85,46 @@ footer{text-align:center;padding:26px;color:#64748b}
 </section>
 </div>
 <div class="adbox" aria-label="Advertisement"></div>
+<section class="panel" style="margin-top:20px">
+<h2>4. More Image Tools</h2>
+<p class="note">Choose an image to use these browser-based utilities.</p>
+
+<h3>Image to Base64</h3>
+<label for="toolImage">Choose image</label>
+<input id="toolImage" type="file" accept="image/*">
+<button id="base64Btn" type="button">Convert to Base64</button>
+<textarea id="base64Output" rows="4" style="width:100%;margin-top:10px" readonly placeholder="Base64 output appears here"></textarea>
+<button id="copyBase64" type="button" class="secondary">Copy Base64</button>
+
+<h3>Color Picker</h3>
+<label for="colorImage">Choose image to inspect</label>
+<input id="colorImage" type="file" accept="image/*">
+<canvas id="colorCanvas" style="max-width:100%;display:block;margin-top:10px;cursor:crosshair"></canvas>
+<p id="colorValue" class="status">Choose an image, then tap it to inspect a color.</p>
+
+<h3>Image Metadata</h3>
+<button id="metadataBtn" type="button">Show image details</button>
+<p id="metadataOutput" class="status">Choose an image above to inspect basic file details.</p>
+
+<h3>Favicon Maker</h3>
+<label for="faviconText">Text or initial (optional)</label>
+<input id="faviconText" maxlength="3" placeholder="e.g. W">
+<label for="faviconColor">Background color</label>
+<input id="faviconColor" type="color" value="#172554">
+<button id="faviconBtn" type="button">Create favicon PNG</button>
+<a id="faviconDownload" hidden><button type="button">Download favicon</button></a>
+
+<h3>Blur / Pixelate</h3>
+<label for="effectMode">Effect</label>
+<select id="effectMode"><option value="blur">Blur</option><option value="pixelate">Pixelate</option></select>
+<label for="effectAmount">Effect strength</label>
+<input id="effectAmount" type="range" min="2" max="30" value="10">
+<button id="effectBtn" type="button">Apply effect</button>
+<canvas id="effectCanvas" style="max-width:100%;display:block;margin-top:10px"></canvas>
+<a id="effectDownload" hidden><button type="button">Download edited image</button></a>
+
+<p class="note">Extra tools run locally in your browser. Metadata is limited to basic file details; full EXIF data is not guaranteed.</p>
+</section>
 <p class="note">Privacy: image processing happens locally in your browser. Never click ads unless genuinely interested.</p>
 </main>
 <footer>© Websitewire · <a href="/">Home</a></footer>
@@ -169,6 +209,163 @@ $('process').addEventListener('click',()=>{
  }catch(e){button.disabled=false;setStatus('Processing failed: '+e.message)}
 });
 window.addEventListener('beforeunload',()=>{revoke(sourceURL);revoke(resultURL)});
+
+/* EXTRA_IMAGE_TOOLS_JS */
+const extraImageInput = $('toolImage');
+const colorImageInput = $('colorImage');
+let colorImage = null, effectImage = null, faviconURL = null, effectURL = null;
+
+function loadImageFile(file, callback) {
+ if (!file || !file.type.startsWith('image/')) {
+  alert('Please choose a valid image file.');
+  return;
+ }
+ const url = URL.createObjectURL(file);
+ const img = new Image();
+ img.onload = () => callback(img, file, url);
+ img.onerror = () => { URL.revokeObjectURL(url); alert('Could not open this image.'); };
+ img.src = url;
+}
+
+$('base64Btn').addEventListener('click', () => {
+ const file = extraImageInput.files && extraImageInput.files[0];
+ if (!file) { alert('Choose an image first.'); return; }
+ if (file.size > 8 * 1024 * 1024) {
+  alert('For browser performance, choose an image smaller than 8 MB.');
+  return;
+ }
+ const reader = new FileReader();
+ reader.onload = () => {
+  $('base64Output').value = String(reader.result).split(',')[1] || '';
+ };
+ reader.onerror = () => alert('Could not read this file.');
+ reader.readAsDataURL(file);
+});
+
+$('copyBase64').addEventListener('click', async () => {
+ const output = $('base64Output');
+ if (!output.value) { alert('Convert an image to Base64 first.'); return; }
+ try {
+  await navigator.clipboard.writeText(output.value);
+  alert('Base64 copied.');
+ } catch {
+  output.focus(); output.select();
+  alert('Clipboard access unavailable. Select the text and copy it manually.');
+ }
+});
+
+colorImageInput.addEventListener('change', () => {
+ const file = colorImageInput.files && colorImageInput.files[0];
+ loadImageFile(file, (img, f, url) => {
+  colorImage = img;
+  const canvas = $('colorCanvas'), ctx = canvas.getContext('2d');
+  const scale = Math.min(1, 700 / img.naturalWidth, 500 / img.naturalHeight);
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  $('colorValue').textContent = `Tap the image to pick a color. Image: ${img.naturalWidth} × ${img.naturalHeight}px.`;
+  URL.revokeObjectURL(url);
+ });
+});
+
+$('colorCanvas').addEventListener('click', event => {
+ const canvas = $('colorCanvas'), rect = canvas.getBoundingClientRect();
+ if (!canvas.width || !canvas.height) return;
+ const x = Math.max(0, Math.min(canvas.width - 1, Math.floor((event.clientX - rect.left) * canvas.width / rect.width)));
+ const y = Math.max(0, Math.min(canvas.height - 1, Math.floor((event.clientY - rect.top) * canvas.height / rect.height)));
+ try {
+  const pixel = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
+  const hex = '#' + [...pixel].slice(0, 3).map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+  $('colorValue').textContent = `HEX ${hex} · RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+  $('colorValue').style.borderLeft = `12px solid ${hex}`;
+ } catch { $('colorValue').textContent = 'Unable to read this pixel.'; }
+});
+
+$('metadataBtn').addEventListener('click', () => {
+ const file = (extraImageInput.files && extraImageInput.files[0]) ||
+              (colorImageInput.files && colorImageInput.files[0]) ||
+              (fileEl.files && fileEl.files[0]);
+ if (!file) { $('metadataOutput').textContent = 'Choose an image first.'; return; }
+ loadImageFile(file, (img, f, url) => {
+  $('metadataOutput').textContent =
+   `Name: ${f.name} · Type: ${f.type || 'unknown'} · Size: ${(f.size / 1024).toFixed(1)} KB · Dimensions: ${img.naturalWidth} × ${img.naturalHeight}px · Last modified: ${f.lastModified ? new Date(f.lastModified).toLocaleString() : 'unknown'}. Full EXIF metadata is not decoded by this basic tool.`;
+  URL.revokeObjectURL(url);
+ });
+});
+
+$('faviconBtn').addEventListener('click', () => {
+ const canvas = document.createElement('canvas');
+ canvas.width = canvas.height = 64;
+ const ctx = canvas.getContext('2d');
+ ctx.fillStyle = $('faviconColor').value;
+ ctx.fillRect(0, 0, 64, 64);
+ const label = $('faviconText').value.trim().slice(0, 3);
+ if (label) {
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${label.length === 1 ? 38 : label.length === 2 ? 29 : 22}px system-ui, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(label, 32, 34, 56);
+ } else {
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(32, 32, 17, 0, Math.PI * 2); ctx.fill();
+ }
+ canvas.toBlob(blob => {
+  if (!blob) { alert('Could not create favicon.'); return; }
+  if (faviconURL) URL.revokeObjectURL(faviconURL);
+  faviconURL = URL.createObjectURL(blob);
+  $('faviconDownload').href = faviconURL;
+  $('faviconDownload').download = 'websitewire-favicon.png';
+  $('faviconDownload').hidden = false;
+ }, 'image/png');
+});
+
+$('effectBtn').addEventListener('click', () => {
+ const file = (extraImageInput.files && extraImageInput.files[0]) ||
+              (fileEl.files && fileEl.files[0]);
+ if (!file) { alert('Choose an image in the main editor or extra tools first.'); return; }
+ loadImageFile(file, (img, f, url) => {
+  try {
+   const canvas = $('effectCanvas'), ctx = canvas.getContext('2d');
+   const scale = Math.min(1, 1600 / img.naturalWidth, 1600 / img.naturalHeight);
+   const w = Math.max(1, Math.round(img.naturalWidth * scale));
+   const h = Math.max(1, Math.round(img.naturalHeight * scale));
+   canvas.width = w; canvas.height = h;
+   const amount = Number($('effectAmount').value);
+   if ($('effectMode').value === 'blur') {
+    ctx.filter = `blur(${Math.max(1, amount / 3)}px)`;
+    ctx.drawImage(img, 0, 0, w, h);
+    ctx.filter = 'none';
+   } else {
+    const small = document.createElement('canvas');
+    small.width = Math.max(1, Math.round(w / amount));
+    small.height = Math.max(1, Math.round(h / amount));
+    const sctx = small.getContext('2d');
+    sctx.drawImage(img, 0, 0, small.width, small.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(small, 0, 0, small.width, small.height, 0, 0, w, h);
+    ctx.imageSmoothingEnabled = true;
+   }
+   canvas.toBlob(blob => {
+    URL.revokeObjectURL(url);
+    if (!blob) { alert('Could not export the edited image.'); return; }
+    if (effectURL) URL.revokeObjectURL(effectURL);
+    effectURL = URL.createObjectURL(blob);
+    $('effectDownload').href = effectURL;
+    $('effectDownload').download = 'image-effect.png';
+    $('effectDownload').hidden = false;
+   }, 'image/png');
+  } catch (err) {
+   URL.revokeObjectURL(url);
+   alert('Effect failed: ' + err.message);
+  }
+ });
+});
+
+window.addEventListener('beforeunload', () => {
+ if (faviconURL) URL.revokeObjectURL(faviconURL);
+ if (effectURL) URL.revokeObjectURL(effectURL);
+});
+
 </script>
 </body>
 </html>
