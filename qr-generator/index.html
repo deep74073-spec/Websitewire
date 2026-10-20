@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create and download QR codes for websites, text and links for free with Websitewire's online QR Code Generator.">
+  <title>Free QR Code Generator | Websitewire</title>
+  <link rel="icon" type="image/png" href="/Website_wire.png">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+    header{background:#fff;padding:16px 20px;border-bottom:1px solid #e2e8f0}
+    header a{font-size:21px;font-weight:700;color:#172033;text-decoration:none}
+    header span{color:#2563eb}
+    main{max-width:720px;margin:35px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:24px;box-shadow:0 8px 28px #1720330b}
+    h1{margin:0 0 10px;font-size:30px}
+    .intro{color:#64748b;line-height:1.6}
+    label{display:block;font-weight:700;margin:20px 0 8px}
+    textarea,select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff}
+    textarea{min-height:110px;resize:vertical}
+    button{border:0;border-radius:10px;padding:13px 17px;font-size:16px;font-weight:700;cursor:pointer}
+    .primary{background:#2563eb;color:#fff;width:100%;margin-top:16px}
+    .download{background:#0f766e;color:#fff;margin-top:14px}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    #result{margin-top:24px;text-align:center}
+    #qr{max-width:100%;height:auto}
+    .hint{font-size:13px;color:#64748b;line-height:1.5}
+    footer{text-align:center;padding:25px;color:#64748b;font-size:14px}
+    footer a{color:#2563eb}
+  </style>
+</head>
+<body>
+<header><a href="/">Website<span>wire</span></a></header>
+<main>
+  <section class="card">
+    <h1>Free QR Code Generator</h1>
+    <p class="intro">Create a QR code for a website link, message or any text, then download it as a PNG image.</p>
+    <label for="content">Website link or text</label>
+    <textarea id="content" placeholder="https://example.com or type your text"></textarea>
+    <label for="size">QR code size</label>
+    <select id="size">
+      <option value="200">200 × 200</option>
+      <option value="300" selected>300 × 300</option>
+      <option value="500">500 × 500</option>
+    </select>
+    <button class="primary" id="generate">Generate QR Code</button>
+    <div id="result" aria-live="polite"></div>
+    <p class="hint">Avoid entering passwords or other sensitive information. QR codes can be scanned by anyone who sees them.</p>
+  </section>
+</main>
+<footer><a href="/">Home</a> · Websitewire</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const content = document.getElementById('content');
+const size = document.getElementById('size');
+const result = document.getElementById('result');
+document.getElementById('generate').addEventListener('click', () => {
+  const value = content.value.trim();
+  result.replaceChildren();
+  if (!value) {
+    result.textContent = 'Please enter a website link or some text first.';
+    content.focus();
+    return;
+  }
+  if (!window.QRCode) {
+    result.textContent = 'QR library could not load. Check your internet connection and try again.';
+    return;
+  }
+  const holder = document.createElement('div');
+  holder.style.display = 'inline-block';
+  result.appendChild(holder);
+  try {
+    new QRCode(holder, {
+      text: value,
+      width: Number(size.value),
+      height: Number(size.value),
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    const download = document.createElement('button');
+    download.className = 'download';
+    download.textContent = 'Download QR as PNG';
+    download.addEventListener('click', () => {
+      const canvas = holder.querySelector('canvas');
+      const image = holder.querySelector('img');
+      let url;
+      if (canvas) {
+        url = canvas.toDataURL('image/png');
+      } else if (image && image.src) {
+        url = image.src;
+      } else {
+        result.append(' QR image is not ready yet. Please try again.');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'websitewire-qr-code.png';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+    result.appendChild(document.createElement('br'));
+    result.appendChild(download);
+  } catch (error) {
+    result.textContent = 'Could not create the QR code. Please try different text.';
+  }
+});
+</script>
+</body>
+</html>
