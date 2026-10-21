@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Developer Tools | Websitewire</title>
+<meta name="description" content="Free online developer utilities for formatting JSON, encoding text, generating UUIDs, testing regular expressions and converting timestamps.">
+<link rel="canonical" href="https://websitewire.co.in/developer-tools/">
+<link rel="icon" href="/Website_wire.png">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#202938;line-height:1.6;background:#f8faff}
+a{color:inherit;text-decoration:none}.hub-header{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:14px;padding:12px 22px;background:#fff;border-bottom:1px solid #e5e7eb}
+.brand{display:flex;align-items:center;gap:9px;font-size:22px;font-weight:700;color:#172033}.brand img{width:38px;height:38px;object-fit:contain}
+.sidebar-toggle{border:0;border-radius:9px;background:#172033;color:#fff;font-size:22px;padding:7px 12px;cursor:pointer}
+.hub-layout{position:relative;min-height:70vh}.hub-sidebar{display:none;position:absolute;top:0;left:0;z-index:250;width:min(82vw,280px);height:100%;min-height:100%;padding:22px 14px;flex-direction:column;gap:7px;background:#172033;box-shadow:8px 0 25px #0002}
+.hub-sidebar.open{display:flex}.hub-sidebar a{display:block;color:#f8fafc;padding:12px 13px;border-radius:9px;font-weight:600}.hub-sidebar a:hover{background:#334155}
+.hub-content{width:100%;min-width:0}.hero{text-align:center;padding:48px 18px 36px;background:linear-gradient(135deg,#edf4ff,#f8faff)}
+.eyebrow{display:inline-block;padding:5px 12px;background:#dbeafe;color:#1d4ed8;border-radius:30px;font-size:13px;font-weight:700}
+h1{font-size:clamp(31px,5vw,45px);line-height:1.2;margin:15px 0 12px;color:#172033}.hero p{max-width:680px;margin:auto;color:#5c6676}
+main{max-width:1100px;margin:auto;padding:28px 20px 50px}.search-wrap{max-width:680px;margin:0 auto 25px}.search-wrap label{display:block;font-weight:700;margin-bottom:8px}
+#toolSearch{width:100%;padding:14px 16px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;background:#fff}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}.section-heading h2{margin:0;font-size:23px}#resultCount{font-size:14px;color:#64748b}
+.tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.tool-card{display:flex;flex-direction:column;min-width:0;padding:22px;border:1px solid #e2e8f0;border-radius:17px;background:#fff;box-shadow:0 7px 22px #1720330b;transition:transform .2s,box-shadow .2s}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 13px 28px #17203315}.tool-icon{display:grid;place-items:center;width:50px;height:50px;border-radius:14px;background:#dbeafe;font-size:27px;margin-bottom:12px}
+.tool-card h3{margin:5px 0 8px;font-size:20px;color:#172033}.tool-card p{margin:0 0 18px;color:#5c6676;font-size:14px;flex:1}
+.open-tool{display:block;text-align:center;background:#2563eb;color:#fff;padding:11px 14px;border-radius:9px;font-weight:700}.open-tool:hover{background:#1d4ed8}
+#noResults{display:none;text-align:center;padding:30px;background:#fff;border:1px dashed #cbd5e1;border-radius:14px;color:#64748b}
+.note{margin-top:30px;padding:17px 19px;background:#eef4ff;border-radius:12px;color:#475569;font-size:14px}
+footer{text-align:center;padding:24px 15px;background:#172033;color:#fff}footer a{margin:0 8px}
+@media(max-width:800px){.tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.hub-header{padding:10px 14px}.brand{font-size:19px}.brand img{width:32px;height:32px}.hero{padding:38px 16px 28px}main{padding:23px 14px 38px}.tools-grid{grid-template-columns:1fr;gap:13px}.tool-card{padding:19px}.section-heading h2{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="hub-header">
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+<a class="brand" href="/"><img src="/Website_wire.png" alt=""><span>Websitewire</span></a>
+</header>
+<div class="hub-layout">
+<aside class="hub-sidebar" id="hubSidebar" aria-label="Website sections">
+<a href="/">⌂ &nbsp; Home</a><a href="/articles/">📰 &nbsp; Articles</a>
+<a href="/games/">🎮 &nbsp; Games</a><a href="/multi-tools/">🧰 &nbsp; Multi Tools</a>
+<a href="/developer-tools/">🧑‍💻 &nbsp; Developer Tools</a><a href="/seo-tools/">📈 &nbsp; SEO Tools</a>
+<a href="/video-editor/">🎬 &nbsp; Video Editor</a>
+</aside>
+<div class="hub-content">
+<section class="hero"><span class="eyebrow">FREE ONLINE UTILITIES</span>
+<h1>🧑‍💻 Developer Tools</h1><p>Simple, free browser-based utilities for everyday coding tasks. Choose a tool to get started.</p></section>
+<main>
+<div class="search-wrap"><label for="toolSearch">Find a tool</label>
+<input id="toolSearch" type="search" placeholder="Search tools..." autocomplete="off"></div>
+<div class="section-heading"><h2>Explore Tools</h2><span id="resultCount" aria-live="polite">7 tools</span></div>
+<div class="tools-grid" id="toolsGrid"><article class="tool-card" data-search="json, format, validate, pretty print json formatter & validator">
+<div class="tool-icon" aria-hidden="true">🧹</div>
+<h3>JSON Formatter & Validator</h3><p>Format JSON neatly and check whether your JSON is valid.</p>
+<a class="open-tool" href="/developer-tools/json-formatter/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="base64, encode, decode, text base64 encode / decode">
+<div class="tool-icon" aria-hidden="true">🔐</div>
+<h3>Base64 Encode / Decode</h3><p>Encode plain text to Base64 or decode Base64 back to text.</p>
+<a class="open-tool" href="/developer-tools/base64/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="url, encode, decode, percent encoding url encode / decode">
+<div class="tool-icon" aria-hidden="true">🔗</div>
+<h3>URL Encode / Decode</h3><p>Encode special characters for URLs or decode URL-encoded text.</p>
+<a class="open-tool" href="/developer-tools/url-encoder/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="uuid, guid, random id uuid generator">
+<div class="tool-icon" aria-hidden="true">🆔</div>
+<h3>UUID Generator</h3><p>Generate a random UUID for development and testing.</p>
+<a class="open-tool" href="/developer-tools/uuid-generator/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="regex, regexp, regular expression, pattern regex tester">
+<div class="tool-icon" aria-hidden="true">🧪</div>
+<h3>Regex Tester</h3><p>Test a regular expression against sample text.</p>
+<a class="open-tool" href="/developer-tools/regex-tester/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="html, entity, escape, decode html entity encoder">
+<div class="tool-icon" aria-hidden="true">🔣</div>
+<h3>HTML Entity Encoder</h3><p>Convert special HTML characters to entities and decode them.</p>
+<a class="open-tool" href="/developer-tools/html-entities/">Open Tool →</a>
+</article>
+<article class="tool-card" data-search="timestamp, unix, epoch, date, time timestamp converter">
+<div class="tool-icon" aria-hidden="true">⏱️</div>
+<h3>Timestamp Converter</h3><p>Convert Unix timestamps to readable dates and back.</p>
+<a class="open-tool" href="/developer-tools/timestamp-converter/">Open Tool →</a>
+</article></div>
+<div id="noResults" role="status">No tools found. Try another search.</div>
+<div class="note"><strong>Quick note:</strong> These tools are planned for browser-based use. Individual tool pages will be added next.</div>
+</main>
+</div>
+</div>
+<footer><p>© <span id="year"></span> Websitewire</p><a href="/">Home</a><a href="/privacy-policy/">Privacy Policy</a><a href="/contact/">Contact</a></footer>
+<script>
+const toggle=document.getElementById('sidebarToggle'),sidebar=document.getElementById('hubSidebar');
+toggle.addEventListener('click',()=>{const open=sidebar.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close menu':'Open menu');toggle.textContent=open?'✕':'☰';});
+document.addEventListener('click',e=>{if(sidebar.classList.contains('open')&&!sidebar.contains(e.target)&&!toggle.contains(e.target)){sidebar.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open menu');toggle.textContent='☰';}});
+const search=document.getElementById('toolSearch'),cards=[...document.querySelectorAll('.tool-card')],count=document.getElementById('resultCount'),empty=document.getElementById('noResults');
+function filterTools(){const q=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const show=(card.innerText+' '+card.dataset.search).toLowerCase().includes(q);card.hidden=!show;if(show)visible++;});count.textContent=visible+' '+(visible===1?'tool':'tools');empty.style.display=visible?'none':'block';}
+search.addEventListener('input',filterTools);document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body></html>

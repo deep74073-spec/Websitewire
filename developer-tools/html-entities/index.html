@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Entity Encoder & Decoder | Websitewire</title>
+<meta name="description" content="Encode or decode HTML entities safely.">
+<link rel="canonical" href="https://websitewire.co.in/developer-tools/html-entities/">
+<style>
+:root{color-scheme:light;--blue:#2563eb;--navy:#10213d;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--bg:#f5f8fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--navy);color:white;padding:18px max(20px,calc((100% - 1000px)/2))}header a{color:white;text-decoration:none;font-weight:750}
+main{max-width:900px;margin:32px auto;padding:0 18px}.crumb{font-size:14px;color:var(--muted)}.crumb a{color:var(--blue)}
+h1{line-height:1.2;font-size:clamp(27px,5vw,38px);margin:14px 0 8px}.intro{color:var(--muted);margin-top:0}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin:22px 0;box-shadow:0 8px 24px #14213d08}
+label{display:block;font-weight:650;margin:14px 0 6px}textarea,input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;background:white;color:var(--ink);font:inherit}
+textarea{min-height:150px;resize:vertical}button{border:0;border-radius:9px;padding:11px 16px;background:var(--blue);color:white;font:inherit;font-weight:650;cursor:pointer;margin:10px 8px 0 0}button.secondary{background:#e8eef8;color:#172033}
+.output{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f5f9;border-radius:9px;padding:14px;min-height:44px;margin-top:12px}.status{color:#b42318;white-space:pre-wrap;margin-top:10px}.hint{color:var(--muted);font-size:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+footer{text-align:center;color:var(--muted);padding:24px}a{color:var(--blue)}
+@media(max-width:600px){.row{grid-template-columns:1fr}.panel{padding:16px}main{margin-top:20px}}
+</style>
+</head>
+<body>
+<header><a href="/">Websitewire</a></header>
+<main>
+<div class="crumb"><a href="/developer-tools/">Developer Tools</a> / HTML Entity Encoder & Decoder</div>
+<h1>HTML Entity Encoder & Decoder</h1><p class="intro">Encode or decode HTML entities safely.</p>
+<section class="panel" id="app"></section>
+<p class="hint">Your input is processed locally in this browser. It is not uploaded by this tool.</p>
+</main>
+<footer><a href="/developer-tools/">← All Developer Tools</a> · <a href="/">Home</a></footer>
+<script>
+const app=document.getElementById('app');
+const field=(id,label,placeholder='',type='textarea')=>`<label for="${id}">${label}</label>${type==='textarea'?`<textarea id="${id}" placeholder="${placeholder}"></textarea>`:`<input id="${id}" type="${type}" placeholder="${placeholder}">`}`;
+const btn=(id,text,secondary=false)=>`<button id="${id}" class="${secondary?'secondary':''}">${text}</button>`;
+const out=`<div class="status" id="status" role="status"></div><label>Output</label><div class="output" id="output" aria-live="polite"></div>${btn('copy','Copy output',true)}`;
+function show(value='',error=''){document.getElementById('output').textContent=value;document.getElementById('status').textContent=error}
+function copyOut(){navigator.clipboard?.writeText(document.getElementById('output').textContent).then(()=>{document.getElementById('status').textContent='Copied.'}).catch(()=>{document.getElementById('status').textContent='Copy unavailable; select the output and copy it manually.'})}
+function run(fn){try{const r=fn();show(String(r??''))}catch(e){show('',e.message||'Could not process input.')}}
+const kind='entities';
+if(kind==='json'){
+app.innerHTML=field('source','JSON input','Paste JSON here')+btn('go','Format JSON')+btn('validate','Validate only',true)+out;
+go.onclick=()=>run(()=>JSON.stringify(JSON.parse(source.value),null,2));
+validate.onclick=()=>run(()=>{JSON.parse(source.value);return 'Valid JSON ✓'});
+}else if(kind==='base64'){
+app.innerHTML=field('source','Text input','Enter text to encode or decode')+btn('enc','Encode')+btn('dec','Decode',true)+out;
+enc.onclick=()=>run(()=>btoa(Array.from(new TextEncoder().encode(source.value),b=>String.fromCharCode(b)).join('')));
+dec.onclick=()=>run(()=>new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(atob(source.value.trim()),c=>c.charCodeAt(0))));
+}else if(kind==='url'){
+app.innerHTML=field('source','Text input','Enter text or encoded URL component')+btn('enc','Encode')+btn('dec','Decode',true)+out;
+enc.onclick=()=>run(()=>encodeURIComponent(source.value));dec.onclick=()=>run(()=>decodeURIComponent(source.value));
+}else if(kind==='uuid'){
+app.innerHTML=`<label for="count">How many UUIDs? (1–50)</label><input id="count" type="number" min="1" max="50" value="1">`+btn('go','Generate UUIDs')+out;
+go.onclick=()=>run(()=>{let n=Number(count.value);if(!Number.isInteger(n)||n<1||n>50)throw Error('Choose a whole number from 1 to 50.');return Array.from({length:n},()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{let r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})).join('\n')});
+}else if(kind==='regex'){
+app.innerHTML=field('pattern','Regular expression','e.g. \\bcat\\b','text')+`<div class="row"><div>${field('flags','Flags (optional)','gi','text')}</div><div>${field('source','Test text','Enter text to test')}</div></div>`+btn('go','Test regex')+out;
+go.onclick=()=>run(()=>{let re=new RegExp(pattern.value,flags.value),text=source.value,matches=[],m; if(re.global||re.sticky){while((m=re.exec(text))!==null){matches.push(`Match at ${m.index}: ${m[0]}`);if(m[0]==='')re.lastIndex++}}else{m=re.exec(text);if(m)matches.push(`Match at ${m.index}: ${m[0]}`)}return matches.length?matches.join('\n'):'No matches found.'});
+}else if(kind==='entities'){
+app.innerHTML=field('source','Text input','Enter text to encode or HTML entities to decode')+btn('enc','Encode entities')+btn('dec','Decode entities',true)+out;
+enc.onclick=()=>run(()=>source.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'));
+dec.onclick=()=>run(()=>{let t=document.createElement('textarea');t.innerHTML=source.value;return t.value});
+}else if(kind==='timestamp'){
+app.innerHTML=`<h3>Unix timestamp → date</h3>`+field('stamp','Timestamp (seconds or milliseconds)','e.g. 1700000000','text')+btn('toDate','Convert to date')+`<hr>`+`<h3>Date → Unix timestamp</h3>`+field('date','Date and time','', 'datetime-local')+btn('toStamp','Convert to timestamp')+out;
+toDate.onclick=()=>run(()=>{let n=Number(stamp.value);if(!stamp.value.trim()||!Number.isFinite(n))throw Error('Enter a valid Unix timestamp.');let ms=Math.abs(n)<1e11?n*1000:n,d=new Date(ms);if(Number.isNaN(d.getTime()))throw Error('Timestamp is out of range.');return `UTC: ${d.toISOString()}\nLocal: ${d.toLocaleString()}\nMilliseconds: ${d.getTime()}`});
+toStamp.onclick=()=>run(()=>{if(!date.value)throw Error('Choose a date and time.');let ms=new Date(date.value).getTime();return `Seconds: ${Math.floor(ms/1000)}\nMilliseconds: ${ms}`});
+}
+document.getElementById('copy').onclick=copyOut;
+</script>
+</body></html>

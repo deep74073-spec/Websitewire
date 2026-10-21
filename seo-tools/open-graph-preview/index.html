@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Graph Preview | Websitewire</title>
+<meta name="description" content="Preview social sharing metadata and generate Open Graph tags.">
+<link rel="canonical" href="https://websitewire.co.in/seo-tools/open-graph-preview/">
+<style>
+:root{--blue:#2563eb;--navy:#10213d;--ink:#172033;--muted:#64748b;--line:#dbe3ef;--bg:#f5f8fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--navy);padding:18px max(20px,calc((100% - 1000px)/2))}header a{color:white;text-decoration:none;font-weight:750}
+main{max-width:900px;margin:32px auto;padding:0 18px}.crumb{font-size:14px;color:var(--muted)}.crumb a,a{color:var(--blue)}
+h1{font-size:clamp(27px,5vw,38px);line-height:1.2;margin:14px 0 8px}.intro{color:var(--muted)}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin:22px 0;box-shadow:0 8px 24px #14213d08}
+label{display:block;font-weight:650;margin:14px 0 6px}textarea,input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;background:white;color:var(--ink);font:inherit}
+textarea{min-height:110px;resize:vertical}button{border:0;border-radius:9px;padding:11px 16px;background:var(--blue);color:white;font:inherit;font-weight:650;cursor:pointer;margin:10px 8px 0 0}button.secondary{background:#e8eef8;color:#172033}
+.output{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f5f9;border-radius:9px;padding:14px;min-height:44px;margin-top:12px}.status{color:#b42318;white-space:pre-wrap;margin-top:10px}.hint{color:var(--muted);font-size:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.preview{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px;background:white;overflow-wrap:anywhere}.preview h3{color:#1a0dab;margin:0;font-size:21px;font-weight:500}.preview .url{color:#16803d;font-size:14px}.preview p{margin:7px 0;color:#4b5563}
+footer{text-align:center;color:var(--muted);padding:24px}
+@media(max-width:600px){.row{grid-template-columns:1fr}.panel{padding:16px}main{margin-top:20px}}
+</style>
+</head>
+<body><header><a href="/">Websitewire</a></header>
+<main><div class="crumb"><a href="/seo-tools/">SEO Tools</a> / Open Graph Preview</div>
+<h1>Open Graph Preview</h1><p class="intro">Preview social sharing metadata and generate Open Graph tags.</p><section class="panel" id="app"></section>
+<p class="hint">This tool runs in your browser. Results are suggestions and do not guarantee search ranking or an exact search-engine appearance.</p>
+</main><footer><a href="/seo-tools/">← All SEO Tools</a> · <a href="/">Home</a></footer>
+<script>
+const app=document.getElementById('app');
+const field=(id,label,placeholder='',type='textarea')=>`<label for="${id}">${label}</label>${type==='textarea'?`<textarea id="${id}" placeholder="${placeholder}"></textarea>`:`<input id="${id}" type="${type}" placeholder="${placeholder}">`}`;
+const btn=(id,text,secondary=false)=>`<button id="${id}" class="${secondary?'secondary':''}">${text}</button>`;
+const output=`<label>Output</label><div class="output" id="output" aria-live="polite"></div><div class="status" id="status" role="status"></div>${btn('copy','Copy output',true)}`;
+function show(value='',error=''){document.getElementById('output').textContent=value;document.getElementById('status').textContent=error}
+function run(fn){try{show(String(fn()??''))}catch(e){show('',e.message||'Please check your input.')}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function copyOut(){navigator.clipboard?.writeText(document.getElementById('output').textContent).then(()=>status.textContent='Copied.').catch(()=>status.textContent='Copy unavailable; select and copy the output manually.')}
+const kind='og';
+if(kind==='serp'){
+app.innerHTML=field('title','Page title','Your page title','text')+field('url','Page URL','https://example.com/page','url')+field('desc','Meta description','Write a concise page description')+`<p class="hint"><span id="tc">0</span> title characters · <span id="dc">0</span> description characters</p><div class="preview"><h3 id="pt">Your page title</h3><div class="url" id="pu">https://example.com/page</div><p id="pd">Your description preview will appear here.</p></div>`;
+function update(){pt.textContent=title.value||'Your page title';pu.textContent=url.value||'https://example.com/page';pd.textContent=desc.value||'Your description preview will appear here.';tc.textContent=title.value.length;dc.textContent=desc.value.length}
+title.oninput=url.oninput=desc.oninput=update;update();
+}else if(kind==='meta'){
+app.innerHTML=field('title','Page title','Page title','text')+field('desc','Meta description','Short page summary')+field('url','Canonical URL','https://example.com/page','url')+`<label for="robots">Robots directive</label><select id="robots"><option>index, follow</option><option>noindex, follow</option><option>index, nofollow</option><option>noindex, nofollow</option></select>`+btn('go','Generate tags')+output;
+go.onclick=()=>run(()=>`<title>${esc(title.value)}</title>\n<meta name="description" content="${esc(desc.value)}">\n<link rel="canonical" href="${esc(url.value)}">\n<meta name="robots" content="${esc(robots.value)}">`);
+}else if(kind==='robots'){
+app.innerHTML=`<label for="agent">User-agent</label><select id="agent"><option>* (all crawlers)</option><option>Googlebot</option><option>Bingbot</option></select><label for="mode">Default rule</label><select id="mode"><option value="allow">Allow all paths</option><option value="block">Disallow all paths</option></select>`+field('disallow','Paths to disallow (one per line)','e.g. /admin/\\n/private/')+field('sitemap','Sitemap URL (optional)','https://example.com/sitemap.xml','url')+btn('go','Generate robots.txt')+output;
+go.onclick=()=>run(()=>{let a=agent.value.split(' ')[0],lines=[`User-agent: ${a}`,mode.value==='allow'?'Allow: /':'Disallow: /'];if(disallow.value.trim())disallow.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).forEach(x=>lines.push(`Disallow: ${x.startsWith('/')?x:'/'+x}`));if(sitemap.value.trim())lines.push('',`Sitemap: ${sitemap.value.trim()}`);return lines.join('\n')});
+}else if(kind==='sitemap'){
+app.innerHTML+='<p>Enter one absolute page URL per line. Only valid HTTP(S) URLs are included.</p>'+field('urls','Page URLs','https://example.com/\\nhttps://example.com/about')+btn('go','Generate sitemap XML')+output;
+go.onclick=()=>run(()=>{let list=urls.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),valid=[];for(const x of list){let u;try{u=new URL(x)}catch{throw Error('Invalid URL: '+x)}if(!['http:','https:'].includes(u.protocol))throw Error('Only HTTP(S) URLs are supported: '+x);valid.push(u.href)}if(!valid.length)throw Error('Enter at least one valid URL.');return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${valid.map(u=>`  <url><loc>${esc(u)}</loc></url>`).join('\n')}\n</urlset>`});
+}else if(kind==='og'){
+app.innerHTML=field('title','Social title','Title shown when shared','text')+field('desc','Social description','Description for social sharing')+field('url','Page URL','https://example.com/page','url')+field('image','Image URL','https://example.com/image.jpg','url')+`<div class="preview"><h3 id="pt">Social preview title</h3><div class="url" id="pu">example.com</div><p id="pd">Social description preview.</p><p id="pi" class="hint">Image URL not set</p></div>`+btn('go','Generate Open Graph tags')+output;
+function update(){pt.textContent=title.value||'Social preview title';try{pu.textContent=url.value?new URL(url.value).hostname:'example.com'}catch{pu.textContent=url.value}pd.textContent=desc.value||'Social description preview.';pi.textContent=image.value||'Image URL not set'}
+title.oninput=desc.oninput=url.oninput=image.oninput=update;update();
+go.onclick=()=>run(()=>`<meta property="og:title" content="${esc(title.value)}">\n<meta property="og:description" content="${esc(desc.value)}">\n<meta property="og:url" content="${esc(url.value)}">\n<meta property="og:image" content="${esc(image.value)}">\n<meta property="og:type" content="website">`);
+}else if(kind==='density'){
+app.innerHTML=field('text','Text to analyse','Paste your text here')+field('keyword','Target keyword or phrase','Enter keyword','text')+btn('go','Check density')+output;
+go.onclick=()=>run(()=>{let t=text.value.toLowerCase(),k=keyword.value.trim().toLowerCase();if(!t.trim()||!k)throw Error('Enter both text and a target keyword.');let words=t.match(/[\p{L}\p{N}_'-]+/gu)||[],escaped=k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),matches=t.match(new RegExp(`(?<![\\p{L}\\p{N}_])${escaped}(?![\\p{L}\\p{N}_])`,'gu'))||[];return `Word count: ${words.length}\nKeyword occurrences: ${matches.length}\nKeyword density: ${words.length?(matches.length*k.split(/\s+/).length/words.length*100).toFixed(2):'0.00'}%`});
+}else if(kind==='description'){
+app.innerHTML=field('text','Page content or notes','Paste page content or key points')+field('desc','Meta description draft','Write your description here')+`<p class="hint"><span id="count">0</span> characters. A commonly used target is around 150–160 characters, but display can vary.</p>`+btn('suggest','Suggest from page text')+btn('trim','Trim to 155 characters',true)+output;
+function update(){count.textContent=desc.value.length}desc.oninput=update;
+suggest.onclick=()=>{let s=text.value.trim().replace(/\s+/g,' ');desc.value=s.slice(0,155);update();show(desc.value,'Draft suggestion created from the start of your text; review and edit it for accuracy.')};
+trim.onclick=()=>{desc.value=desc.value.slice(0,155);update();show(desc.value,'Trimmed to 155 characters. Review wording before publishing.')};
+}
+const copy=document.getElementById('copy');if(copy)copy.onclick=copyOut;
+</script></body></html>
