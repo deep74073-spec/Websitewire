@@ -1,1 +1,3 @@
-User-agent: *\nAllow: /\nSitemap: https://websitewire.co.in/sitemap.xml\n
+User-agent: *
+Allow: /
+Sitemap: https://websitewire.co.in/sitemap.xml
