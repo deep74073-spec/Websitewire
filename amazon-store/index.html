@@ -2,158 +2,239 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shop & Deals | Websitewire</title>
-<meta name="description" content="Explore curated shopping searches for festive decor, puja essentials, fashion, books and gadgets through Websitewire.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shop All Categories | Websitewire</title>
+<meta name="description" content="Explore popular Amazon India shopping categories with Websitewire, from electronics and fashion to home, books, sports and more.">
 <link rel="canonical" href="https://websitewire.co.in/amazon-store/">
 <style>
-:root{color-scheme:light;--ink:#172033;--muted:#5b6475;--blue:#2563eb;--line:#e2e8f0;--bg:#f6f8fc}
-*{box-sizing:border-box}body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
-a{color:inherit}.top{background:#fff;border-bottom:1px solid var(--line)}.nav{max-width:1120px;margin:auto;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:850;font-size:1.2rem;text-decoration:none;color:#1d4ed8}.nav a:last-child{color:var(--blue);font-weight:650}
-.hero{background:linear-gradient(135deg,#eff6ff,#fff 65%,#f5f3ff);padding:52px 20px 38px}.wrap{max-width:1120px;margin:auto}.eyebrow{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#2563eb}.hero h1{font-size:clamp(2rem,5vw,3.3rem);line-height:1.12;letter-spacing:-.04em;margin:10px 0}.hero p{max-width:680px;color:var(--muted);margin:12px 0 0}
-.disclosure{margin:20px auto 0;max-width:1120px;padding:13px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;color:#475569;font-size:.9rem}
-.controls{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 18px}.controls input,.controls select{min-height:44px;padding:10px 13px;border:1px solid #cbd5e1;border-radius:10px;background:white;font:inherit}.controls input{flex:1;min-width:210px}.controls select{min-width:190px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-bottom:44px}.product{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:220px;box-shadow:0 3px 12px #0f172a08}.category{align-self:flex-start;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:4px 10px;font-size:.77rem;font-weight:750}.product h3{font-size:1.15rem;line-height:1.35;margin:14px 0 7px}.product p{color:var(--muted);font-size:.92rem;margin:0 0 20px}.shop-link{margin-top:auto;display:inline-flex;align-self:flex-start;text-decoration:none;font-weight:750;color:#1d4ed8}.shop-link:hover{text-decoration:underline}
-.empty{display:none;color:var(--muted);padding:20px 0}.note{color:var(--muted);font-size:.9rem;padding:0 0 38px}.footer{background:#fff;border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--muted);font-size:.9rem}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding-top:38px}}
-@media(max-width:480px){.grid{grid-template-columns:1fr}.nav{padding:12px 16px}.product{min-height:0}.hero{padding-left:16px;padding-right:16px}}
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#172033;font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:inherit}.top{background:#fff;border-bottom:1px solid #e2e8f0}.nav{max-width:1160px;margin:auto;padding:15px 20px;display:flex;justify-content:space-between;gap:12px;align-items:center}.brand{font-size:1.25rem;font-weight:850;color:#1d4ed8;text-decoration:none}.nav a:last-child{color:#1d4ed8;text-decoration:none;font-weight:650}
+.hero{padding:46px 20px;background:linear-gradient(120deg,#eaf2ff,#fff 55%,#f4edff)}.wrap{max-width:1160px;margin:auto}.eyebrow{color:#2563eb;font-size:.8rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.12;letter-spacing:-.04em;margin:9px 0}.hero p{max-width:700px;color:#536176;margin:12px 0}
+.notice{margin:20px auto 0;padding:14px 16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;color:#475569;font-size:.9rem}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.tools input,.tools select{font:inherit;min-height:44px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}.tools input{flex:1;min-width:210px}.tools select{min-width:180px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-bottom:36px}.category-card{overflow:hidden;background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 14px #0f172a08;transition:transform .15s,box-shadow .15s}.category-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px #0f172a12}.category-art{height:124px;display:flex;align-items:center;justify-content:center;font-size:3.8rem;background:linear-gradient(135deg,#eaf2ff,#f5f3ff)}.category-card:nth-child(3n+2) .category-art{background:linear-gradient(135deg,#fff1e8,#fff8ed)}.category-card:nth-child(3n) .category-art{background:linear-gradient(135deg,#e7faf2,#effcf7)}.category-info{padding:15px;display:flex;flex-direction:column;min-height:145px}.category-label{font-size:.73rem;color:#2563eb;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.category-info h2{font-size:1.02rem;line-height:1.35;margin:8px 0 17px}.shop-link{margin-top:auto;color:#1d4ed8;font-weight:800;text-decoration:none}.shop-link:hover{text-decoration:underline}.empty{display:none;color:#64748b;padding:20px 0}.footnote{color:#64748b;font-size:.88rem;padding-bottom:36px}.footer{background:#fff;border-top:1px solid #e2e8f0;text-align:center;padding:20px;color:#64748b;font-size:.9rem}
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:620px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.hero{padding:34px 16px}.nav{padding:13px 16px}.category-art{height:100px;font-size:3rem}.category-info{padding:12px;min-height:140px}}@media(max-width:380px){.grid{grid-template-columns:1fr}.category-card{display:grid;grid-template-columns:100px 1fr}.category-art{height:100%;min-height:130px}.category-info{min-height:130px}}
 </style>
 </head>
 <body>
-<header class="top"><nav class="nav"><a class="brand" href="/">Websitewire</a><a href="/">← Back to homepage</a></nav></header>
-<section class="hero"><div class="wrap"><span class="eyebrow">Websitewire shopping hub</span><h1>Find your next favourite</h1><p>Browse curated shopping searches for festive decorations, puja essentials, fashion, books and gadgets. Compare options on Amazon before buying.</p></div></section>
-<div class="wrap">
-<div class="disclosure"><strong>Affiliate disclosure:</strong> Some links are affiliate links. Websitewire may earn a commission from qualifying purchases, at no extra cost to you.</div>
-<div class="controls"><input id="search" type="search" placeholder="Search categories and products…" aria-label="Search products"><select id="category" aria-label="Filter by category"><option value="">All categories</option><option>Festive Decor</option><option>Puja Essentials</option><option>Fashion</option><option>Books & Gifts</option><option>Gadgets</option></select><select id="market" aria-label="Choose Amazon marketplace"><option value="in">Amazon India</option><option value="com">Amazon US</option></select></div>
-<div class="grid" id="products">
-<article class="product" data-category="Festive Decor">
-      <span class="category">Festive Decor</span>
-      <h3>Clay diyas & oil lamps</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="clay diya oil lamp" href="https://www.amazon.in/s?k=clay+diya+oil+lamp&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+<header class="top"><nav class="nav"><a class="brand" href="/">Websitewire</a><a href="/">← Home</a></nav></header>
+<section class="hero"><div class="wrap"><span class="eyebrow">Websitewire shopping hub</span><h1>Shop all categories</h1><p>Explore popular shopping categories in one place. Choose a category to compare available products on Amazon India.</p></div></section>
+<main class="wrap">
+<div class="notice"><strong>Affiliate disclosure:</strong> Websitewire may earn a commission from qualifying purchases through affiliate links, at no extra cost to you. Category artwork is illustrative, not a product photo.</div>
+<div class="tools"><input id="search" type="search" placeholder="Search all categories…" aria-label="Search categories"><select id="group" aria-label="Filter category group"><option value="">All departments</option><option>Electronics</option><option>Fashion</option><option>Beauty</option><option>Home</option><option>Books &amp; Learning</option><option>Entertainment</option><option>Kids</option><option>Sports</option><option>Lifestyle</option><option>Daily Needs</option></select></div>
+<section class="grid" id="categories">
+
+    <article class="category-card" data-category="Electronics" data-search="mobiles & accessories mobiles electronics">
+      <div class="category-art" aria-hidden="true">📱</div>
+      <div class="category-info">
+        <span class="category-label">Electronics</span>
+        <h2>Mobiles & Accessories</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=mobiles&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Festive Decor">
-      <span class="category">Festive Decor</span>
-      <h3>LED string lights</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="diwali decorative led string lights" href="https://www.amazon.in/s?k=diwali+decorative+led+string+lights&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Electronics" data-search="computers & laptops computers electronics">
+      <div class="category-art" aria-hidden="true">💻</div>
+      <div class="category-info">
+        <span class="category-label">Electronics</span>
+        <h2>Computers & Laptops</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=computers&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Festive Decor">
-      <span class="category">Festive Decor</span>
-      <h3>Rangoli colours & stencils</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="rangoli colours stencils" href="https://www.amazon.in/s?k=rangoli+colours+stencils&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Electronics" data-search="electronics & audio electronics electronics">
+      <div class="category-art" aria-hidden="true">🎧</div>
+      <div class="category-info">
+        <span class="category-label">Electronics</span>
+        <h2>Electronics & Audio</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=electronics&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Festive Decor">
-      <span class="category">Festive Decor</span>
-      <h3>Home decorations</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="diwali home decoration" href="https://www.amazon.in/s?k=diwali+home+decoration&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Electronics" data-search="tvs & home entertainment televisions electronics">
+      <div class="category-art" aria-hidden="true">📺</div>
+      <div class="category-info">
+        <span class="category-label">Electronics</span>
+        <h2>TVs & Home Entertainment</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=televisions&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Puja Essentials">
-      <span class="category">Puja Essentials</span>
-      <h3>Puja thali & samagri</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="puja thali puja samagri" href="https://www.amazon.in/s?k=puja+thali+puja+samagri&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Fashion" data-search="clothing & fashion fashion fashion">
+      <div class="category-art" aria-hidden="true">👗</div>
+      <div class="category-info">
+        <span class="category-label">Fashion</span>
+        <h2>Clothing & Fashion</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=fashion&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Puja Essentials">
-      <span class="category">Puja Essentials</span>
-      <h3>Karwa Chauth puja thali</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="karwa chauth puja thali" href="https://www.amazon.in/s?k=karwa+chauth+puja+thali&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Fashion" data-search="shoes & footwear shoes fashion">
+      <div class="category-art" aria-hidden="true">👟</div>
+      <div class="category-info">
+        <span class="category-label">Fashion</span>
+        <h2>Shoes & Footwear</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=shoes&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Puja Essentials">
-      <span class="category">Puja Essentials</span>
-      <h3>Karwa puja set</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="karwa chauth karwa puja set" href="https://www.amazon.in/s?k=karwa+chauth+karwa+puja+set&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Beauty" data-search="beauty & personal care beauty beauty">
+      <div class="category-art" aria-hidden="true">💄</div>
+      <div class="category-info">
+        <span class="category-label">Beauty</span>
+        <h2>Beauty & Personal Care</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=beauty&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Puja Essentials">
-      <span class="category">Puja Essentials</span>
-      <h3>Decorative puja diyas</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="decorative puja diya" href="https://www.amazon.in/s?k=decorative+puja+diya&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Home" data-search="home & kitchen home home">
+      <div class="category-art" aria-hidden="true">🛋️</div>
+      <div class="category-info">
+        <span class="category-label">Home</span>
+        <h2>Home & Kitchen</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=home&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Fashion">
-      <span class="category">Fashion</span>
-      <h3>Festive ethnic wear</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="traditional festive wear men women" href="https://www.amazon.in/s?k=traditional+festive+wear+men+women&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Home" data-search="kitchen appliances kitchen appliances home">
+      <div class="category-art" aria-hidden="true">🍳</div>
+      <div class="category-info">
+        <span class="category-label">Home</span>
+        <h2>Kitchen Appliances</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=kitchen+appliances&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Fashion">
-      <span class="category">Fashion</span>
-      <h3>Sarees & suits</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="women festive saree suit" href="https://www.amazon.in/s?k=women+festive+saree+suit&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Home" data-search="home improvement home improvement home">
+      <div class="category-art" aria-hidden="true">🧺</div>
+      <div class="category-info">
+        <span class="category-label">Home</span>
+        <h2>Home Improvement</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=home+improvement&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Fashion">
-      <span class="category">Fashion</span>
-      <h3>Chaniya choli & lehenga</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="women navratri chaniya choli lehenga" href="https://www.amazon.in/s?k=women+navratri+chaniya+choli+lehenga&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Books & Learning" data-search="books books books & learning">
+      <div class="category-art" aria-hidden="true">📚</div>
+      <div class="category-info">
+        <span class="category-label">Books & Learning</span>
+        <h2>Books</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=books&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Fashion">
-      <span class="category">Fashion</span>
-      <h3>Ethnic juttis</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="women embroidered ethnic juttis" href="https://www.amazon.in/s?k=women+embroidered+ethnic+juttis&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Entertainment" data-search="video games video games entertainment">
+      <div class="category-art" aria-hidden="true">🎮</div>
+      <div class="category-info">
+        <span class="category-label">Entertainment</span>
+        <h2>Video Games</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=video+games&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Books & Gifts">
-      <span class="category">Books & Gifts</span>
-      <h3>Hindi Ramayana books</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="Ramayana book Hindi" href="https://www.amazon.in/s?k=Ramayana+book+Hindi&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Kids" data-search="toys & games toys kids">
+      <div class="category-art" aria-hidden="true">🧸</div>
+      <div class="category-info">
+        <span class="category-label">Kids</span>
+        <h2>Toys & Games</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=toys&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Books & Gifts">
-      <span class="category">Books & Gifts</span>
-      <h3>Festive gift hampers</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="diwali gift hamper" href="https://www.amazon.in/s?k=diwali+gift+hamper&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Kids" data-search="baby products baby products kids">
+      <div class="category-art" aria-hidden="true">🍼</div>
+      <div class="category-info">
+        <span class="category-label">Kids</span>
+        <h2>Baby Products</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=baby+products&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Gadgets">
-      <span class="category">Gadgets</span>
-      <h3>Power banks</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="URBN Bloq Magtag Power Bank" href="https://www.amazon.in/s?k=URBN+Bloq+Magtag+Power+Bank&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Sports" data-search="sports & fitness sports fitness sports">
+      <div class="category-art" aria-hidden="true">🏋️</div>
+      <div class="category-info">
+        <span class="category-label">Sports</span>
+        <h2>Sports & Fitness</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=sports+fitness&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-<article class="product" data-category="Gadgets">
-      <span class="category">Gadgets</span>
-      <h3>Smart projectors</h3>
-      <p>Compare available options and current details on Amazon.</p>
-      <a class="shop-link" data-query="JUST CORSECA smart projector" href="https://www.amazon.in/s?k=JUST+CORSECA+smart+projector&amp;tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Explore on Amazon India ↗</a>
+
+    <article class="category-card" data-category="Lifestyle" data-search="travel & luggage luggage lifestyle">
+      <div class="category-art" aria-hidden="true">🧳</div>
+      <div class="category-info">
+        <span class="category-label">Lifestyle</span>
+        <h2>Travel & Luggage</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=luggage&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
     </article>
-</div><p class="empty" id="empty">No matching categories or products. Try another search.</p>
-<p class="note">Product availability, prices, delivery and seller details can change. Check the latest information on Amazon before purchasing. This page does not display unverified prices, ratings or product images.</p>
-</div>
-<footer class="footer">© Websitewire · <a href="/">Home</a></footer>
+
+    <article class="category-card" data-category="Lifestyle" data-search="automotive accessories car accessories lifestyle">
+      <div class="category-art" aria-hidden="true">🚗</div>
+      <div class="category-info">
+        <span class="category-label">Lifestyle</span>
+        <h2>Automotive Accessories</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=car+accessories&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+
+    <article class="category-card" data-category="Lifestyle" data-search="pet supplies pet supplies lifestyle">
+      <div class="category-art" aria-hidden="true">🐾</div>
+      <div class="category-info">
+        <span class="category-label">Lifestyle</span>
+        <h2>Pet Supplies</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=pet+supplies&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+
+    <article class="category-card" data-category="Daily Needs" data-search="grocery & daily needs grocery daily needs">
+      <div class="category-art" aria-hidden="true">🥫</div>
+      <div class="category-info">
+        <span class="category-label">Daily Needs</span>
+        <h2>Grocery & Daily Needs</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=grocery&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+
+    <article class="category-card" data-category="Fashion" data-search="watches & accessories watches fashion">
+      <div class="category-art" aria-hidden="true">⌚</div>
+      <div class="category-info">
+        <span class="category-label">Fashion</span>
+        <h2>Watches & Accessories</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=watches&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+
+    <article class="category-card" data-category="Fashion" data-search="jewellery jewellery fashion">
+      <div class="category-art" aria-hidden="true">💍</div>
+      <div class="category-info">
+        <span class="category-label">Fashion</span>
+        <h2>Jewellery</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=jewellery&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+
+    <article class="category-card" data-category="Lifestyle" data-search="gifts & celebration gift items lifestyle">
+      <div class="category-art" aria-hidden="true">🎁</div>
+      <div class="category-info">
+        <span class="category-label">Lifestyle</span>
+        <h2>Gifts & Celebration</h2>
+        <a class="shop-link" href="https://www.amazon.in/s?k=gift+items&tag=websitewire-21" target="_blank" rel="sponsored nofollow noopener">Shop Now ↗</a>
+      </div>
+    </article>
+</section><p class="empty" id="empty">No categories found. Try another search.</p>
+<p class="footnote">Categories are shopping shortcuts, not endorsements of specific products. Product availability, price, seller and delivery details may change; check Amazon for current information.</p>
+</main><footer class="footer">© Websitewire · <a href="/">Home</a></footer>
 <script>
-const search = document.getElementById('search');
-const category = document.getElementById('category');
-const market = document.getElementById('market');
-const cards = [...document.querySelectorAll('.product')];
-function updateStore(){
-  const term = search.value.trim().toLowerCase();
-  let visible = 0;
-  cards.forEach(card => {
-    const matchesText = card.textContent.toLowerCase().includes(term);
-    const matchesCategory = !category.value || card.dataset.category === category.value;
-    card.hidden = !(matchesText && matchesCategory);
-    if (!card.hidden) visible++;
-    const link = card.querySelector('.shop-link');
-    const query = link.dataset.query;
-    if (market.value === 'com') {
-      link.href = 'https://www.amazon.com/s?k=' + encodeURIComponent(query);
-      link.textContent = 'Search on Amazon US ↗';
-    } else {
-      link.href = 'https://www.amazon.in/s?k=' + encodeURIComponent(query) + '&tag=websitewire-21';
-      link.textContent = 'Explore on Amazon India ↗';
-    }
-  });
-  document.getElementById('empty').style.display = visible ? 'none' : 'block';
+const search=document.getElementById('search'),group=document.getElementById('group');
+const cards=[...document.querySelectorAll('.category-card')];
+function filterCards(){
+ const term=search.value.trim().toLowerCase();let count=0;
+ cards.forEach(card=>{
+  const okText=card.dataset.search.includes(term);
+  const okGroup=!group.value||card.dataset.category===group.value;
+  card.hidden=!(okText&&okGroup);if(!card.hidden)count++;
+ });
+ document.getElementById('empty').style.display=count?'none':'block';
 }
-search.addEventListener('input', updateStore);
-category.addEventListener('change', updateStore);
-market.addEventListener('change', updateStore);
-updateStore();
+search.addEventListener('input',filterCards);group.addEventListener('change',filterCards);filterCards();
 </script>
 </body></html>
