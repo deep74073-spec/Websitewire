@@ -11,6 +11,15 @@
 a{color:inherit}.top{background:#fff;border-bottom:1px solid #e2e8f0}.nav{max-width:1160px;margin:auto;padding:15px 20px;display:flex;justify-content:space-between;gap:12px;align-items:center}.brand{font-size:1.25rem;font-weight:850;color:#1d4ed8;text-decoration:none}.nav a:last-child{color:#1d4ed8;text-decoration:none;font-weight:650}
 .hero{padding:46px 20px;background:linear-gradient(120deg,#eaf2ff,#fff 55%,#f4edff)}.wrap{max-width:1160px;margin:auto}.eyebrow{color:#2563eb;font-size:.8rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.12;letter-spacing:-.04em;margin:9px 0}.hero p{max-width:700px;color:#536176;margin:12px 0}
 .notice{margin:20px auto 0;padding:14px 16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;color:#475569;font-size:.9rem}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.tools input,.tools select{font:inherit;min-height:44px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}.tools input{flex:1;min-width:210px}.tools select{min-width:180px}
+
+.product-search{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:20px;margin:24px 0}
+.product-search h2{margin:0 0 6px;font-size:1.25rem}
+.product-search p{margin:0 0 14px;color:#64748b;font-size:.92rem}
+.product-search form{display:flex;gap:10px;flex-wrap:wrap}
+.product-search input{flex:1;min-width:190px;min-height:48px;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}
+.product-search button{min-height:48px;padding:12px 18px;border:0;border-radius:10px;background:#1d4ed8;color:white;font:inherit;font-weight:800;cursor:pointer}
+.product-search button:hover{background:#1e40af}
+
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-bottom:36px}.category-card{overflow:hidden;background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 14px #0f172a08;transition:transform .15s,box-shadow .15s}.category-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px #0f172a12}.category-art{height:124px;display:flex;align-items:center;justify-content:center;font-size:3.8rem;background:linear-gradient(135deg,#eaf2ff,#f5f3ff)}.category-card:nth-child(3n+2) .category-art{background:linear-gradient(135deg,#fff1e8,#fff8ed)}.category-card:nth-child(3n) .category-art{background:linear-gradient(135deg,#e7faf2,#effcf7)}.category-info{padding:15px;display:flex;flex-direction:column;min-height:145px}.category-label{font-size:.73rem;color:#2563eb;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.category-info h2{font-size:1.02rem;line-height:1.35;margin:8px 0 17px}.shop-link{margin-top:auto;color:#1d4ed8;font-weight:800;text-decoration:none}.shop-link:hover{text-decoration:underline}.empty{display:none;color:#64748b;padding:20px 0}.footnote{color:#64748b;font-size:.88rem;padding-bottom:36px}.footer{background:#fff;border-top:1px solid #e2e8f0;text-align:center;padding:20px;color:#64748b;font-size:.9rem}
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:620px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.hero{padding:34px 16px}.nav{padding:13px 16px}.category-art{height:100px;font-size:3rem}.category-info{padding:12px;min-height:140px}}@media(max-width:380px){.grid{grid-template-columns:1fr}.category-card{display:grid;grid-template-columns:100px 1fr}.category-art{height:100%;min-height:130px}.category-info{min-height:130px}}
 </style>
@@ -20,6 +29,17 @@ a{color:inherit}.top{background:#fff;border-bottom:1px solid #e2e8f0}.nav{max-wi
 <section class="hero"><div class="wrap"><span class="eyebrow">Websitewire shopping hub</span><h1>Shop all categories</h1><p>Explore popular shopping categories in one place. Choose a category to compare available products on Amazon India.</p></div></section>
 <main class="wrap">
 <div class="notice"><strong>Affiliate disclosure:</strong> Websitewire may earn a commission from qualifying purchases through affiliate links, at no extra cost to you. Category artwork is illustrative, not a product photo.</div>
+
+<section class="product-search">
+  <h2>Search products on Amazon</h2>
+  <p>Product ka naam likhein aur Amazon India par available results dekhein.</p>
+  <form id="product-search-form" action="https://www.amazon.in/s" method="get" target="_blank">
+    <input type="search" id="product-query" name="k" placeholder="e.g. Samsung mobile, earbuds, laptop…" aria-label="Product name" required>
+    <input type="hidden" name="tag" value="websitewire-21">
+    <button type="submit">Search Products ↗</button>
+  </form>
+</section>
+
 <div class="tools"><input id="search" type="search" placeholder="Search all categories…" aria-label="Search categories"><select id="group" aria-label="Filter category group"><option value="">All departments</option><option>Electronics</option><option>Fashion</option><option>Beauty</option><option>Home</option><option>Books &amp; Learning</option><option>Entertainment</option><option>Kids</option><option>Sports</option><option>Lifestyle</option><option>Daily Needs</option></select></div>
 <section class="grid" id="categories">
 
