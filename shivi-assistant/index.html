@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101322">
+<title>Shivi Assistant — Websitewire</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101322;color:#f4f5ff;font:16px system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}header{padding:16px 20px;border-bottom:1px solid #30354b;display:flex;justify-content:space-between;align-items:center;gap:10px}.head-left{display:flex;align-items:center;gap:12px}#menuToggle{font-size:20px;padding:7px 11px}#chatMenu{position:absolute;z-index:5;top:70px;left:12px;width:min(300px,calc(100vw - 24px));max-height:70vh;overflow:auto;padding:14px;background:#191d30;border:1px solid #454a65;border-radius:14px;box-shadow:0 12px 35px #0008}#chatMenu[hidden]{display:none}#chatMenu h3{font-size:14px;color:#a5acc4;margin:18px 4px 8px}#newChat{width:100%;text-align:left}#historyList{display:flex;flex-direction:column;gap:6px}#historyList button{width:100%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}header a{color:#c2baff;text-decoration:none}.brand{font-weight:750;font-size:19px}small{display:block;color:#a5acc4;font-weight:400;font-size:12px}main{width:min(850px,100%);margin:auto;padding:24px 16px;flex:1;display:flex;flex-direction:column}h1{text-align:center;font-size:clamp(28px,5vw,42px);margin:24px 0 8px}.sub{text-align:center;color:#a5acc4;margin:0 0 28px}#messages{display:flex;flex-direction:column;gap:16px;flex:1}.msg{padding:13px 16px;border:1px solid #30354b;border-radius:16px;background:#191d30;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.user{background:#282344;align-self:flex-end;max-width:90%}.assistant{align-self:stretch}.sources{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.sources a{color:#c2baff;font-size:13px}.composer{margin-top:20px;background:#191d30;border:1px solid #454a65;border-radius:18px;padding:10px}.composer textarea{width:100%;resize:vertical;min-height:65px;max-height:180px;background:transparent;color:white;border:0;outline:0;padding:8px;font:inherit}.actions{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}.actions div{display:flex;gap:8px;flex-wrap:wrap}button{border:1px solid #454a65;background:#262a40;color:white;border-radius:11px;padding:9px 13px;font:inherit;cursor:pointer}button.primary{background:#8070f5;border-color:#8070f5}button:disabled{opacity:.5}#status{font-size:13px;color:#a5acc4;min-height:24px;padding:8px 2px}footer{text-align:center;color:#9299b2;font-size:12px;padding:18px}img.generated{display:block;width:100%;max-width:600px;border-radius:12px;margin-top:12px} @media(max-width:480px){header{padding:12px}main{padding:16px 12px}.actions button{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header>
+<div class="head-left">
+<button type="button" id="menuToggle" aria-label="Open chat menu">☰</button>
+<a class="brand" href="/">✦ Shivi Assistant<small>AI companion by Deepak Kumar</small></a>
+</div>
+<a href="/multi-tools/">← Multi Tools</a>
+</header>
+<aside id="chatMenu" aria-label="Chat menu" hidden>
+<button type="button" id="newChat">＋ New Chat</button>
+<h3>Chat History</h3>
+<div id="historyList"></div>
+</aside>
+<main>
+<h1>How can I help <span style="color:#a99cff">you today?</span></h1>
+<p class="sub">Ask questions, research topics, or create an image.</p>
+<section id="messages" aria-live="polite"></section>
+<div id="status" role="status"></div>
+<form class="composer" id="form">
+<textarea id="prompt" placeholder="Message Shivi Assistant…" aria-label="Your message" required></textarea>
+<div class="actions"><div><button type="button" id="voice">🎙 Voice</button><button type="button" id="image">🎨 Create image</button><button type="button" id="camera">📷 Camera</button><button type="button" id="attach">＋ File</button><input type="file" id="file" hidden accept="image/*,.pdf,.docx,.txt,.md,.html,.htm,.css,.js,.mjs,.json,.xml,.csv,.ts,.tsx,.jsx,.py,.java,.c,.cpp,.cs,.php,.go,.rs,.sql,.sh,.yml,.yaml,.toml,.log,.svg"><input type="file" id="cameraFile" hidden accept="image/*" capture="environment"></div><button class="primary" id="send" type="submit">Send ↑</button></div>
+<div id="filename" style="font-size:12px;color:#a5acc4"></div>
+</form>
+</main>
+<footer>Made for Deepak Kumar · Websitewire</footer>
+<script>
+(function(){
+const API='https://shivi-assistant-backend.onrender.com';
+const form=document.querySelector('#form'),prompt=document.querySelector('#prompt'),messages=document.querySelector('#messages'),status=document.querySelector('#status'),send=document.querySelector('#send');
+let busy=false;
+let currentChatId=String(Date.now());
+const HISTORY_KEY='shiviAssistantChatHistory';
+function getHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch(e){return []}}
+function saveCurrentChat(){
+  const items=[...messages.querySelectorAll('.msg')].map(el=>({who:el.classList.contains('user')?'user':'assistant',text:el.innerText||el.textContent||''}));
+  if(!items.length)return;
+  let history=getHistory();
+  const title=(items.find(x=>x.who==='user')?.text||'New Chat').slice(0,55);
+  history=history.filter(x=>x.id!==currentChatId);
+  history.unshift({id:currentChatId,title,items,updated:Date.now()});
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(0,50)));
+  renderHistory();
+}
+function renderHistory(){
+  const list=document.querySelector('#historyList');
+  list.replaceChildren();
+  getHistory().forEach(chat=>{
+    const b=document.createElement('button');
+    b.type='button';b.textContent=chat.title||'Chat';
+    b.addEventListener('click',()=>{
+      messages.replaceChildren();
+      currentChatId=chat.id;
+      (chat.items||[]).forEach(item=>message(item.text,item.who));
+      document.querySelector('#chatMenu').hidden=true;
+      status.textContent='';
+    });
+    list.appendChild(b);
+  });
+}
+document.querySelector('#menuToggle').addEventListener('click',()=>{
+  const menu=document.querySelector('#chatMenu');
+  menu.hidden=!menu.hidden;
+  if(!menu.hidden)renderHistory();
+});
+document.querySelector('#newChat').addEventListener('click',()=>{
+  saveCurrentChat();
+  currentChatId=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);
+  messages.replaceChildren();
+  prompt.value='';
+  status.textContent='';
+  document.querySelector('#filename').textContent='';
+  document.querySelector('#chatMenu').hidden=true;
+  prompt.focus();
+});
+renderHistory();
+
+function message(text,who){const el=document.createElement('div');el.className='msg '+who;el.textContent=text;messages.appendChild(el);el.scrollIntoView({behavior:'smooth',block:'nearest'});return el;}
+async function request(path,body){const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw Error(d.error||d.message||'Request failed ('+r.status+')');return d;}
+async function run(text,makeImage){
+if(busy||!text.trim())return;busy=true;send.disabled=true;message(makeImage?'Create image: '+text:text,'user');prompt.value='';const reply=message(makeImage?'Creating your image…':'Shivi is thinking…','assistant');status.textContent=makeImage?'Generating image…':'Thinking…';
+try{
+const d=await request(makeImage?'/api/image':'/api/chat',makeImage?{prompt:text}:{message:text});
+if(makeImage){const url=d.imageUrl||d.url||(d.images&&d.images[0]&&d.images[0].url);reply.textContent=url?'Your image is ready:':'Image service returned no image URL.';if(url){const img=document.createElement('img');img.className='generated';img.src=url;img.alt=text;reply.appendChild(img);}}
+else{reply.textContent=d.answer||d.response||'No answer returned.';if(Array.isArray(d.sources)&&d.sources.length){const box=document.createElement('div');box.className='sources';d.sources.forEach(s=>{try{const u=new URL(s.url);if(!['http:','https:'].includes(u.protocol))return;const a=document.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=s.title||u.hostname;box.appendChild(a);}catch(e){}});reply.appendChild(box);}}
+status.textContent='';
+}catch(e){reply.textContent='Could not connect: '+e.message;status.textContent='Please check your connection and try again.';}
+finally{saveCurrentChat();busy=false;send.disabled=false;prompt.focus();}
+}
+form.addEventListener('submit',e=>{e.preventDefault();run(prompt.value,false);});
+document.querySelector('#image').addEventListener('click',()=>{if(!prompt.value.trim()){status.textContent='Please describe the image first.';prompt.focus();return;}run(prompt.value,true);});
+document.querySelector('#attach').addEventListener('click',()=>document.querySelector('#file').click());
+async function analyzeFile(f){
+  if(!f)return;
+  const label=document.querySelector('#filename');
+  label.textContent='Analyzing '+f.name+'…';
+  const question=prompt.value.trim()||'Please explain this file briefly.';
+  message('Analyze file: '+f.name,'user');
+  const reply=message('Shivi is reading the file…','assistant');
+  status.textContent='Analyzing file…';
+  send.disabled=true;
+  try{
+    const data=new FormData();
+    data.append('file',f);
+    data.append('question',question);
+    const r=await fetch(API+'/api/upload',{method:'POST',body:data});
+    const d=await r.json();
+    if(!r.ok)throw Error(d.error||'File analysis failed');
+    reply.textContent=d.answer||'No answer returned.';
+    label.textContent='Analyzed: '+f.name;
+    prompt.value='';
+    status.textContent='';
+  }catch(err){
+    reply.textContent='Could not analyze file: '+err.message;
+    label.textContent='File: '+f.name;
+    status.textContent='Please try another file.';
+  }finally{
+    send.disabled=false;
+    document.querySelector('#file').value='';
+    document.querySelector('#cameraFile').value='';
+    saveCurrentChat();
+    prompt.focus();
+  }
+}
+document.querySelector('#file').addEventListener('change',e=>analyzeFile(e.target.files[0]));
+document.querySelector('#cameraFile').addEventListener('change',e=>analyzeFile(e.target.files[0]));
+document.querySelector('#camera').addEventListener('click',()=>document.querySelector('#cameraFile').click());
+document.querySelector('#voice').addEventListener('click',()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){status.textContent='Voice input is not supported in this browser.';return;}const rec=new SR();rec.lang='en-IN';rec.onresult=e=>{prompt.value=e.results[0][0].transcript;status.textContent='Voice captured. Press Send to continue.';};rec.onerror=()=>status.textContent='Voice input could not start. You can type instead.';rec.start();status.textContent='Listening…';});
+})();
+</script>
+</body>
+</html>
