@@ -1,0 +1,19 @@
+{
+  "name": "shivi-assistant-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure backend for Websitewire Shivi Assistant",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "multer": "^2.0.2"
+  }
+}

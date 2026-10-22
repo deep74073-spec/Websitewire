@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: shivi-assistant-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: FAL_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
