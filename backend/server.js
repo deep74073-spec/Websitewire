@@ -323,8 +323,3 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Shivi Assistant backend listening on port ${PORT}`);
 });
-
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Shivi Assistant backend listening on port ${PORT}`);
-});
