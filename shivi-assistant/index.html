@@ -54,6 +54,30 @@ img.generated{display:block;width:100%;max-width:600px;border-radius:12px;margin
 .loading-dots i:nth-child(3){animation-delay:.3s}
 @keyframes shiviPulse{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-5px)}}
 </style>
+
+/* SHIVI_FINAL_UI_PATCH_V3 */
+#menuToggle {
+ position:fixed!important; top:max(10px,env(safe-area-inset-top))!important;
+ left:10px!important; z-index:10010!important;
+ display:inline-flex!important; cursor:pointer;
+}
+#chatMenu {
+ position:fixed!important; inset:0 auto 0 0!important;
+ width:min(300px,86vw)!important; height:100dvh!important;
+ max-height:100dvh!important; overflow-y:auto!important;
+ overscroll-behavior:contain; padding:64px 18px 24px!important;
+ background:var(--surface,#fff)!important;
+ color:var(--text,#172033)!important;
+ border-right:1px solid var(--line,#ddd);
+ box-shadow:12px 0 35px #0002; z-index:10009!important;
+}
+#chatMenu[hidden], #toolsMenu[hidden] { display:none!important; }
+.actions { display:flex!important; align-items:center!important; gap:8px!important; }
+#voice { display:inline-flex!important; align-items:center; justify-content:center;
+ gap:5px; flex-shrink:0; }
+#send { flex-shrink:0; }
+.generated { display:block; max-width:100%; height:auto; border-radius:12px; }
+
 </head>
 <body>
 <header>
@@ -78,14 +102,25 @@ img.generated{display:block;width:100%;max-width:600px;border-radius:12px;margin
 <textarea id="prompt" placeholder="Reply Shivi Assistant…" aria-label="Your message" required></textarea>
 <div class="actions">
 <div class="tool-area">
-<button type="button" id="plusTools" class="icon-btn" aria-label="More tools" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+<button type="button" id="plusTools" class="icon-btn" aria-label="More tools" aria-expanded="false">
+<svg viewBox="0 0 24 24" width="24" height="24"
+ fill="none" stroke="currentColor" stroke-width="2"
+ stroke-linecap="round" aria-hidden="true">
+ <path d="M12 5v14M5 12h14"/>
+</svg></button>
 <div id="toolsMenu" class="tools-menu" hidden>
 
 
 
 <button type="button" id="attach"><svg viewBox="0 0 24 24"><path d="m21 11.5-8.5 8.5a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.5 5.8l-9 9a2 2 0 0 1-2.8-2.8l8-8"/></svg>File</button>
-<button type="button" id="camera" aria-label="Capture photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Camera</button></div>
-<input type="file" id="file" hidden accept="image/*,.pdf,.docx,.txt,.md,.html,.htm,.css,.js,.mjs,.json,.xml,.csv,.ts,.tsx,.jsx,.py,.java,.c,.cpp,.cs,.php,.go,.rs,.sql,.sh,.yml,.yaml,.toml,.log,.svg">
+<button type="button" id="camera" aria-label="Capture photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Camera</button>
+<button type="button" id="attachImage" aria-label="Attach image">
+  🖼️ Image Attach
+</button>
+</div>
+<input type="file" id="file" hidden accept="image/*,.pdf,.docx,.txt,.md,.html,.htm,.css,.js,.mjs,.json,.
+<input type="file" id="imageFile" accept="image/*" hidden>
+xml,.csv,.ts,.tsx,.jsx,.py,.java,.c,.cpp,.cs,.php,.go,.rs,.sql,.sh,.yml,.yaml,.toml,.log,.svg">
 <input type="file" id="cameraFile" hidden accept="image/*" capture="environment">
 </div>
 
@@ -190,7 +225,7 @@ toolsMenu.querySelectorAll('button').forEach(b=>{
 form.addEventListener('submit',e=>{
   e.preventDefault();
   const text=prompt.value.trim();
-  const imageStart=/^(?:(?:create|generate|draw|make)\s+(?:me\s+)?(?:an?\s+)?(?:image|picture|illustration|artwork)\b|(?:ek\s+)?(?:image|photo|picture|tasveer|logo)\s+(?:banao|bnao|bana[o]?|banado|create\s+karo)|(?:image|photo|picture|tasveer|logo)\s+(?:bna|bana)\s+do)\s*/i;
+const imageStart = /^(?:(?:please\s+)?(?:generate|create|make|draw|design)\s+(?:(?:an?|the)\s+)?(?:image|picture|photo|illustration)\b|(?:ek\s+)?(?:image|photo|tasveer)\s+banao\b|(?:image|photo|picture)\s*:\s*)\s*[:,-]?\s*/i;
   const makeImage=imageStart.test(text);
   const imagePrompt=makeImage?text.replace(imageStart,'').trim():text;
   run(makeImage?(imagePrompt||text):text,makeImage);
@@ -237,5 +272,71 @@ document.querySelector('#voice').addEventListener('click',()=>{const SR=window.S
 
 document.querySelector('#camera')?.addEventListener('click',()=>document.querySelector('#cameraFile')?.click());
 </script>
+
+<script>
+/* SHIVI_FINAL_UI_PATCH_V3 */
+(() => {
+ const menu=document.getElementById('chatMenu');
+ const toggle=document.getElementById('menuToggle');
+ const close=document.getElementById('closeChatMenu');
+ if(!menu||!toggle||menu.dataset.patchV3) return;
+ menu.dataset.patchV3='1';
+
+ const isOpen=()=>!menu.hidden && getComputedStyle(menu).display!=='none';
+ function hideMenu(){
+   menu.hidden=true;
+   toggle.setAttribute('aria-expanded','false');
+   toggle.setAttribute('aria-label','Open chat menu');
+ }
+ function showMenu(){
+   menu.hidden=false;
+   toggle.setAttribute('aria-expanded','true');
+   toggle.setAttribute('aria-label','Close chat menu');
+ }
+ document.addEventListener('click',e=>{
+   if(!e.target.closest('#menuToggle')) return;
+   e.preventDefault();
+   e.stopImmediatePropagation();
+   isOpen()?hideMenu():showMenu();
+ },true);
+ document.addEventListener('pointerdown',e=>{
+   if(isOpen()&&!menu.contains(e.target)&&!toggle.contains(e.target))
+     hideMenu();
+ },true);
+ close?.addEventListener('click',e=>{e.preventDefault();hideMenu();});
+ document.addEventListener('keydown',e=>{
+   if(e.key==='Escape'&&isOpen()) hideMenu();
+ });
+ menu.addEventListener('click',e=>{
+   const item=e.target.closest('a,button');
+   if(item&&(item.matches('a')||item.id==='newChat'||
+      item.hasAttribute('data-close-menu'))) hideMenu();
+ });
+})();
+</script>
+
+
+<script>
+/* SHIVI_IMAGE_ATTACH_IN_PLUS_MENU_V1 */
+(() => {
+  const btn = document.getElementById('attachImage');
+  const picker = document.getElementById('imageFile');
+  if (!btn || !picker || btn.dataset.bound) return;
+  btn.dataset.bound = '1';
+  btn.addEventListener('click', () => picker.click());
+  picker.addEventListener('change', () => {
+    const file = picker.files && picker.files[0];
+    if (!file) return;
+    const existing = document.getElementById('file');
+    if (existing) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      existing.files = dt.files;
+      existing.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
