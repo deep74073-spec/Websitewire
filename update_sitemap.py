@@ -44,7 +44,6 @@ def page_url(path):
         url_path = "/" if str(rel) == "." else "/" + rel.as_posix().strip("/") + "/"
     else:
         url_path = "/" + rel.as_posix()
-        url_path = url_path[:-5] if url_path.lower().endswith(".html") else url_path
     return BASE + quote(url_path, safe="/-._~")
 
 urls = set()
