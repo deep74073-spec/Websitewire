@@ -1,0 +1,40 @@
+name: Update Sitemap
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-sitemap:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate sitemap
+        run: python update_sitemap.py
+
+      - name: Commit sitemap if changed
+        run: |
+          if git diff --quiet -- sitemap.xml; then
+            echo "Sitemap is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- sitemap.xml
+          git commit -m "Automatically update sitemap"
+          git push
