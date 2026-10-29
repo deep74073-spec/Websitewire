@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d18">
+<title>Qavrixa — Live Chat</title>
+<style>
+:root{color-scheme:dark;--bg:#090d18;--panel:#111a2b;--line:#29364d;--cyan:#67e8f9;--purple:#a78bfa;--muted:#9ba9bd}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#1b2543,#090d18 60%);color:#f8fafc;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
+header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #ffffff15}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:23px}
+.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0b1020}
+.status{font-size:12px;color:#a7f3d0}
+main{max-width:850px;margin:auto;padding:45px 14px}
+.intro{text-align:center;margin-bottom:28px}
+h1{font-size:clamp(36px,8vw,55px);letter-spacing:-2px;margin:10px 0}
+h1 span{background:linear-gradient(90deg,var(--cyan),var(--purple));background-clip:text;color:transparent}
+.intro p{color:var(--muted);font-size:14px}
+.card{max-width:700px;margin:auto;border:1px solid #344158;border-radius:22px;background:#0d1423;overflow:hidden;box-shadow:0 25px 80px #0005}
+.top{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.sub{font-size:12px;color:var(--muted);margin-top:4px}
+#state{font-size:12px;color:var(--cyan)}
+.join{padding:14px;display:flex;gap:9px;border-bottom:1px solid var(--line)}
+input{min-width:0;background:#111b2b;border:1px solid #344158;border-radius:12px;padding:13px;color:white;font:inherit;outline:none}
+input:focus{border-color:var(--cyan)}
+#name{width:125px}
+#room{flex:1}
+button{border:0;border-radius:12px;padding:0 17px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0b1020;font-weight:800;cursor:pointer}
+#messages{height:360px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:13px}
+.info{text-align:center;color:var(--muted);font-size:12px;padding:5px}
+.msg{align-self:flex-start;max-width:85%}
+.msg.mine{align-self:flex-end}
+.author{font-size:11px;color:var(--cyan);margin:0 4px 5px}
+.mine .author{text-align:right;color:var(--purple)}
+.bubble{background:#1a2639;border-radius:14px 14px 14px 4px;padding:11px 14px;font-size:14px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.mine .bubble{background:#443a8a;border-radius:14px 14px 4px 14px}
+.time{font-size:10px;color:#8290a5;margin:5px 4px 0}
+.composer{padding:13px;display:flex;gap:9px;border-top:1px solid var(--line)}
+#message{flex:1}
+#send{padding:0 20px}
+footer{text-align:center;color:#718096;font-size:11px;padding:18px}
+@media(max-width:500px){header{padding:0 15px}main{padding:35px 10px}.join{gap:6px;padding:10px}#name{width:88px;padding:11px 8px}#room{padding:11px 8px}button{padding:0 11px}#messages{height:340px;padding:14px}.composer{padding:10px;gap:6px}#message{padding:12px 9px}#send{padding:0 13px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">q</div>qavrixa</div><div class="status">● <span id="connection">Connecting…</span></div></header>
+<main>
+<section class="intro"><h1>Chat in <span>real time.</span></h1><p>One link. Two phones. Start a conversation.</p></section>
+<section class="card">
+<div class="top"><div><strong id="roomTitle">Public Lounge</strong><div class="sub">Share the same room name with your friend</div></div><div id="state">Connecting…</div></div>
+<form class="join" id="joinForm"><input id="name" maxlength="24" placeholder="Your name" aria-label="Your name" required><input id="room" maxlength="40" placeholder="Room name" aria-label="Room name" value="lounge" required><button>Join</button></form>
+<div id="messages" aria-live="polite"><div class="info">Connecting to Qavrixa…</div></div>
+<form class="composer" id="chatForm"><input id="message" maxlength="500" placeholder="Write a message…" aria-label="Message" autocomplete="off" required disabled><button id="send" disabled>Send ↗</button></form>
+</section>
+</main>
+<footer>Qavrixa · Be kind. Keep conversations respectful.</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, push, query, limitToLast, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCvu2g98m6hg33HOvV7jSUY5X9Kt4AuP50",
+  authDomain: "qavrixa-8522f.firebaseapp.com",
+  databaseURL: "https://qavrixa-8522f-default-rtdb.firebaseio.com",
+  projectId: "qavrixa-8522f",
+  storageBucket: "qavrixa-8522f.firebasestorage.app",
+  messagingSenderId: "735119570267",
+  appId: "1:735119570267:web:18de69ff4fcca5f000167e"
+};
+
+const $ = id => document.getElementById(id);
+const messagesEl = $("messages");
+let db, user, activeRoom = "", stopListening = null, joined = false;
+const shown = new Set();
+const cleanRoom = s => s.trim().toLowerCase().replace(/[^a-z0-9_-]/g,"").slice(0,40);
+function showError(message) {
+  $("state").textContent = message;
+  $("connection").textContent = "Connection issue";
+}
+function addMessage(data, key) {
+  if (shown.has(key)) return;
+  shown.add(key);
+  if (messagesEl.querySelector(".info")) messagesEl.innerHTML = "";
+  const row = document.createElement("div");
+  row.className = "msg" + (data.uid === user.uid ? " mine" : "");
+  const author = document.createElement("div");
+  author.className = "author";
+  author.textContent = data.name || "Guest";
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = data.text || "";
+  const time = document.createElement("div");
+  time.className = "time";
+  time.textContent = data.time ? new Date(data.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "Just now";
+  row.append(author,bubble,time);
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+try {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  db = getDatabase(app);
+  await signInAnonymously(auth);
+  user = auth.currentUser;
+  $("connection").textContent = "Connected";
+  $("state").textContent = "Ready to chat";
+} catch (error) {
+  showError("Sign-in failed");
+  console.error(error);
+}
+$("joinForm").addEventListener("submit", event => {
+  event.preventDefault();
+  if (!user || !db) return showError("Firebase not connected");
+  const room = cleanRoom($("room").value);
+  const name = $("name").value.trim().slice(0,24);
+  if (!room || !name) return;
+  if (stopListening) stopListening();
+  activeRoom = room;
+  joined = true;
+  shown.clear();
+  messagesEl.innerHTML = '<div class="info">Loading messages…</div>';
+  $("roomTitle").textContent = "Room: " + room;
+  $("room").value = room;
+  $("state").textContent = "Room joined";
+  $("message").disabled = false;
+  $("send").disabled = false;
+  const roomQuery = query(ref(db, "messages/" + room), limitToLast(100));
+  stopListening = onChildAdded(roomQuery, snapshot => addMessage(snapshot.val() || {}, snapshot.key), error => showError("Cannot read messages"));
+});
+$("chatForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!joined || !user || !db || !activeRoom) return showError("Join a room first");
+  const text = $("message").value.trim();
+  const name = $("name").value.trim().slice(0,24);
+  if (!text || !name) return;
+  $("send").disabled = true;
+  try {
+    await push(ref(db, "messages/" + activeRoom), {
+      uid: user.uid, name, text: text.slice(0,500), time: serverTimestamp()
+    });
+    $("message").value = "";
+  } catch (error) {
+    showError("Message not sent");
+    console.error(error);
+  } finally {
+    $("send").disabled = false;
+  }
+});
+</script>
+</body>
+</html>
