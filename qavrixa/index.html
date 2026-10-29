@@ -51,6 +51,21 @@ footer{text-align:center;color:#718096;font-size:11px;padding:18px}
 <section class="card">
 <div class="top"><div><strong id="roomTitle">Public Lounge</strong><div class="sub">Share the same room name with your friend</div></div><div id="state">Connecting…</div></div>
 <form class="join" id="joinForm"><input id="name" maxlength="24" placeholder="Your name" aria-label="Your name" required><input id="room" maxlength="40" placeholder="Room name" aria-label="Room name" value="lounge" required><button>Join</button></form>
+
+<div style="padding:14px;border-bottom:1px solid var(--line)">
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button type="button" id="startAudioCall">🎙️ Audio Call</button>
+    <button type="button" id="startVideoCall">📹 Video Call</button>
+    <button type="button" id="answerCall" disabled>Answer Call</button>
+    <button type="button" id="endCall" disabled>End Call</button>
+  </div>
+  <div id="callStatus" role="status" style="margin-top:10px;font-size:13px">Join a room before calling.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+    <video id="localVideo" autoplay muted playsinline style="display:none;width:46%;max-height:180px;background:#111;border-radius:10px"></video>
+    <video id="remoteVideo" autoplay playsinline style="display:none;width:46%;max-height:180px;background:#111;border-radius:10px"></video>
+  </div>
+</div>
+
 <div id="messages" aria-live="polite"><div class="info">Connecting to Qavrixa…</div></div>
 <form class="composer" id="chatForm"><input id="message" maxlength="500" placeholder="Write a message…" aria-label="Message" autocomplete="off" required disabled><button id="send" disabled>Send ↗</button></form>
 </section>
@@ -59,7 +74,7 @@ footer{text-align:center;color:#718096;font-size:11px;padding:18px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getDatabase, ref, push, query, limitToLast, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+import { getDatabase, ref, push, set, query, limitToLast, onChildAdded, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCvu2g98m6hg33HOvV7jSUY5X9Kt4AuP50",
@@ -149,6 +164,319 @@ $("chatForm").addEventListener("submit", async event => {
     $("send").disabled = false;
   }
 });
+
+// Basic 1-to-1 WebRTC audio/video calls using Firebase as signaling.
+let peer = null;
+let localStream = null;
+let currentCallId = null;
+let currentCallRef = null;
+let callMode = "audio";
+let stopCallList = null;
+let stopCallDoc = null;
+let stopRemoteCandidates = null;
+let seenIncomingCall = "";
+let settingRemoteAnswer = false;
+let pendingCandidates = [];
+
+const callText = text => { $("callStatus").textContent = text; };
+
+function callPath(room, id) {
+  return "calls/" + room + "/" + id;
+}
+
+function closeMediaOnly() {
+  if (peer) {
+    peer.ontrack = null;
+    peer.onicecandidate = null;
+    peer.onconnectionstatechange = null;
+    peer.close();
+    peer = null;
+  }
+  if (stopRemoteCandidates) {
+    stopRemoteCandidates();
+    stopRemoteCandidates = null;
+  }
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+  $("localVideo").srcObject = null;
+  $("remoteVideo").srcObject = null;
+  $("localVideo").style.display = "none";
+  $("remoteVideo").style.display = "none";
+  $("endCall").disabled = true;
+  $("answerCall").disabled = true;
+  currentCallId = null;
+  currentCallRef = null;
+  pendingCandidates = [];
+  settingRemoteAnswer = false;
+}
+
+async function getMedia(mode) {
+  callMode = mode;
+  localStream = await navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: mode === "video"
+  });
+  $("localVideo").srcObject = localStream;
+  $("localVideo").style.display = mode === "video" ? "block" : "none";
+  $("endCall").disabled = false;
+}
+
+function makePeer(remoteCandidatePath) {
+  peer = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  });
+
+  localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+
+  peer.ontrack = event => {
+    $("remoteVideo").srcObject = event.streams[0];
+    $("remoteVideo").style.display =
+      (event.streams[0].getVideoTracks().length > 0) ? "block" : "none";
+  };
+
+  peer.onicecandidate = async event => {
+    if (!event.candidate || !currentCallRef) return;
+    try {
+      const bucket = remoteCandidatePath === "callerCandidates"
+        ? "calleeCandidates" : "callerCandidates";
+      await push(ref(db, currentCallRef + "/" + bucket), event.candidate.toJSON());
+    } catch (err) {
+      console.error("ICE candidate write failed", err);
+      callText("Network setup failed. Check Firebase Rules.");
+    }
+  };
+
+  peer.onconnectionstatechange = () => {
+    if (!peer) return;
+    const state = peer.connectionState;
+    if (state === "connected") callText("Call connected");
+    if (state === "failed") callText("Connection failed. A TURN server may be needed.");
+    if (state === "disconnected") callText("Call temporarily disconnected");
+  };
+
+  stopRemoteCandidates = onChildAdded(
+    ref(db, currentCallRef + "/" + remoteCandidatePath),
+    async snap => {
+      if (!peer || !snap.val()) return;
+      try {
+        const candidate = new RTCIceCandidate(snap.val());
+        if (peer.remoteDescription) {
+          await peer.addIceCandidate(candidate);
+        } else {
+          pendingCandidates.push(candidate);
+        }
+      } catch (err) {
+        console.error("ICE candidate error", err);
+      }
+    },
+    err => {
+      console.error(err);
+      callText("Cannot receive network signaling. Check Firebase Rules.");
+    }
+  );
+}
+
+async function flushCandidates() {
+  if (!peer || !peer.remoteDescription) return;
+  for (const candidate of pendingCandidates) {
+    try { await peer.addIceCandidate(candidate); }
+    catch (err) { console.error(err); }
+  }
+  pendingCandidates = [];
+}
+
+async function startOutgoingCall(mode) {
+  if (!user || !db || !activeRoom || !joined) {
+    callText("Join a room before calling.");
+    return;
+  }
+  if (!navigator.mediaDevices || !window.RTCPeerConnection) {
+    callText("This browser does not support WebRTC calls.");
+    return;
+  }
+
+  closeMediaOnly();
+  try {
+    callText("Requesting microphone/camera permission…");
+    await getMedia(mode);
+
+    const newCall = push(ref(db, "calls/" + activeRoom));
+    currentCallId = newCall.key;
+    currentCallRef = callPath(activeRoom, currentCallId);
+    makePeer("calleeCandidates");
+
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+
+    await set(ref(db, currentCallRef), {
+      callerUid: user.uid,
+      callerName: $("name").value.trim().slice(0, 24) || "Guest",
+      mode,
+      status: "ringing",
+      offer: { type: offer.type, sdp: offer.sdp },
+      createdAt: serverTimestamp()
+    });
+
+    // Caller waits for the other participant's answer.
+    stopCallDoc = onValue(ref(db, currentCallRef), async snap => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === "ended") {
+        closeMediaOnly();
+        callText("Call ended.");
+        return;
+      }
+      if (data.answer && peer && !settingRemoteAnswer) {
+        settingRemoteAnswer = true;
+        try {
+          await peer.setRemoteDescription(new RTCSessionDescription(data.answer));
+          await flushCandidates();
+          callText("Connecting call…");
+        } catch (err) {
+          console.error(err);
+          callText("Could not connect the call.");
+        }
+      }
+    });
+
+    $("answerCall").disabled = true;
+    $("endCall").disabled = false;
+    callText("Calling room members… Ask someone in this room to press Answer Call.");
+  } catch (err) {
+    console.error("Outgoing call failed", err);
+    closeMediaOnly();
+    callText("Call could not start. Allow microphone/camera and check Firebase Rules.");
+  }
+}
+
+async function answerIncomingCall() {
+  if (!user || !db || !activeRoom || !seenIncomingCall) return;
+  const callId = seenIncomingCall;
+  const path = callPath(activeRoom, callId);
+
+  try {
+    const snap = await new Promise((resolve, reject) => {
+      let stop = onValue(ref(db, path), value => {
+        stop();
+        resolve(value);
+      }, reject);
+    });
+    const data = snap.val();
+    if (!data || data.status !== "ringing" || data.callerUid === user.uid) {
+      callText("This call is no longer available.");
+      return;
+    }
+
+    closeMediaOnly();
+    currentCallId = callId;
+    currentCallRef = path;
+    callText("Joining call…");
+    await getMedia(data.mode === "video" ? "video" : "audio");
+    makePeer("callerCandidates");
+
+    await peer.setRemoteDescription(new RTCSessionDescription(data.offer));
+    await flushCandidates();
+
+    const answer = await peer.createAnswer();
+    await peer.setLocalDescription(answer);
+    await set(ref(db, path + "/answer"), {
+      type: answer.type,
+      sdp: answer.sdp
+    });
+    await set(ref(db, path + "/status"), "answered");
+
+    if (stopCallDoc) stopCallDoc();
+    stopCallDoc = onValue(ref(db, path + "/status"), statusSnap => {
+      if (statusSnap.val() === "ended") {
+        closeMediaOnly();
+        callText("Call ended.");
+      }
+    });
+
+    seenIncomingCall = "";
+    $("answerCall").disabled = true;
+    $("endCall").disabled = false;
+    callText("Answer sent. Connecting…");
+  } catch (err) {
+    console.error("Answer call failed", err);
+    closeMediaOnly();
+    callText("Could not answer. Check microphone/camera permission and Firebase Rules.");
+  }
+}
+
+async function endCurrentCall() {
+  const path = currentCallRef;
+  closeMediaOnly();
+  if (stopCallDoc) {
+    stopCallDoc();
+    stopCallDoc = null;
+  }
+  if (path && db) {
+    try { await set(ref(db, path + "/status"), "ended"); }
+    catch (err) { console.error("Could not end call in database", err); }
+  }
+  callText("Call ended.");
+}
+
+function watchRoomCalls(room) {
+  if (stopCallList) {
+    stopCallList();
+    stopCallList = null;
+  }
+  seenIncomingCall = "";
+  $("answerCall").disabled = true;
+  callText("Ready. Join a room member's call or start one.");
+
+  stopCallList = onValue(ref(db, "calls/" + room), snap => {
+    let incoming = null;
+    snap.forEach(child => {
+      const data = child.val() || {};
+      if (data.status === "ringing" && data.callerUid !== user.uid && !data.answer) {
+        incoming = { id: child.key, name: data.callerName || "Guest", mode: data.mode || "audio" };
+      }
+    });
+
+    if (incoming && !currentCallId) {
+      seenIncomingCall = incoming.id;
+      $("answerCall").disabled = false;
+      $("answerCall").textContent =
+        "Answer " + (incoming.mode === "video" ? "Video" : "Audio") + " Call from " + incoming.name;
+      callText("Incoming call from " + incoming.name);
+    } else if (!currentCallId) {
+      seenIncomingCall = "";
+      $("answerCall").disabled = true;
+      $("answerCall").textContent = "Answer Call";
+    }
+  }, err => {
+    console.error("Call room listener failed", err);
+    callText("Cannot load calls. Check Firebase Rules.");
+  });
+}
+
+$("startAudioCall").addEventListener("click", () => startOutgoingCall("audio"));
+$("startVideoCall").addEventListener("click", () => startOutgoingCall("video"));
+$("answerCall").addEventListener("click", answerIncomingCall);
+$("endCall").addEventListener("click", endCurrentCall);
+
+// Hook into either the Random Rooms join function or the original Join form.
+if (typeof joinRoom === "function") {
+  const originalJoinRoom = joinRoom;
+  joinRoom = function(roomId, roomName) {
+    originalJoinRoom(roomId, roomName);
+    watchRoomCalls(roomId);
+  };
+}
+const joinFormForCalls = $("joinForm");
+if (joinFormForCalls) {
+  joinFormForCalls.addEventListener("submit", () => {
+    setTimeout(() => {
+      if (activeRoom) watchRoomCalls(activeRoom);
+    }, 0);
+  });
+}
+
 </script>
 
 <a id="qavrixa-home-button" href="/"
