@@ -50,7 +50,16 @@ footer{text-align:center;color:#718096;font-size:11px;padding:18px}
 <section class="intro"><h1>Chat in <span>real time.</span></h1><p>One link. Two phones. Start a conversation.</p></section>
 <section class="card">
 <div class="top"><div><strong id="roomTitle">Public Lounge</strong><div class="sub">Share the same room name with your friend</div></div><div id="state">Connecting…</div></div>
-<form class="join" id="joinForm"><input id="name" maxlength="24" placeholder="Your name" aria-label="Your name" required><input id="room" maxlength="40" placeholder="Room name" aria-label="Room name" value="lounge" required><button>Join</button></form>
+<form class="join" id="joinForm">
+  <input id="name" maxlength="24" placeholder="Your name" aria-label="Your name" required>
+  <input id="room" maxlength="40" placeholder="Room ID" aria-label="Room ID" value="lounge" required>
+  <button type="submit">Join Room</button>
+</form>
+<div style="padding:12px 14px;border-bottom:1px solid var(--line)">
+  <button type="button" id="createRandomRoom" style="min-height:42px">＋ Create Random Room</button>
+  <div style="margin-top:14px;font-weight:700">Public Rooms</div>
+  <div id="publicRooms" class="sub" style="display:grid;gap:8px;margin-top:9px">Loading public rooms…</div>
+</div>
 
 <div style="padding:14px;border-bottom:1px solid var(--line)">
   <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -126,25 +135,110 @@ try {
   showError("Sign-in failed");
   console.error(error);
 }
-$("joinForm").addEventListener("submit", event => {
-  event.preventDefault();
+function joinRoom(roomValue, roomName) {
   if (!user || !db) return showError("Firebase not connected");
-  const room = cleanRoom($("room").value);
-  const name = $("name").value.trim().slice(0,24);
+  const room = cleanRoom(roomValue || "");
+  const name = (roomName || $("name").value).trim().slice(0,24);
   if (!room || !name) return;
+  $("name").value = name;
+  $("room").value = room;
+  try {
+    localStorage.setItem("qavrixa_name", name);
+    localStorage.setItem("qavrixa_room", room);
+  } catch (_) {}
   if (stopListening) stopListening();
   activeRoom = room;
   joined = true;
   shown.clear();
   messagesEl.innerHTML = '<div class="info">Loading messages…</div>';
   $("roomTitle").textContent = "Room: " + room;
-  $("room").value = room;
   $("state").textContent = "Room joined";
   $("message").disabled = false;
   $("send").disabled = false;
   const roomQuery = query(ref(db, "messages/" + room), limitToLast(100));
   stopListening = onChildAdded(roomQuery, snapshot => addMessage(snapshot.val() || {}, snapshot.key), error => showError("Cannot read messages"));
+  watchRoomCalls(room);
+}
+
+$("joinForm").addEventListener("submit", event => {
+  event.preventDefault();
+  joinRoom($("room").value, $("name").value);
 });
+
+function roomButtonLabel(room) {
+  return room.name || room.id || "Public room";
+}
+
+function renderPublicRooms(snapshot) {
+  const list = $("publicRooms");
+  if (!list) return;
+  list.replaceChildren();
+  const rooms = [];
+  snapshot.forEach(child => {
+    const data = child.val() || {};
+    if (data.public === true && typeof data.roomId === "string") {
+      rooms.push({ id: child.key, roomId: cleanRoom(data.roomId), name: String(data.name || "Public room").slice(0,50) });
+    }
+  });
+  rooms.sort((a,b) => a.name.localeCompare(b.name));
+  if (!rooms.length) {
+    list.textContent = "No public rooms yet. Create one to get started.";
+    return;
+  }
+  rooms.slice(0,30).forEach(room => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:9px;background:#111b2b;border:1px solid var(--line);border-radius:10px";
+    const label = document.createElement("span");
+    label.textContent = roomButtonLabel(room) + " · " + room.roomId;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Join";
+    button.style.minHeight = "36px";
+    button.addEventListener("click", () => joinRoom(room.roomId, $("name").value));
+    row.append(label, button);
+    list.append(row);
+  });
+}
+
+$("createRandomRoom").addEventListener("click", async () => {
+  if (!user || !db) return showError("Firebase not connected");
+  const name = $("name").value.trim().slice(0,24);
+  if (!name) {
+    $("name").focus();
+    $("state").textContent = "Enter your name first";
+    return;
+  }
+  const room = "room-" + Math.random().toString(36).slice(2,9);
+  const button = $("createRandomRoom");
+  button.disabled = true;
+  try {
+    await set(ref(db, "rooms/" + room), {
+      roomId: room, name: name + "'s room", public: true,
+      createdBy: user.uid, createdAt: Date.now()
+    });
+    $("room").value = room;
+    joinRoom(room, name);
+  } catch (error) {
+    console.error("Create room failed", error);
+    $("state").textContent = "Could not create room. Check Firebase Rules.";
+  } finally {
+    button.disabled = false;
+  }
+});
+
+onValue(ref(db, "rooms"), renderPublicRooms, error => {
+  console.error("Public rooms listener failed", error);
+  $("publicRooms").textContent = "Cannot load rooms. Check Firebase Rules.";
+});
+
+try {
+  $("name").value = localStorage.getItem("qavrixa_name") || "";
+  $("room").value = localStorage.getItem("qavrixa_room") || "lounge";
+} catch (_) {}
+
+if ($("name").value.trim()) {
+  joinRoom($("room").value, $("name").value);
+}
 $("chatForm").addEventListener("submit", async event => {
   event.preventDefault();
   if (!joined || !user || !db || !activeRoom) return showError("Join a room first");
@@ -460,22 +554,7 @@ $("startVideoCall").addEventListener("click", () => startOutgoingCall("video"));
 $("answerCall").addEventListener("click", answerIncomingCall);
 $("endCall").addEventListener("click", endCurrentCall);
 
-// Hook into either the Random Rooms join function or the original Join form.
-if (typeof joinRoom === "function") {
-  const originalJoinRoom = joinRoom;
-  joinRoom = function(roomId, roomName) {
-    originalJoinRoom(roomId, roomName);
-    watchRoomCalls(roomId);
-  };
-}
-const joinFormForCalls = $("joinForm");
-if (joinFormForCalls) {
-  joinFormForCalls.addEventListener("submit", () => {
-    setTimeout(() => {
-      if (activeRoom) watchRoomCalls(activeRoom);
-    }, 0);
-  });
-}
+// Room joining directly starts the call listener in joinRoom().
 
 </script>
 
