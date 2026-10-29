@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tic Tac Toe Online | Websitewire</title>
+<meta name="description" content="Play Tic Tac Toe online for free on Websitewire. Challenge a friend in this classic two-player game.">
+<link rel="canonical" href="https://websitewire.co.in/games/tictactoe/">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:18px;background:linear-gradient(135deg,#101827,#302765);font-family:Arial,sans-serif;color:white}
+.game{width:100%;max-width:380px;text-align:center}
+a{color:#9bdcff}
+h1{font-size:34px;margin:8px}
+.scores{display:flex;gap:8px;margin:22px 0}
+.scores div{flex:1;background:#ffffff14;padding:12px 4px;border-radius:12px}
+strong{display:block;font-size:24px;margin-top:7px}
+#status{font-size:19px;min-height:28px;margin:20px 0}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cell{aspect-ratio:1;border:1px solid #ffffff30;border-radius:14px;background:#ffffff12;color:white;font-size:48px;font-weight:bold}
+.x{color:#65dcff}.o{color:#ff9bcf}.win{background:#168768}
+.action{width:100%;padding:14px;margin-top:12px;border:0;border-radius:12px;font-weight:bold;font-size:16px;background:#8172ff;color:white}
+#reset{background:#ffffff20;color:white}
+</style>
+</head>
+<body>
+<main class="game">
+<a href="/games/">← All Games</a>
+<h1>❌ Tic Tac Toe ⭕</h1>
+<p>Play with a friend — free, no download!</p>
+<div class="scores">
+<div>Player X<strong id="sx">0</strong></div>
+<div>Draw<strong id="sd">0</strong></div>
+<div>Player O<strong id="so">0</strong></div>
+</div>
+<div id="status" aria-live="polite">Player X's turn</div>
+<div class="board" id="board"></div>
+<button class="action" onclick="start()">New Game</button>
+<button class="action" id="reset" onclick="resetScore()">Reset Score</button>
+<p><a href="/">Websitewire Home</a></p>
+</main>
+<script>
+const el=document.getElementById('board');
+const statusEl=document.getElementById('status');
+const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+let b=[],turn='X',active=true,s={X:0,O:0,D:0},cells=[];
+function start(){
+ b=Array(9).fill('');turn='X';active=true;el.innerHTML='';
+ cells=b.map((_,i)=>{
+  const c=document.createElement('button');
+  c.className='cell';c.setAttribute('aria-label','Cell '+(i+1));
+  c.onclick=()=>play(i);el.appendChild(c);return c;
+ });
+ statusEl.textContent="Player X's turn";
+}
+function play(i){
+ if(!active||b[i])return;
+ b[i]=turn;cells[i].textContent=turn;
+ cells[i].classList.add(turn.toLowerCase());cells[i].disabled=true;
+ const line=lines.find(a=>a.every(n=>b[n]===turn));
+ if(line){
+  active=false;s[turn]++;
+  line.forEach(n=>cells[n].classList.add('win'));
+  statusEl.textContent='🎉 Player '+turn+' wins!';
+  cells.forEach(c=>c.disabled=true);update();return;
+ }
+ if(b.every(Boolean)){
+  active=false;s.D++;statusEl.textContent="It's a draw!";
+  update();return;
+ }
+ turn=turn==='X'?'O':'X';
+ statusEl.textContent="Player "+turn+"'s turn";
+}
+function update(){
+ document.getElementById('sx').textContent=s.X;
+ document.getElementById('so').textContent=s.O;
+ document.getElementById('sd').textContent=s.D;
+}
+function resetScore(){s={X:0,O:0,D:0};update();start()}
+start();
+</script>
+</body>
+</html>
