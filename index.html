@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="canonical" href="https://websitewire.co.in/">
-  <title>Websitewire</title>
-  <meta name="description" content="Websitewire helps you find solutions to everyday problems.">
+  <title>Websitewire – Practical Articles &amp; Guides</title>
+  <meta name="description" content="Read practical Websitewire articles and step-by-step guides about technology, websites, documents, images and everyday problems.">
   <link rel="icon" href="/Website_wire.png">
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9100998938332588"
@@ -225,6 +225,142 @@ header { flex-wrap: nowrap !important; gap: 10px; }
     width: 260px;
   }
 }
+
+/* Article-first homepage */
+.article-home-hero {
+  text-align: center;
+  padding: 58px 20px 52px;
+  background: linear-gradient(135deg, #edf4ff, #f8faff);
+}
+.article-home-label, .article-home-kicker {
+  color: #155eef;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+.article-home-hero h1 {
+  max-width: 780px;
+  margin: 12px auto;
+  color: #172033;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.2;
+}
+.article-home-hero p {
+  max-width: 680px;
+  margin: 0 auto 22px;
+  color: #5c6676;
+  font-size: 17px;
+}
+.article-home-button {
+  display: inline-block;
+  padding: 11px 19px;
+  border-radius: 9px;
+  background: #155eef;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+}
+.article-home-main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 38px 20px 55px;
+}
+.article-home-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.article-home-heading h2 {
+  margin: 6px 0;
+  font-size: clamp(24px, 4vw, 30px);
+}
+.article-home-heading p {
+  margin: 0;
+  color: #667085;
+}
+.article-home-all, .article-home-read {
+  color: #155eef;
+  font-weight: 700;
+  text-decoration: none;
+}
+.article-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.article-home-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 4px 16px rgba(23,32,51,.05);
+}
+.article-home-image {
+  display: block;
+  height: 185px;
+  overflow: hidden;
+  background: #f2f4f7;
+}
+.article-home-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.article-home-card-content {
+  padding: 17px;
+}
+.article-home-category {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #eef4ff;
+  color: #1849a9;
+  font-size: 12px;
+  font-weight: 700;
+}
+.article-home-card h3 {
+  margin: 11px 0 8px;
+  font-size: 19px;
+  line-height: 1.35;
+}
+.article-home-card h3 a {
+  color: #172033;
+  text-decoration: none;
+}
+.article-home-card h3 a:hover {
+  color: #155eef;
+}
+.article-home-card p {
+  min-height: 72px;
+  margin: 0 0 14px;
+  color: #667085;
+  font-size: 14px;
+}
+.article-home-note {
+  margin-top: 34px;
+  padding: 22px;
+  border-radius: 13px;
+  background: #f8faff;
+}
+.article-home-note h2 { margin: 0 0 8px; }
+.article-home-note p { margin: 0 0 10px; color: #5c6676; }
+.article-home-note a { color: #155eef; font-weight: 700; }
+@media(max-width:850px) {
+  .article-home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media(max-width:560px) {
+  .article-home-hero { padding: 42px 17px; }
+  .article-home-main { padding: 28px 15px 40px; }
+  .article-home-grid { grid-template-columns: 1fr; gap: 15px; }
+  .article-home-heading { align-items: flex-start; flex-direction: column; }
+  .article-home-card p { min-height: 0; }
+  .article-home-image { height: 195px; }
+}
+
 </style>
 </head>
 
@@ -244,89 +380,168 @@ header { flex-wrap: nowrap !important; gap: 10px; }
     <a href="/multi-tools/">🧰 &nbsp; Multi Tools</a>
     <a href="/video-editor/">🎬 &nbsp; Video Editor</a>
   </aside>
+
   <div class="hub-content">
+    <section class="article-home-hero">
+      <span class="article-home-label">WEBSITEWIRE · ARTICLES & GUIDES</span>
+      <h1>Practical Guides for Everyday Questions</h1>
+      <p>Explore helpful how-to articles, straightforward explanations and practical steps for technology, websites, documents and everyday tasks.</p>
+      <a class="article-home-button" href="/articles/">Browse All Articles</a>
+    </section>
 
-<section class="hub-hero">
-  <span class="hub-tag">ONE WEBSITE · MANY SERVICES</span>
-  <h1>Everything You Need, in One Place</h1>
-  <p>Read helpful articles, play games, convert documents and manage images—all on Websitewire.</p>
-</section>
+    <main class="article-home-main">
+      <div class="article-home-heading">
+        <div>
+          <span class="article-home-kicker">READ · LEARN · SOLVE</span>
+          <h2>Latest Articles & Guides</h2>
+          <p>Choose a topic to explore the complete guide and its practical solutions.</p>
+        </div>
+        <a href="/articles/" class="article-home-all">All articles →</a>
+      </div>
 
-<main class="hub-main">
-  <div class="hub-section-heading">
-    <h2>Explore Websitewire</h2>
-    <p>Choose a section to get started.</p>
+      <section class="article-home-grid" aria-label="Websitewire articles">
+
+        <article class="article-home-card">
+          <a href="/articles/fix-slow-wifi.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/wifi.jpg" alt="Troubleshooting slow Wi-Fi at home" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Technology</span>
+            <h3><a href="/articles/fix-slow-wifi.html">How to Fix Slow Wi-Fi at Home</a></h3>
+            <p>Understand common causes of slow Wi-Fi and follow practical steps to troubleshoot your connection.</p>
+            <a class="article-home-read" href="/articles/fix-slow-wifi.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/create-a-business-website.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/business-website.jpg" alt="Creating a small business website" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Websites</span>
+            <h3><a href="/articles/create-a-business-website.html">How to Create a Website for Your Small Business</a></h3>
+            <p>A practical beginner's guide to planning, creating and launching a business website.</p>
+            <a class="article-home-read" href="/articles/create-a-business-website.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/choose-a-web-hosting-plan.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/web-hosting.jpg" alt="Web hosting plan guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Websites</span>
+            <h3><a href="/articles/choose-a-web-hosting-plan.html">How to Choose a Web Hosting Plan</a></h3>
+            <p>Compare hosting types, storage, support, backups and renewal costs before choosing a plan.</p>
+            <a class="article-home-read" href="/articles/choose-a-web-hosting-plan.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/new-gadgets-launches-october-2026.html" class="article-home-image">
+            <img src="/assets/products/urbn-bloq-magtag.png" alt="Technology gadgets featured in October 2026" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Technology & Gadgets</span>
+            <h3><a href="/articles/new-gadgets-launches-october-2026.html">3 Gadgets to Know About in October 2026</a></h3>
+            <p>Explore selected gadgets, their key features and things to consider before buying.</p>
+            <a class="article-home-read" href="/articles/new-gadgets-launches-october-2026.html">Read the article →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/navratri-shopping-guide.html" class="article-home-image">
+            <img src="/assets/article-images/navratri.jpg" alt="Navratri shopping guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Festival</span>
+            <h3><a href="/articles/navratri-shopping-guide.html">Navratri Shopping Guide</a></h3>
+            <p>Explore festive shopping ideas and useful essentials to consider for Navratri.</p>
+            <a class="article-home-read" href="/articles/navratri-shopping-guide.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/dussehra-guide.html" class="article-home-image">
+            <img src="/assets/article-images/dussehra.png" alt="Dussehra festival guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Festival</span>
+            <h3><a href="/articles/dussehra-guide.html">Dussehra Guide</a></h3>
+            <p>Learn about Dussehra traditions, celebrations and ideas for festival preparation.</p>
+            <a class="article-home-read" href="/articles/dussehra-guide.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/karwa-chauth-guide.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/karwa-chauth.jpg" alt="Karwa Chauth guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Festival</span>
+            <h3><a href="/articles/karwa-chauth-guide.html">Karwa Chauth Guide</a></h3>
+            <p>Explore traditions and practical preparation ideas for Karwa Chauth.</p>
+            <a class="article-home-read" href="/articles/karwa-chauth-guide.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/diwali-guide.html" class="article-home-image">
+            <img src="/assets/article-images/diwali.png" alt="Diwali festival guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Festival</span>
+            <h3><a href="/articles/diwali-guide.html">Diwali Guide</a></h3>
+            <p>Find helpful ideas for Diwali preparation, celebrations and festive activities.</p>
+            <a class="article-home-read" href="/articles/diwali-guide.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/free-online-pdf-document-converter.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/pdf-tools.webp" alt="PDF and document tools guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Documents</span>
+            <h3><a href="/articles/free-online-pdf-document-converter.html">Free Online PDF and Document Tools</a></h3>
+            <p>Learn how to create, merge, split and manage PDF documents with practical guidance.</p>
+            <a class="article-home-read" href="/articles/free-online-pdf-document-converter.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/free-online-image-converter-resizer.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/image-tools.webp" alt="Image converter and resizer guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Images</span>
+            <h3><a href="/articles/free-online-image-converter-resizer.html">Free Online Image Converter and Resizer</a></h3>
+            <p>Understand image formats, resizing, compression and common image editing tasks.</p>
+            <a class="article-home-read" href="/articles/free-online-image-converter-resizer.html">Read the guide →</a>
+          </div>
+        </article>
+
+        <article class="article-home-card">
+          <a href="/articles/free-online-typing-speed-test.html" class="article-home-image">
+            <img src="/assets/article-images/downloaded/typing-keyboard.jpg" alt="Typing speed test guide" loading="lazy">
+          </a>
+          <div class="article-home-card-content">
+            <span class="article-home-category">Learning</span>
+            <h3><a href="/articles/free-online-typing-speed-test.html">Free Online Typing Speed Test</a></h3>
+            <p>Understand typing speed, WPM, accuracy and ways to practise more effectively.</p>
+            <a class="article-home-read" href="/articles/free-online-typing-speed-test.html">Read the guide →</a>
+          </div>
+        </article>
+
+      </section>
+
+      <section class="article-home-note">
+        <h2>Guides with practical solutions</h2>
+        <p>Websitewire articles explain a topic step by step. When a guide refers to an online tool, you can find the relevant tool on Websitewire and use it for the task.</p>
+        <a href="/articles/">Explore all articles →</a>
+      </section>
+    </main>
   </div>
-
-  <section class="hub-grid" aria-label="Website sections">
-    <a class="hub-card articles-card" href="/articles/">
-      <span class="hub-icon">📰</span>
-      <h3>Articles & Guides</h3>
-      <p>Helpful information, festival guides, technology tips and how-to articles.</p>
-      <span class="hub-link">Explore Articles →</span>
-    </a>
-
-    <a class="hub-card games-card" href="/games/">
-      <span class="hub-icon">🎮</span>
-      <h3>Games Zone</h3>
-      <p>Play browser games on your phone or computer. Start with Snake and discover more games.</p>
-      <span class="hub-link">Play Games →</span>
-    </a>
-
-    <a class="hub-card multi-tools-card" href="/multi-tools/">
-      <span class="hub-icon">🧰</span>
-      <h3>Multi Tools</h3>
-      <p>Image, document and QR tools—all in one place, with more tools to come.</p>
-      <span class="hub-link">Explore Multi Tools →</span>
-    </a>
-
-    <a class="hub-card typingmaster-card" href="/typingmaster/">
-      <div class="hub-card-icon">⌨️</div>
-      <h2>TypingMaster</h2>
-      <p>Practice typing, improve your speed, and test your accuracy for free.</p>
-      <span>Start Typing →</span>
-    </a>
-
-    <a class="hub-card video-editor-card" href="/video-editor/">
-      <span class="hub-icon">🎬</span>
-      <h3>Online Video Editor</h3>
-      <p>Edit videos on mobile or computer. Trim clips, crop and resize, add text, captions and music, prepare Reels and Shorts, and access thumbnail and compression tools in one place.</p>
-      <span class="hub-link">Open Video Editor →</span>
-    </a>
-
-
-
-
-
-
-    <a class="hub-card" href="/qavrixa/" style="border-top:5px solid #7c3aed">
-      <span class="hub-icon">💬</span>
-      <h3>Qavrixa Live Chat</h3>
-      <p>Join a chat room and talk with others live. Choose a room and a display name to get started.</p>
-      <span class="hub-link">Open Qavrixa →</span>
-    </a>
-
-    <a class="hub-card shivi-assistant-card" href="/shivi-assistant/" style="border-top:5px solid #2563eb">
-      <h3>Shivi Assistant</h3>
-      <p>Your personal AI assistant for questions, research, and image creation.</p>
-      <span class="hub-link">Open Shivi Assistant →</span>
-    </a>
-
-    <a class="hub-card" style="border-top:5px solid #16a34a" href="/amazon-store/">
-      <span class="hub-icon">🛍️</span>
-      <h3>Shop &amp; Deals</h3>
-      <p>Browse curated festive decor, puja essentials, fashion, books and gadgets through Amazon.</p>
-      <span class="hub-link">Explore Shop &amp; Deals →</span>
-    </a>
-
-
-  </section>
-
-  <section class="hub-about" id="about">
-    <h2>Welcome to Websitewire</h2>
-    <p>A growing collection of useful information, browser games and file tools—all organised into easy-to-find sections.</p>
-  </section>
-</main>
 
 </div>
 </div>
